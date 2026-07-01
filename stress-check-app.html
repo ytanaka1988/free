@@ -140,16 +140,18 @@ const B_ITEMS = [
 "めまいがする","体のふしぶしが痛む","頭が重かったり頭痛がする","首筋や肩がこる","腰が痛い","目が疲れる",
 "動悸や息切れがする","胃腸の具合が悪い","食欲がない","便秘や下痢をする","よく眠れない"
 ];
-// true = ネガティブ(3,4が悪い方向) / false = ポジティブ(1,2が悪い方向=逆転、活気のみ)
-const B_NEGATIVE = [false,false,false, true,true,true, true,true,true, true,true,true, true,true,true,true,true,true, true,true,true,true,true,true, true,true,true,true,true];
+// B尺度は「なかった(1)～いつも(4)」という頻度尺度のため、Aとは逆に「数字が大きいほど悪い」。
+// isBad()の引数的には、そのため true/false の意味をA用と逆にして渡す必要がある。
+// true = 悪い方向は1,2側（活気3項目：頻度が低い＝悪い） / false = 悪い方向は3,4側（それ以外：頻度が高い＝悪い）
+const B_NEGATIVE = [true,true,true, false,false,false, false,false,false, false,false,false, false,false,false,false,false,false, false,false,false,false,false,false, false,false,false,false,false];
 
 const C_ITEMS = [
 "上司(話ができる)","職場の同僚(話ができる)","配偶者、家族、友人等(話ができる)",
 "上司(頼りになる)","職場の同僚(頼りになる)","配偶者、家族、友人等(頼りになる)",
 "上司(きいてくれる)","職場の同僚(きいてくれる)","配偶者、家族、友人等(きいてくれる)"
 ];
-// C: 非常に=1(良い) ... 全くない=4(悪い) → すべてネガティブ扱い(数値が大きいほど悪い)
-const C_NEGATIVE = [true,true,true,true,true,true,true,true,true];
+// C: 非常に=1(良い) ... 全くない=4(悪い) → 数値が大きいほど悪いので、isBad()には false(=3,4が悪い方向)を渡す
+const C_NEGATIVE = [false,false,false,false,false,false,false,false,false];
 
 const D_ITEMS = ["仕事に満足だ","家庭生活に満足だ"];
 
@@ -258,8 +260,15 @@ document.getElementById("submitBtn").addEventListener("click", ()=>{
     {name:"周囲の支援 (C問1,2,4,5,7,8)", cnt:support.cnt, need:5, check: support.cnt>=5}
   ];
 
-  const stressReactionCheck = psychological.check || physical.check;
-  const workloadRiskFactors = [workload.check, control.check, relation.check, fitness.check].filter(Boolean).length;
+  const psychologicalCheck = psychological.cnt >= th.psychological;
+  const physicalCheck = physical.cnt >= th.physical;
+  const stressReactionCheck = psychologicalCheck || physicalCheck;
+  const workloadRiskFactors = [
+    workload.cnt >= th.workload,
+    control.cnt >= 2,
+    relation.cnt >= 2,
+    fitness.cnt >= 2
+  ].filter(Boolean).length;
 
   const overallBox = document.getElementById("overallBox");
   overallBox.className = "overall " + (stressReactionCheck ? "high" : "low");
@@ -285,7 +294,10 @@ document.getElementById("submitBtn").addEventListener("click", ()=>{
     extraNote.appendChild(el("p",{text:
       `ストレス反応が要チェックであり、かつ仕事のストレス要因（負担度・コントロール度・対人関係・適合性）のうち ${workloadRiskFactors} 項目が要チェックです。厚労省マニュアルによれば、仕事のストレス要因が2つ要チェックの場合は心理的ストレス反応の要チェックリスクが男性で2.4倍・女性で2.5倍、3つで男性4.6倍・女性5.6倍、4つで男性6.6倍・女性7.6倍に高まるとされています。`}));
   }
-  if(support.check && (workload.check || control.check)){
+  const supportCheck = support.cnt >= 5;
+  const workloadCheck = workload.cnt >= th.workload;
+  const controlCheck = control.cnt >= 2;
+  if(supportCheck && (workloadCheck || controlCheck)){
     extraNote.appendChild(el("p",{text:
       `「仕事の負担度」「コントロール度」に加え「周囲の支援」も要チェックの場合、心理的ストレス反応が要チェックとなる確率は男性18.5倍・女性12.5倍、身体的ストレス反応は男性5.5倍・女性6.1倍との報告があります。`}));
   }
