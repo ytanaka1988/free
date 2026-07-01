@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>職業性ストレス簡易調査票（57項目）セルフチェック</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --accent:#2f6f4f; --accent2:#c0392b;
+    --border:#e0e0e0; --text:#222;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--text); margin:0; padding:20px;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{font-size:22px;margin-bottom:4px;}
+  .sub{color:#666;font-size:13px;margin-bottom:20px;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px; margin-bottom:18px;
+  }
+  .card h2{font-size:16px;margin:0 0 12px;border-left:4px solid var(--accent);padding-left:8px;}
+  .qrow{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap:12px; padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:14px;
+  }
+  .qrow:last-child{border-bottom:none;}
+  .qtext{flex:1;}
+  .qnum{color:#999;font-size:12px;margin-right:6px;}
+  .opts{display:flex;gap:10px;white-space:nowrap;}
+  .opts label{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#555;cursor:pointer;}
+  .opts input{margin-bottom:2px;}
+  .scale-head{display:flex;justify-content:flex-end;gap:10px;font-size:11px;color:#888;margin-bottom:6px;}
+  .scale-head span{width:34px;text-align:center;}
+  .gender-row{display:flex;gap:20px;align-items:center;margin-bottom:6px;}
+  button#submitBtn{
+    background:var(--accent); color:#fff; border:none; padding:12px 28px;
+    border-radius:8px; font-size:15px; cursor:pointer; display:block; margin:20px auto;
+  }
+  button#submitBtn:hover{opacity:0.9;}
+  #result{display:none;}
+  .result-flag{
+    display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:bold; margin-left:8px;
+  }
+  .flag-check{background:#fdecea;color:var(--accent2);}
+  .flag-ok{background:#eaf6ee;color:var(--accent);}
+  .cat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #eee;font-size:14px;}
+  .overall{
+    padding:16px; border-radius:8px; font-size:16px; font-weight:bold; text-align:center; margin-bottom:16px;
+  }
+  .overall.high{background:#fdecea;color:var(--accent2);}
+  .overall.low{background:#eaf6ee;color:var(--accent);}
+  .note{font-size:12px;color:#777;line-height:1.6;margin-top:10px;}
+  .note p{margin:6px 0;}
+  .missing{color:var(--accent2);font-size:13px;text-align:center;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>職業性ストレス簡易調査票（57項目）セルフチェック</h1>
+  <div class="sub">
+    厚生労働省「職業性ストレス簡易調査票を用いたストレスの現状把握のためのマニュアル」記載の
+    <b>簡易採点法</b>に基づき判定します。全57項目に回答してください。<br>
+    ※本アプリは自己チェック目的の簡易ツールです。結果のみで健康状態を断定せず、気になる場合は産業医・保健師等にご相談ください。
+  </div>
+
+  <div class="card">
+    <h2>性別（判定基準が男女で異なるため選択してください）</h2>
+    <div class="gender-row">
+      <label><input type="radio" name="gender" value="male" checked> 男性</label>
+      <label><input type="radio" name="gender" value="female"> 女性</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>A. あなたの仕事についてうかがいます</h2>
+    <div class="scale-head"><span>そうだ</span><span>まあ</span><span>やや違う</span><span>違う</span></div>
+    <div id="sectionA"></div>
+  </div>
+
+  <div class="card">
+    <h2>B. 最近1か月間のあなたの状態についてうかがいます</h2>
+    <div class="scale-head"><span>なかった</span><span>時々</span><span>しばしば</span><span>いつも</span></div>
+    <div id="sectionB"></div>
+  </div>
+
+  <div class="card">
+    <h2>C. あなたの周りの方々についてうかがいます</h2>
+    <div class="scale-head"><span>非常に</span><span>かなり</span><span>多少</span><span>全くない</span></div>
+    <div id="sectionC"></div>
+  </div>
+
+  <div class="card">
+    <h2>D. 満足度について（参考項目・判定には使用しません）</h2>
+    <div class="scale-head"><span>満足</span><span>まあ満足</span><span>やや不満</span><span>不満</span></div>
+    <div id="sectionD"></div>
+  </div>
+
+  <button id="submitBtn">結果を判定する</button>
+  <div class="missing" id="missingMsg"></div>
+
+  <div class="card" id="result">
+    <h2>判定結果</h2>
+    <div id="overallBox"></div>
+    <div id="catList"></div>
+    <div class="note" id="extraNote"></div>
+  </div>
+</div>
+
+<script>
+const A_ITEMS = [
+"非常にたくさんの仕事をしなければならない",
+"時間内に仕事が処理しきれない",
+"一生懸命働かなければならない",
+"かなり注意を集中する必要がある",
+"高度の知識や技術が必要なむずかしい仕事だ",
+"勤務時間中はいつも仕事のことを考えていなければならない",
+"からだを大変よく使う仕事だ",
+"自分のペースで仕事ができる",
+"自分で仕事の順番・やり方を決めることができる",
+"職場の仕事の方針に自分の意見を反映できる",
+"自分の技能や知識を仕事で使うことが少ない",
+"私の部署内で意見のくい違いがある",
+"私の部署と他の部署とはうまが合わない",
+"私の職場の雰囲気は友好的である",
+"私の職場の作業環境（騒音、照明、温度、換気など）はよくない",
+"仕事の内容は自分にあっている",
+"働きがいのある仕事だ"
+];
+// true = ネガティブ表現(1,2が悪い方向) / false = ポジティブ表現(3,4が悪い方向=逆転)
+const A_NEGATIVE = [true,true,true,true,true,true,true,false,false,false,true,true,true,false,true,false,false];
+
+const B_ITEMS = [
+"活気がわいてくる","元気がいっぱいだ","生き生きする",
+"怒りを感じる","内心腹立たしい","イライラしている",
+"ひどく疲れた","へとへとだ","だるい",
+"気がはりつめている","不安だ","落着かない",
+"ゆううつだ","何をするのも面倒だ","物事に集中できない","気分が晴れない","仕事が手につかない","悲しいと感じる",
+"めまいがする","体のふしぶしが痛む","頭が重かったり頭痛がする","首筋や肩がこる","腰が痛い","目が疲れる",
+"動悸や息切れがする","胃腸の具合が悪い","食欲がない","便秘や下痢をする","よく眠れない"
+];
+// true = ネガティブ(3,4が悪い方向) / false = ポジティブ(1,2が悪い方向=逆転、活気のみ)
+const B_NEGATIVE = [false,false,false, true,true,true, true,true,true, true,true,true, true,true,true,true,true,true, true,true,true,true,true,true, true,true,true,true,true];
+
+const C_ITEMS = [
+"上司(話ができる)","職場の同僚(話ができる)","配偶者、家族、友人等(話ができる)",
+"上司(頼りになる)","職場の同僚(頼りになる)","配偶者、家族、友人等(頼りになる)",
+"上司(きいてくれる)","職場の同僚(きいてくれる)","配偶者、家族、友人等(きいてくれる)"
+];
+// C: 非常に=1(良い) ... 全くない=4(悪い) → すべてネガティブ扱い(数値が大きいほど悪い)
+const C_NEGATIVE = [true,true,true,true,true,true,true,true,true];
+
+const D_ITEMS = ["仕事に満足だ","家庭生活に満足だ"];
+
+function el(tag, opts, children){
+  const node = document.createElement(tag);
+  if(opts){
+    for(const k in opts){
+      if(k === "class") node.className = opts[k];
+      else if(k === "text") node.textContent = opts[k];
+      else node.setAttribute(k, opts[k]);
+    }
+  }
+  (children||[]).forEach(c=>node.appendChild(c));
+  return node;
+}
+
+function buildSection(containerId, items, prefix){
+  const container = document.getElementById(containerId);
+  items.forEach((text,i)=>{
+    const num = i+1;
+    const opts = el("div",{class:"opts"});
+    for(let v=1; v<=4; v++){
+      const label = el("label",{});
+      const input = el("input",{type:"radio", name:prefix+num, value:String(v), required:"required"});
+      label.appendChild(input);
+      opts.appendChild(label);
+    }
+    const row = el("div",{class:"qrow"},[
+      el("div",{class:"qtext"},[ el("span",{class:"qnum",text:num+"."}), document.createTextNode(text) ]),
+      opts
+    ]);
+    container.appendChild(row);
+  });
+}
+buildSection("sectionA", A_ITEMS, "A");
+buildSection("sectionB", B_ITEMS, "B");
+buildSection("sectionC", C_ITEMS, "C");
+buildSection("sectionD", D_ITEMS, "D");
+
+function getAnswers(prefix, count){
+  const arr = [];
+  for(let i=1;i<=count;i++){
+    const sel = document.querySelector(`input[name="${prefix}${i}"]:checked`);
+    arr.push(sel ? parseInt(sel.value,10) : null);
+  }
+  return arr;
+}
+
+function isBad(value, negative){
+  if(value===null) return null;
+  return negative ? (value===1||value===2) : (value===3||value===4);
+}
+
+function countBad(values, negativeFlags, indices){
+  let cnt=0, missing=0;
+  indices.forEach(idx=>{
+    const v = values[idx-1];
+    const neg = negativeFlags[idx-1];
+    const bad = isBad(v, neg);
+    if(bad===null) missing++;
+    else if(bad) cnt++;
+  });
+  return {cnt, missing};
+}
+
+function clearChildren(node){
+  while(node.firstChild) node.removeChild(node.firstChild);
+}
+
+document.getElementById("submitBtn").addEventListener("click", ()=>{
+  const gender = document.querySelector('input[name="gender"]:checked').value;
+  const a = getAnswers("A",17);
+  const b = getAnswers("B",29);
+  const c = getAnswers("C",9);
+
+  const missingMsg = document.getElementById("missingMsg");
+  const totalMissing = [...a,...b,...c].filter(v=>v===null).length;
+  if(totalMissing>0){
+    missingMsg.textContent = `未回答の項目が ${totalMissing} 件あります。すべての項目に回答してください。`;
+    document.getElementById("result").style.display="none";
+    return;
+  }
+  missingMsg.textContent = "";
+
+  const workload = countBad(a, A_NEGATIVE, [1,2,3,4,5,6,7]);
+  const control  = countBad(a, A_NEGATIVE, [8,9,10]);
+  const relation = countBad(a, A_NEGATIVE, [12,13,14]);
+  const fitness  = countBad(a, A_NEGATIVE, [16,17]);
+
+  const psychological = countBad(b, B_NEGATIVE, Array.from({length:18},(_,i)=>i+1));
+  const physical = countBad(b, B_NEGATIVE, Array.from({length:11},(_,i)=>i+19));
+
+  const support = countBad(c, C_NEGATIVE, [1,2,4,5,7,8]);
+
+  const th = gender === "male"
+    ? {workload:6, psychological:14, physical:5}
+    : {workload:5, psychological:13, physical:6};
+
+  const categories = [
+    {name:"仕事の負担度 (A問1-7)", cnt:workload.cnt, need:th.workload, check: workload.cnt>=th.workload},
+    {name:"仕事のコントロール度 (A問8-10)", cnt:control.cnt, need:2, check: control.cnt>=2},
+    {name:"仕事での対人関係 (A問12-14)", cnt:relation.cnt, need:2, check: relation.cnt>=2},
+    {name:"仕事の適合性 (A問16-17)", cnt:fitness.cnt, need:2, check: fitness.cnt>=2},
+    {name:"心理的ストレス反応 (B問1-18)", cnt:psychological.cnt, need:th.psychological, check: psychological.cnt>=th.psychological},
+    {name:"身体的ストレス反応 (B問19-29)", cnt:physical.cnt, need:th.physical, check: physical.cnt>=th.physical},
+    {name:"周囲の支援 (C問1,2,4,5,7,8)", cnt:support.cnt, need:5, check: support.cnt>=5}
+  ];
+
+  const stressReactionCheck = psychological.check || physical.check;
+  const workloadRiskFactors = [workload.check, control.check, relation.check, fitness.check].filter(Boolean).length;
+
+  const overallBox = document.getElementById("overallBox");
+  overallBox.className = "overall " + (stressReactionCheck ? "high" : "low");
+  overallBox.textContent = stressReactionCheck
+    ? "ストレス状態にあることが疑われます（ストレス反応が要チェック）"
+    : "現時点で強いストレス反応の兆候は見られません";
+
+  const catList = document.getElementById("catList");
+  clearChildren(catList);
+  categories.forEach(cat=>{
+    const flag = el("span",{class:"result-flag " + (cat.check?"flag-check":"flag-ok"),
+      text: (cat.check?"要チェック":"OK") + `（基準:${cat.need}件以上）`});
+    const row = el("div",{class:"cat-row"},[
+      el("span",{text:`${cat.name}：${cat.cnt} 件`}),
+      flag
+    ]);
+    catList.appendChild(row);
+  });
+
+  const extraNote = document.getElementById("extraNote");
+  clearChildren(extraNote);
+  if(stressReactionCheck && workloadRiskFactors>0){
+    extraNote.appendChild(el("p",{text:
+      `ストレス反応が要チェックであり、かつ仕事のストレス要因（負担度・コントロール度・対人関係・適合性）のうち ${workloadRiskFactors} 項目が要チェックです。厚労省マニュアルによれば、仕事のストレス要因が2つ要チェックの場合は心理的ストレス反応の要チェックリスクが男性で2.4倍・女性で2.5倍、3つで男性4.6倍・女性5.6倍、4つで男性6.6倍・女性7.6倍に高まるとされています。`}));
+  }
+  if(support.check && (workload.check || control.check)){
+    extraNote.appendChild(el("p",{text:
+      `「仕事の負担度」「コントロール度」に加え「周囲の支援」も要チェックの場合、心理的ストレス反応が要チェックとなる確率は男性18.5倍・女性12.5倍、身体的ストレス反応は男性5.5倍・女性6.1倍との報告があります。`}));
+  }
+  extraNote.appendChild(el("p",{text:
+    "本結果は簡易的なセルフチェックです。医学的診断ではありません。気になる症状がある場合や高ストレスの疑いがある場合は、産業医・保健師・かかりつけ医等の専門家にご相談ください。"}));
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+});
+</script>
+</body>
+</html>
