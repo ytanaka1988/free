@@ -208,6 +208,15 @@ class Slide(object):
                 self.text(x + 0.26, yy - 0.03, w - 0.26, 0.32, it, size=size,
                           color=INK)
 
+    def bullets(self, x, y, w, items, pitch=0.46, size=SZ_BODY, color=CORAL,
+                dot=0.09):
+        """コーラルの小さな点を先頭に置いた箇条書き（課題の列挙などチェック向きでない場面）"""
+        for i, it in enumerate(items):
+            yy = y + i * pitch
+            self.shape(x, yy + size / 72.0 * 0.52, dot, dot, MSO_SHAPE.OVAL,
+                       fill=color)
+            self.text(x + 0.28, yy, w - 0.28, 0.34, it, size=size, color=INK)
+
     def rows(self, x, y, w, items, pitch=0.58, h=0.46, size=SZ_ROW,
              numbered=True, fill=BLUE_L):
         """淡ブルーの一覧行。numbered=True で先頭にネイビーの小さい連番。"""
