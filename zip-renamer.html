@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>zip ⇄ zi_ 拡張子コンバータ</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --accent:#2f6f4f; --accent2:#c0392b;
+    --border:#e0e0e0; --text:#222;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:var(--bg); color:var(--text); margin:0; padding:20px;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{font-size:22px;margin-bottom:4px;}
+  .sub{color:#666;font-size:13px;margin-bottom:20px;line-height:1.7;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px; margin-bottom:18px;
+  }
+  .card h2{font-size:16px;margin:0 0 12px;border-left:4px solid var(--accent);padding-left:8px;}
+  #drop{
+    border:2px dashed #c8d3cc; border-radius:10px; background:#fbfdfc;
+    padding:38px 20px; text-align:center; color:#666; font-size:14px; cursor:pointer;
+    transition:background .15s,border-color .15s;
+  }
+  #drop.over{background:#eaf6ee;border-color:var(--accent);color:var(--accent);}
+  #drop b{display:block;font-size:16px;color:var(--text);margin-bottom:6px;}
+  #picker{display:none;}
+  .mode-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap;font-size:14px;margin-bottom:10px;}
+  .mode-row label{display:flex;align-items:center;gap:5px;cursor:pointer;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;color:#888;font-weight:normal;font-size:12px;border-bottom:1px solid var(--border);padding:6px 8px;}
+  td{padding:9px 8px;border-bottom:1px solid #f0f0f0;vertical-align:middle;word-break:break-all;}
+  tr:last-child td{border-bottom:none;}
+  .arrow{color:#aaa;text-align:center;width:26px;}
+  .newname{color:var(--accent);font-weight:bold;}
+  .size{color:#999;white-space:nowrap;font-size:12px;text-align:right;}
+  .warn{color:var(--accent2);font-size:11px;display:block;margin-top:2px;}
+  .dl{
+    background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:6px;
+    font-size:12px;cursor:pointer;white-space:nowrap;
+  }
+  .dl:hover{opacity:.9;}
+  .dl.done{background:#9bb8a8;}
+  .rm{background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;line-height:1;}
+  .rm:hover{color:var(--accent2);}
+  .actions{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+  button#allBtn{
+    background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:8px;
+    font-size:15px;cursor:pointer;
+  }
+  button#allBtn:hover{opacity:.9;}
+  button#clearBtn{
+    background:#fff;color:#666;border:1px solid var(--border);padding:12px 20px;
+    border-radius:8px;font-size:14px;cursor:pointer;
+  }
+  #listCard{display:none;}
+  .empty{color:#999;font-size:13px;text-align:center;padding:10px 0;}
+  .note{font-size:12px;color:#777;line-height:1.8;margin-top:10px;}
+  .note p{margin:6px 0;}
+  @media(max-width:600px){
+    .size{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>zip ⇄ zi_ 拡張子コンバータ</h1>
+  <div class="sub">
+    メールで <b>.zip</b> が受信できない相手に送るために <b>.zi_</b> へ、受け取った <b>.zi_</b> を <b>.zip</b> へ戻すためのツールです。<br>
+    ファイルの中身は一切変更せず、<b>拡張子（ファイル名）だけ</b>を付け替えて保存し直します。<br>
+    ※処理はすべてブラウザ内で完結し、ファイルはどこにもアップロードされません。
+  </div>
+
+  <div class="card">
+    <h2>1. 変換の向き</h2>
+    <div class="mode-row">
+      <label><input type="radio" name="mode" value="auto" checked> 自動判定（.zip→.zi_ / .zi_→.zip）</label>
+      <label><input type="radio" name="mode" value="tozi"> .zip → .zi_ に統一</label>
+      <label><input type="radio" name="mode" value="tozip"> .zi_ → .zip に統一</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. ファイルを選ぶ</h2>
+    <div id="drop">
+      <b>ここにファイルをドラッグ＆ドロップ</b>
+      クリックしてファイルを選択することもできます（複数可）
+    </div>
+    <input type="file" id="picker" multiple>
+  </div>
+
+  <div class="card" id="listCard">
+    <h2>3. ダウンロード</h2>
+    <table>
+      <thead>
+        <tr><th>元のファイル名</th><th></th><th>変換後</th><th class="size">サイズ</th><th></th><th></th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="actions">
+      <button id="allBtn">すべてダウンロード</button>
+      <button id="clearBtn">リストを空にする</button>
+    </div>
+    <div class="note">
+      <p>※ ブラウザによっては複数ファイルの連続ダウンロードに許可が必要です。ブロックされた場合は個別の「保存」ボタンをお使いください。</p>
+      <p>※ 受け取った側は <b>.zi_</b> を <b>.zip</b> に戻してから展開してください。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ZIP_EXT = "zip", ALT_EXT = "zi_";
+  var items = [];
+  var seq = 0;
+
+  var drop   = document.getElementById("drop");
+  var picker = document.getElementById("picker");
+  var tbody  = document.getElementById("tbody");
+  var listCard = document.getElementById("listCard");
+
+  function currentMode(){
+    return document.querySelector('input[name="mode"]:checked').value;
+  }
+
+  // 拡張子を除いた部分と拡張子（小文字）を返す
+  function splitName(name){
+    var i = name.lastIndexOf(".");
+    if(i <= 0) return { base:name, ext:"" };
+    return { base:name.slice(0, i), ext:name.slice(i + 1) };
+  }
+
+  function targetName(name, mode){
+    var p = splitName(name), ext = p.ext.toLowerCase();
+    if(mode === "auto"){
+      if(ext === ZIP_EXT) return p.base + "." + ALT_EXT;
+      if(ext === ALT_EXT) return p.base + "." + ZIP_EXT;
+      return name + "." + ALT_EXT; // 拡張子不明ならとりあえず .zi_ を付ける
+    }
+    var to = (mode === "tozip") ? ZIP_EXT : ALT_EXT;
+    if(ext === to) return name;                          // すでに目的の拡張子
+    if(ext === ZIP_EXT || ext === ALT_EXT) return p.base + "." + to;
+    return name + "." + to;                              // その他は末尾に付け足す
+  }
+
+  function formatSize(n){
+    if(n < 1024) return n + " B";
+    if(n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+    return (n / 1024 / 1024).toFixed(1) + " MB";
+  }
+
+  // 先頭4バイトが ZIP のシグネチャ(PK\x03\x04)かどうか調べる
+  function checkZip(item){
+    var r = new FileReader();
+    r.onload = function(){
+      var b = new Uint8Array(r.result);
+      item.isZip = (b[0] === 0x50 && b[1] === 0x4B && b[2] === 0x03 && b[3] === 0x04);
+      render();
+    };
+    r.onerror = function(){ item.isZip = null; };
+    r.readAsArrayBuffer(item.file.slice(0, 4));
+  }
+
+  function addFiles(fileList){
+    for(var i = 0; i < fileList.length; i++){
+      items.push({ id: ++seq, file: fileList[i], isZip: null, done: false });
+      checkZip(items[items.length - 1]);
+    }
+    render();
+  }
+
+  function download(item){
+    var url = URL.createObjectURL(item.file);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = targetName(item.file.name, currentMode());
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+    item.done = true;
+    render();
+  }
+
+  function render(){
+    listCard.style.display = items.length ? "block" : "none";
+    tbody.innerHTML = "";
+    items.forEach(function(item){
+      var newName = targetName(item.file.name, currentMode());
+      var tr = document.createElement("tr");
+
+      var tdOld = document.createElement("td");
+      tdOld.textContent = item.file.name;
+      if(item.isZip === false){
+        var w = document.createElement("span");
+        w.className = "warn";
+        w.textContent = "※ ZIP形式のファイルではないようです（中身は変更されません）";
+        tdOld.appendChild(w);
+      }
+
+      var tdArrow = document.createElement("td");
+      tdArrow.className = "arrow";
+      tdArrow.textContent = "→";
+
+      var tdNew = document.createElement("td");
+      tdNew.className = "newname";
+      tdNew.textContent = newName;
+
+      var tdSize = document.createElement("td");
+      tdSize.className = "size";
+      tdSize.textContent = formatSize(item.file.size);
+
+      var tdBtn = document.createElement("td");
+      var btn = document.createElement("button");
+      btn.className = "dl" + (item.done ? " done" : "");
+      btn.textContent = item.done ? "保存済み" : "保存";
+      btn.onclick = function(){ download(item); };
+      tdBtn.appendChild(btn);
+
+      var tdRm = document.createElement("td");
+      var rm = document.createElement("button");
+      rm.className = "rm";
+      rm.title = "リストから削除";
+      rm.textContent = "×";
+      rm.onclick = function(){
+        items = items.filter(function(x){ return x.id !== item.id; });
+        render();
+      };
+      tdRm.appendChild(rm);
+
+      [tdOld, tdArrow, tdNew, tdSize, tdBtn, tdRm].forEach(function(td){ tr.appendChild(td); });
+      tbody.appendChild(tr);
+    });
+  }
+
+  drop.addEventListener("click", function(){ picker.click(); });
+  picker.addEventListener("change", function(){
+    addFiles(picker.files);
+    picker.value = "";
+  });
+
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    if(e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  });
+  // ページ外へのドロップでファイルが開かれてしまうのを防ぐ
+  ["dragover","drop"].forEach(function(ev){
+    window.addEventListener(ev, function(e){ if(e.target !== drop) e.preventDefault(); });
+  });
+
+  document.querySelectorAll('input[name="mode"]').forEach(function(r){
+    r.addEventListener("change", render);
+  });
+
+  document.getElementById("allBtn").addEventListener("click", function(){
+    items.forEach(function(item, i){
+      setTimeout(function(){ download(item); }, i * 400);
+    });
+  });
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    items = [];
+    render();
+  });
+})();
+</script>
+</body>
+</html>
