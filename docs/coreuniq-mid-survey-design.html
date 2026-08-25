@@ -368,12 +368,12 @@
 <header class="masthead">
   <p class="eyebrow">Core Uniq × 株式会社ニデック様｜トライアル中間振り返り</p>
   <h1>中間アンケート設計書</h1>
-  <p class="standfirst">「成果が出たか」だけでなく、「なぜその課題が起きているのか」「どこまで前進したのか」「新たに何が見えたのか」「何が残っているのか」まで可視化する。Givin' Back が3月にニデック様へ提示した4層フレームをそのまま使い、目的とメンバー用・管理職用の設問たたき台に落としたもの。</p>
+  <p class="standfirst">音声13本と現行フォーム2本をすべて確認したうえでの改訂版。現行案の12問は定点観測として完成しているので壊しません。そこに、<strong>稟議を通した根拠と、情報システム部への結果報告に答えられる設問</strong>を足す形で設計しています。</p>
   <div class="meta">
     <span><b>作成</b> 2026.08.25</span>
     <span><b>対象</b> メンバー8名／管理職2名＋事務局2名</span>
     <span><b>トライアル</b> 2026.03 開始・半年プラン（10名）</span>
-    <span><b>想定実施</b> 2026.09 上旬</span>
+    <span><b>報告先</b> 情報システム部（結果報告は稟議上の義務）</span>
   </div>
 </header>
 
@@ -381,110 +381,183 @@
 <section id="sources">
   <div class="sec-head">
     <span class="sec-num">00</span>
-    <h2>はじめに：参照できた材料と、届かなかった材料</h2>
-    <p>結論の土台を先に開示します。Plaud接続後の再調査を反映済みです。</p>
+    <h2>読んだもの</h2>
+    <p>13本すべてに目を通しました。うち9本は全文、契約実務中心の4本は要点を拾う形で読んでいます。</p>
   </div>
   <div class="body">
-    <div class="note">
-      <h4>Plaudの13本は、この接続では取得できません</h4>
-      <ul>
-        <li>接続されたPlaudアカウントは <strong>田中悠介様のアカウント</strong>（<code>workspace ws_clPu5NvvBm</code>）でした。全409件を走査しましたが、<strong>ご提示の13本は1件も含まれていません</strong>（「コアユニーク」「オンボーディング」「トライアル」いずれの名称検索も0件、該当日付の録音も不在）。</li>
-        <li>共有URLの <code>pub_</code> 以降がファイルIDであることは確認できたため、13件すべてを直接叩きましたが、いずれも <code>500</code> が返りました。<strong>別アカウント（木下代表と推測）の所有物</strong>だからです。</li>
-        <li><strong>解決策：</strong>そのアカウントをコネクタに追加していただくか、13本を workspace <code>ws_clPu5NvvBm</code> に共有していただければ、こちらから読めます。文字起こしをDriveに置いていただく形でも同じです。</li>
-      </ul>
-    </div>
-
-    <p>一方で、Google Drive を洗い直した結果、<strong>音声の代わりになる一次資料がかなり出てきました。</strong>特に下2件は、今回の設計そのものを決める材料です。</p>
-
     <div class="scroll">
       <table>
-        <thead><tr><th>参照した一次資料</th><th>そこから取れたもの</th></tr></thead>
+        <thead><tr><th>音声</th><th>読み方</th><th>設計に効いた内容</th></tr></thead>
         <tbody>
-          <tr><td><strong>ヒアリングアジェンダ_ニデック様_CoreUniq</strong><br><span style="color:var(--muted);font-size:.84rem">2026年3月／作成：木下直美</span></td><td><strong>4層フレーム（課題の特定／ゴールの明確化／阻害要因の分解／成功指標の設計）。</strong>本書はこれを骨格にしています。「指標は目標ではなく目安」という運用思想も</td></tr>
-          <tr><td><strong>CoreUniq 顧客インタビュー 質問マスター（統合版）</strong><br><span style="color:var(--muted);font-size:.84rem">2026-07 更新／YC Office Hours ベース</span></td><td>Mom Test の3ルール、三角測量、業務フロー6フェーズ、<strong>「育成 vs 評価の接点」という勝ち筋仮説</strong>とキラークエスチョン</td></tr>
-          <tr><td>ニデック様_アジェンダ（議事録集約）<br><span style="color:var(--muted);font-size:.84rem">2025.12.25／2026.02.10／04.23／06.05／06.18／08.06</span></td><td>稟議のMUST／WANT、トライアル設計、導入セッション内容、事前アンケート結果と仮説</td></tr>
-          <tr><td>CoreUniq_ニデック様作戦会議_第1回（2026.04.23）</td><td>メンバー個人別スコアと個別所見、リーダー2名の回答パターン分析</td></tr>
-          <tr><td>ニデック様ユーザーインタビュー全文（2026.07.17／三宅様・林様）</td><td>入力が止まる理由、AIフィードバックへの本音、目標設定シートとの二重感、組織文化の課題</td></tr>
-          <tr><td>ニデック様フィードバック（PDF・2026.06提出分）</td><td>管理職／メンバーの不具合・リクエスト・所感の生コメント</td></tr>
-          <tr><td>【Core Uniq】事前アンケート（メンバー向け）回答シート</td><td>定点観測12問の<strong>正確な設問文</strong>と10段階スケール</td></tr>
-          <tr><td>SOEI様 事前／事後アンケート回答シート、Core Uniq 事後アンケート</td><td>事前→事後を同一設問で並べる比較テーブルの型、継続意向・支払意向の設問設計</td></tr>
-          <tr><td>ニデック様との往復メール（2025.12〜2026.08）</td><td>参加者名簿、担当者交代（山崎様→西内様）、契約・スケジュール</td></tr>
+          <tr><td>08-28 AIキャリア支援ツールを活用した人材育成の課題</td><td>全文</td><td><strong>導入前の4課題</strong>／外部アンケートで仮説を検証するという当初設計／トライアル参加者が集まるかという懸念</td></tr>
+          <tr><td>09-12 「コアユニーク」導入検討</td><td>全文</td><td>課長3名の反応（1名前向き・2名「負荷が増える」）／<strong>「メリットをメンバーに説得できる感覚がない」</strong>／選定バイアスの議論</td></tr>
+          <tr><td>10-17 Gemini有料版のセキュリティ審査準備</td><td>全文</td><td>情シス審査の要求事項／閲覧権限の設計（Givin' Back は原則見ない）</td></tr>
+          <tr><td>12-25 トライアル実施に向けた稟議と計画</td><td>全文＋AI要約</td><td>MUST①運用ルール策定／<strong>MUST②トライアル終了後の結果報告</strong>／メンバー選定方針の未決</td></tr>
+          <tr><td>02-10 導入・契約条件・オンボーディング計画</td><td>要点</td><td>「いずれは全部システムに組み込むための、今はアンケート」／6指標（個人の土台・チーム推進・方向性・相互成長・挑戦・自走）</td></tr>
+          <tr><td>02-17 見積もり・契約条件と事業背景</td><td>要点</td><td>条件協議</td></tr>
+          <tr><td>03-06 利用規約運用・電子合意・NDA優先</td><td>要点</td><td>契約実務</td></tr>
+          <tr><td>03-13 契約、オンボーディング、Core Unique導入</td><td>後半全文</td><td><strong>稟議の根拠＝組織サーベイの3パラメーター</strong>／<strong>「効果測定を決めておかないとまずい」</strong>／CHEN様の言語環境</td></tr>
+          <tr><td>03-23 オンボーディング最終段取り・情シス対応</td><td>全文</td><td><strong>5月中間報告・半年後結果報告を情シスへ</strong>／事前アンケートの狙い（管理職とメンバーの認識ギャップ）／Googleフォームの個人アカウント問題</td></tr>
+          <tr><td>03-31 キックオフ（2時間31分）</td><td>全文</td><td><strong>半年後の3つのゴール</strong>／10名全員のCoreUniq宣言／<strong>当日から全員が「入力が足りない」と自覚</strong>／運用ルール（週報は金曜16時）</td></tr>
+          <tr><td>04-23 週次ミーティング（1時間34分）</td><td>全文</td><td>事前アンケートの個人別分析／<strong>返信機能をあえて付けていない設計思想</strong>／「お互いに見せてと言わないんだな」</td></tr>
+          <tr><td>06-05 ステーションAIトライアル導入と活用法</td><td>全文</td><td><strong>石田様がほぼ未使用</strong>／<strong>中屋敷様「目的をちゃんと伝えてなかった」</strong>／ログイン率80→90%／声かけは日報3日未入力がベスト</td></tr>
+          <tr><td>08-05 新規事業開発、ユーザーインタビュー</td><td>全文</td><td>HR人事コンサル平井氏の知見（<strong>自走まで1年半</strong>／<strong>人事が使い始めるのは役員報告に使われる時だけ</strong>）</td></tr>
+          <tr><td><strong>現行フォーム2本</strong>（メンバー／管理者）</td><td>全文</td><td>設問構成を確認。次章</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="font-size:.9rem;color:var(--muted)">なお、ご提示の中間アンケート2本（Googleフォーム）は依然として設問文を確認できていません。docs.google.com がネットワークポリシーで遮断されており、Drive APIもフォームをテキスト化できないためです。設問文をテキストでいただければ、本書と突き合わせて統合版にします。</p>
+    <p style="font-size:.9rem;color:var(--muted)">Plaud の共有リンクとフォームURLは、いずれもネットワークポリシーで直接は開けません。今回は文字起こしとフォーム内容を1つのGoogleドキュメントにまとめていただき、Google Drive 連携で読みました。今後も同じ形が最短です。</p>
   </div>
 </section>
 
 <!-- ============ 1 ============ -->
-<section id="purpose">
+<section id="current">
   <div class="sec-head">
     <span class="sec-num">01</span>
-    <h2>このアンケートを、何のために実施するのか</h2>
-    <p>新しい枠組みは要りません。3月のヒアリングで自社が定義した4層が、そのまま代表のご質問と一致しています。</p>
+    <h2>現行案は、壊さない</h2>
+    <p>まず現行の中間アンケート2本が何でできているかを確認します。</p>
   </div>
   <div class="body">
-
-    <div class="keypoint">
-      <b>3月のヒアリングアジェンダに、すでに答えがありました。</b>「①課題の特定：今何が課題として上がっているのか／②ゴールの明確化：本来どうなっていたいか／③阻害要因の分解：何が壁になって実現が難しいのか／④成功指標の設計：何が変わったら改善と言えるか」。代表がおっしゃる「なぜ課題が生じているのか／どこまで前進したのか／新たに何が顕在化したのか／どのような課題がまだ残っているのか」は、<strong>この4層を導入後の時点で測り直すこと</strong>と同じです。新しいフレームを持ち込まず、3月に顧客と握った枠で聞くのが最も筋が通ります。
-    </div>
-
     <div class="scroll">
       <table>
-        <thead><tr><th>3月に定義した4層</th><th>中間で問い直す形</th><th>担当設問</th></tr></thead>
+        <thead><tr><th>ブロック</th><th>メンバー用</th><th>管理者用</th></tr></thead>
         <tbody>
-          <tr><td>① 課題の特定</td><td>導入前に挙がっていた課題は、いま現場でどうなっているか</td><td class="num">M4–M15／L3–L14</td></tr>
-          <tr><td>② ゴールの明確化</td><td>「やってよかった」と言える状態を、いま改めて言葉にできるか</td><td class="num">L36</td></tr>
-          <tr><td>③ 阻害要因の分解</td><td>スコアが動かない原因は、本人／上司／制度／文化のどこにあるか</td><td class="num">M37・M39／L18・L23・L28</td></tr>
-          <tr><td>④ 成功指標の設計</td><td>社内報告で「これが動いたから成果」と言える材料は何か</td><td class="num">L32</td></tr>
+          <tr><td>定点観測</td><td>Q1〜Q12（1〜10・全問必須）<br><span style="color:var(--muted);font-size:.84rem">事前アンケートと設問文・尺度とも完全に同一</span></td><td>Q1〜Q12（1〜10・全問必須）<br><span style="color:var(--muted);font-size:.84rem">同上</span></td></tr>
+          <tr><td>自由記述</td><td>Q13 意識や行動にどのような変化がありましたか<br>Q14 チームメンバーとの関わり方で、<strong>良い変化</strong>を感じた具体的なエピソード</td><td>Q13 マネジメントや声かけで、意識や行動にどのような変化がありましたか<br>Q14 チーム・メンバーに起きた<strong>ポジティブな変化</strong>の具体的なエピソード</td></tr>
+          <tr><td>属性</td><td>Q15 所属会社・部門名／Q16 お名前／Q17 性別</td><td>同左</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3>1-2. その上で、目的は4つに分かれます</h3>
-    <div class="purposes">
-      <div class="purpose">
-        <span class="tag">PURPOSE A ／ 顧客のため</span>
-        <h4>中屋敷様・西内様が、社内に「やった意味」を説明できる材料をつくる</h4>
-        <p>2025.12.25 の稟議整理で、他部門・部門長からの <strong>MUST として「トライアルが終わった後の結果報告」</strong> が明記されています。努力目標ではなく、導入時に社内へ約束した宿題です。中間アンケートは、その報告書の骨格を先に用意する場になります。</p>
-        <p class="src">出典：ニデック様_アジェンダ 2025.12.25／2026.02.10「MUST ②」</p>
-      </div>
-      <div class="purpose">
-        <span class="tag">PURPOSE B ／ 共通</span>
-        <h4>変化を「点」ではなく「線」で見る</h4>
-        <p>2026.06.05 のアジェンダに、Givin' Back 側の提案として <strong>「アンケートの定期取得による定点観察（自己評価の変化のスコアリング）」</strong> がすでに挙がっています。今回はその2回目。事前の12問を<strong>一字一句変えずに</strong>再掲することが生命線です。</p>
-        <p class="src">出典：ニデック様_アジェンダ 2026.06.05「その他」</p>
-      </div>
-      <div class="purpose">
-        <span class="tag">PURPOSE C ／ 共通</span>
-        <h4>スコアの裏の「なぜ」を、仮説のまま終わらせない</h4>
-        <p>事前アンケートでチーム関連4項目が4.6〜5.2点だったことに対し、Givin' Back は「チームとして動く機会が少ないのでは」という<strong>仮説</strong>を置いた段階で止まっています。中間では、この仮説を検証する選択式設問を入れて原因を特定します。</p>
-        <p class="src">出典：CoreUniq_ニデック様作戦会議_第1回 2026.04.23「【仮説】」</p>
-      </div>
-      <div class="purpose">
-        <span class="tag">PURPOSE D ／ Givin' Back のため</span>
-        <h4>次の提案の材料と、勝ち筋の検証を同時に取る</h4>
-        <p>質問マスターが置いている勝ち筋仮説は <strong>「育成の記録が自然と集まり、評価が楽になる。結果として育成も回る」</strong>。ニデック様は年2回の目標設定シートと1on1制度を持つ、この仮説を検証するのに理想的な現場です。管理職版に接点設問を入れ、支援ニーズも現場発の言葉で拾います。</p>
-        <p class="src">出典：CoreUniq 顧客インタビュー 質問マスター 4章「判定ロジック」</p>
-      </div>
+    <div class="keypoint">
+      <b>定点観測の部分は、これ以上いじる必要がありません。</b>事前と一字一句同じで尺度も同じ。個人別の事前→中間比較がそのまま成立します。ここは完成しているので、本書では一切触りません。<strong>足りないのは、この12問だけでは答えられない問いがはっきりしている</strong>という点です。
     </div>
 
-    <div class="keypoint">
-      <b>設計上の含意。</b>目的A・Bは「同じ設問を繰り返す」ことで、目的C・Dは「今回だけの新しい設問」で達成されます。<strong>触ってはいけない12問</strong>と<strong>今回足す設問</strong>を明確に分けることが、この設計書の中心です。
+    <h3>1-2. 現行案のままだと答えられないこと</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>答えられない問い</th><th>なぜ答えられないか</th></tr></thead>
+        <tbody>
+          <tr><td><strong>スコアが動かなかったとき、それは「効かなかった」のか「使っていない」のか</strong></td><td>行動事実（入力頻度・1on1・声かけ）を聞いていないため。<strong>石田様は6月時点で「実は全然使ってなくて」「本当最初期ぐらい」</strong>とご発言。石田チーム4名のスコアが動かなくても、原因はツールではなく運用の側にある可能性が高い</td></tr>
+          <tr><td><strong>稟議を通した根拠が改善したのか</strong></td><td>稟議は組織サーベイの3パラメーター（後述）を根拠に通っています。12問はそのどれも直接測っていません</td></tr>
+          <tr><td><strong>新たに何が顕在化したか</strong></td><td>自由記述2問がどちらも「良い変化」「ポジティブな変化」に限定されており、<strong>設問自体に成功バイアスがかかっています</strong>。「かえって難しくなったこと」を書く場所がありません</td></tr>
+          <tr><td><strong>情報システム部への報告に何を載せるか</strong></td><td>報告に使いたい材料を、報告する当人（中屋敷様・西内様）に聞いていないため</td></tr>
+          <tr><td><strong>次に何をすべきか</strong></td><td>支援ニーズを聞く設問がないため</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <h4>設問設計上、もう1点</h4>
+      <ul>
+        <li>3月23日に西内様がすでに指摘されています。<strong>「松原さんはチームでやってないので、そこは変わらないかもしれない」「チームっていう言葉をどう定義するかみたいな話になる」。</strong>Q8〜Q12 はチームに所属して働いていない方には構造的に当てはまりません。設問は変えられませんが、<strong>集計時に松原様を別枠で読む</strong>ことを申し送りとして残すべきです。</li>
+      </ul>
     </div>
   </div>
 </section>
 
 <!-- ============ 2 ============ -->
-<section id="baseline">
+<section id="promise">
   <div class="sec-head">
     <span class="sec-num">02</span>
-    <h2>いまの現在地</h2>
-    <p>中間アンケートは、この数字と、この生の声の「その後」を測るために設計します。</p>
+    <h2>このアンケートが答えるべきこと</h2>
+    <p>目的は、こちらで新しく定義するものではありません。すでに3か所で約束されています。</p>
   </div>
   <div class="body">
 
-    <h3>2-1. 事前アンケートのベースライン（メンバー8名平均）</h3>
+    <div class="purposes">
+      <div class="purpose">
+        <span class="tag">約束 ① ／ 2026.03.13 山崎様</span>
+        <h4>稟議は「組織サーベイの3項目」を根拠に通っている</h4>
+        <p>「組織サーベイで、とある部署のエンゲージメントやモチベーションが低いという数字が出ていたので、コアユニークを使ってモチベーションの回復を狙うという<strong>建前で稟議は通しています</strong>」。スコアが低かったパラメーターは3つ。</p>
+        <p style="margin:.2rem 0 0"><strong>①役割の曖昧さ ②燃え尽き ③仕事上で駆け引きが多い</strong></p>
+        <p class="src">背景：2〜3年前に研究所と技術部署が統合され、職務記述書がぼんやりしている。研究職は成果が見えづらく、製造側から「遊んでいるように見える」。出していい情報と出せない情報の線引きに神経を使う</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">約束 ② ／ 2026.03.31 キックオフ</span>
+        <h4>参加10名に対して、半年後のゴールを3つ提示している</h4>
+        <p>① 自己理解から<strong>自己決定できるインサイト</strong>を見つける<br>② 部門メンバーの<strong>ベクトルを揃える</strong>（共通言語を増やす）<br>③ 最新技術に触れて<strong>新規事業のヒント</strong>にする</p>
+        <p style="margin:.2rem 0 0">山崎様の期待＝①②。西内様の期待＝③に加えて「自己を見つめ直すきっかけの習慣化」。</p>
+        <p class="src">出典：03-31 キックオフ冒頭／03-23 山崎様「今回の対象者10名に対しても同じように思っている」</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">約束 ③ ／ 2025.12.25・2026.03.23</span>
+        <h4>情報システム部への結果報告は、稟議上の義務</h4>
+        <p>他部門・部門長からの指摘として <strong>MUST②「トライアルが終わったら結果はどうなったんだという報告はしてね」</strong> が稟議書に盛り込まれています。山崎様は「5月に中間報告、半年後に結果報告」と説明され、<strong>「やってよかったコアユニーク、という感じで効果をうまく説明したい」「客観的に示せるようになったらすごい嬉しい」</strong>とおっしゃっています。</p>
+        <p class="src">※5月の中間報告は実施されていません。9月の結果報告が唯一の機会になります</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">未決のまま来た論点</span>
+        <h4>効果測定の方法は、2月の時点で「決めておかないとまずい」と言われていた</h4>
+        <p>山崎様（03-13）：<strong>「インサイトが皆さん出てきました、パチパチパチ、と言われるかどうかは正直分からない。インサイトが得られて、だから何、と言われもする」「今回のトライアルがどう良かったという効果測定をどうやるのかは、ある程度決めておかないとまずい。結局なんだったの、と言われかねない」</strong></p>
+        <p style="margin:.2rem 0 0">この宿題は、半年たった今も未回答です。中間アンケートは、ここに答えるための最後の機会になります。</p>
+        <p class="src">出典：03-13 山崎様</p>
+      </div>
+    </div>
+
+    <div class="keypoint">
+      <b>結論。</b>中間アンケートの目的は「変化を測ること」ではなく、<strong>「①②③が現場でどうなったかを、情報システム部に説明できる形で示すこと」</strong>です。現行の12問は①の一部（自己理解）と②の一部（チーム実感）を測っていますが、③と、稟議の根拠だった3パラメーターは測っていません。ここを足します。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="landmines">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>報告で必ず突かれる3点</h2>
+    <p>先に想定しておかないと、集計してから慌てます。3つとも、すでに社内で言われていることです。</p>
+  </div>
+  <div class="body">
+
+    <h3>① 選定バイアス ──「前向きな人を集めただけでは？」</h3>
+    <p>山崎様が2025年9月と12月に、社内の声として2度挙げておられます。</p>
+    <div class="note">
+      <h4>2025.12.25 山崎様</h4>
+      <ul><li>「基本的には割と乗り気な人を集めて、影響の輪を広げるイメージでやりたいと思っている。ただ、<strong>『そんなにツールがすごいんだったら、あまのじゃくみたいな人が生まれ変わったかのような反応を見るために試した方がいいんじゃないの』という声もある。前向きな人を集めてやったら『そりゃそうだよね』となって、結果このユニークの価値が分からないんじゃないの、と言う人もいる</strong>」</li></ul>
+    </div>
+    <p><strong>対策：</strong>スコアの上下ではなく、<strong>行動事実（入力を続けられたか／途中で止まったか）と、その理由</strong>を並べて示す。前向きな人でも止まっている、あるいは前向きでなかった人が続いている、という事実の方が説得力があります。追加設問 A1〜A5 がこれに当たります。</p>
+
+    <h3>② 運用不全 ──「使われていないだけでは？」</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>事実</th><th>出典</th></tr></thead>
+        <tbody>
+          <tr><td>石田様（管理職・4名担当）が「実は全然使ってなくて」「本当最初期ぐらい」</td><td class="num">06-05</td></tr>
+          <tr><td>中屋敷様「<strong>もともとこれを導入するにあたって、その目的をちゃんと伝えてなかった</strong>のがあるので、日々の中で活用してないところもあるのかなと感じた。目的の説明が後になって申し訳なかった」</td><td class="num">06-05</td></tr>
+          <tr><td>キックオフ当日、管理者お二人の「管理者グループ」が未設定で、その場で個別サポートが必要だった</td><td class="num">03-31</td></tr>
+          <tr><td>5月に予定されていた中間報告が実施されていない</td><td class="num">03-23</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>対策：</strong>隠さず、<strong>管理職側の行動事実も同じ精度で測る</strong>（追加設問 B1〜B4）。「メンバーは書いたが上司が見ていなかった」という結果が出たなら、それは失敗ではなく<strong>次の打ち手が明確になったということ</strong>として報告できます。むしろ隠すと、後で必ず崩れます。</p>
+
+    <h3>③ 期間 ──「半年で結論を出せるのか」</h3>
+    <p>8月5日、田中様がヒアリングされた人事コンサルタント・平井恵子氏（元デロイト／カオナビ・タレントパレットの導入運用定着支援）の証言です。</p>
+    <div class="note">
+      <h4>2026.08.05 平井氏の知見</h4>
+      <ul>
+        <li>タレントマネジメントシステムを<strong>きちんと使い切っている企業の方が少ない</strong></li>
+        <li>1on1ツールの類は入れてすぐには使われない。<strong>会社として自走して使い始めるまで1年半かかる</strong></li>
+        <li>定着には<strong>回せる人</strong>（担当を貼り付けて促進する人）が必要</li>
+        <li><strong>人事部が使い始めるのは「役員報告に使われる時」だけ。</strong>自分たちがまとめて役員レポートに使えると楽だし嬉しい</li>
+        <li>目標管理を設定しても、<strong>管理職から反応がないと使われない</strong></li>
+      </ul>
+    </div>
+    <p><strong>対策：</strong>報告の冒頭に「一般に自走まで1年半かかる取り組みの、5か月時点の中間地点である」という前提を置く。そのうえで、<strong>「役員報告に使える形」を今回つくること自体を成果として提示する</strong>。最後の項目は、そのまま管理職版 B11 の設計根拠になっています。</p>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="baseline">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>いまの現在地</h2>
+    <p>集計時に、この数字と声の「その後」として読みます。</p>
+  </div>
+  <div class="body">
+
+    <h3>4-1. 事前アンケートのベースライン（メンバー8名平均）</h3>
     <div class="scroll">
       <table>
         <thead><tr><th>区分</th><th>設問</th><th class="num">平均</th></tr></thead>
@@ -498,351 +571,287 @@
         </tbody>
       </table>
     </div>
-    <p><strong>構造：</strong>個人の自己理解は高く、チームとしての実感が低い。個人が8名分そろっているのに、チームになっていない。</p>
+    <p>管理職2名は回答パターンが正反対でした。水野様は「自分が関わる」系（Q1〜Q6）がすべて1点、「メンバー／チームの状態」系（Q8〜Q11）がすべて10点。石田様は全体が7点前後で、Q12だけ3点。母数2名なので平均には意味がなく、<strong>中間でも個別に並べて読みます</strong>。</p>
+    <p style="font-size:.92rem;color:var(--muted)">なお山崎様は3月23日に、期待値を具体的に口にされています。「<strong>松原さんのNo.9の1点とかが、コアユニークを使って4点5点になったら嬉しいですよね</strong>」。集計時は必ずこの視点（低スコア者が動いたか）を最初に見ます。</p>
 
-    <p>管理職お二人は回答パターンが正反対でした。水野様は「自分が関わる」系（Q1〜Q6）がすべて1点、「メンバー／チームの状態」系（Q8〜Q11）がすべて10点。石田様は全体が7点前後で、Q12「誰もが管理職になれる」だけ3点。<strong>母数2名なので平均に意味がなく、中間でも個別に並べて読む前提</strong>で設計します。</p>
-
-    <div class="note">
-      <h4>規模の前提を忘れずに</h4>
-      <ul><li>ニデック様は約1,689名の組織で、本部だけで70名弱。今回のトライアルは<strong>そこから10名を切り出したパイロット</strong>です。中間アンケートは「10名に効いたか」だけでなく、<strong>「この先どこに広げるべきか」を判断する材料</strong>でもある、という位置づけで設問を置いています（L33・L36）。</li></ul>
-    </div>
-
-    <h3>2-2. その後、新たに顕在化したこと（6〜7月）</h3>
-    <p>ここが中間アンケートで数値として押さえるべきポイントです。すべて現場の実際の発言・記述から拾っています。</p>
+    <h3>4-2. キックオフ時点で、全員がすでに言っていたこと</h3>
+    <p>3月31日、CoreUniq宣言を発表した直後の各人の所感です。<strong>参加者のほぼ全員が「入力が足りない」と自覚していました。</strong></p>
     <div class="scroll">
       <table>
-        <thead><tr><th>顕在化した課題</th><th>根拠となった声</th><th>中間で聞く設問</th></tr></thead>
+        <thead><tr><th>発言</th><th>その後（7月インタビュー）</th></tr></thead>
         <tbody>
-          <tr><td><strong>入力が業務ワークフローと切れている</strong></td><td>「ワークの部分と結びつけた方が分かりやすい」「そうじゃないと、やらないといけない理由を探すと思う」（三宅様）</td><td class="num">M20–M25</td></tr>
-          <tr><td><strong>AIフィードバックに新鮮味と実用性が足りない</strong></td><td>「毎日褒めてくれるだけだと、結局毎日同じ内容で返ってくる印象」「感情的に訴えるのとは別に、実務に役立つ部分がもう少し欲しい」（林様）</td><td class="num">M26–M31</td></tr>
-          <tr><td><strong>上司からの反応がなく、壁打ち感がある</strong></td><td>「現状、壁に向かってしゃべっている感じ」「確認しました、くらいの反応が返ってくるとモチベーションが下がらない」（フィードバックPDF）</td><td class="num">M32–M34／L15–L18</td></tr>
-          <tr><td><strong>会社の目標設定シート（年2回）と未来設計が二重・非連動</strong></td><td>「一致させてはいない」「そこには中身があるだろうかという疑問が結構ある」（三宅様）／「紙に書く方はあんまり真面目に書いてない」（林様）</td><td class="num">M39／L31</td></tr>
-          <tr><td><strong>管理職がダッシュボードの使い方を掴めていない</strong></td><td>「管理者目線では、現時点ではメンバーの日報を確認するにとどまっております」「メンバーに返信機能がないのが残念」（フィードバックPDF）</td><td class="num">L15–L18</td></tr>
-          <tr><td><strong>フィードバックし合う文化そのものが薄い</strong></td><td>「決める文化がないんですよ、多分うちの会社」「成長実感がない。こうすればもっと良くなるとか、そういう風にしてる人があんまりいなかった」（三宅様）</td><td class="num">M35–M37／L28</td></tr>
-          <tr><td><strong>キャリア制度は整いはじめたが、手を挙げた人にしか届いていない</strong></td><td>「自主的にキャリアを築こうとしてる人にしか、そういうところは出てないかな」（社内インターンシップ制度について）</td><td class="num">M40</td></tr>
+          <tr><td>秋山様「入れてるやつが少ないので文章のバリエーションが出てこない。まだこれから」</td><td rowspan="5" style="vertical-align:middle"><strong>三宅様「最初に書いてからは書いてないですね」</strong><br><br>つまり、全員が自覚していた「追加入力」は、その後ほとんど起きていません。追加設問 A3・A4 が直接ここを測ります</td></tr>
+          <tr><td>石田様「これまでやってきたことに引っ張られてる感がある。もっと入力して腹落ちする形に」</td></tr>
+          <tr><td>伊藤様「経験の入力がまだ足りない。自分で考えていると、意外と忘れてたことや新しい発見につながる」</td></tr>
+          <tr><td>林様「入力がかなり少なかったが、そこから個人のパーソナリティ的なものを決めてるのかなと感じた」</td></tr>
+          <tr><td>三宅様「情報量がもっと増えたら面白いものになる」／水野様「まだ入力が足りない」</td></tr>
         </tbody>
       </table>
     </div>
-  </div>
-</section>
 
-<!-- ============ 3 ============ -->
-<section id="policy">
-  <div class="sec-head">
-    <span class="sec-num">03</span>
-    <h2>設計方針</h2>
-    <p>設問を書く前に、6つのルールを決めます。うち2つは自社の既存ドキュメントから借りています。</p>
-  </div>
-  <div class="body">
+    <h3>4-3. 6〜7月に新たに顕在化したこと</h3>
     <div class="scroll">
       <table>
-        <thead><tr><th class="num">#</th><th>方針</th><th>理由</th></tr></thead>
+        <thead><tr><th>顕在化した課題</th><th>根拠となった声</th><th>拾う設問</th></tr></thead>
         <tbody>
-          <tr><td class="num">1</td><td><strong>事前の12問は一字一句変えない</strong></td><td>文言を変えた瞬間に、事前との比較が成立しなくなります。追加はしても、既存は触らない。</td></tr>
-          <tr><td class="num">2</td><td><strong>「成果」と「原因」を別の設問で聞く</strong></td><td>スコアが動いた／動かなかった理由を後から推測せずに済むよう、同じ回で原因側も取っておきます。</td></tr>
-          <tr><td class="num">3</td><td><strong>意見ではなく事実を聞く（Mom Test）</strong></td><td>質問マスターの3ルールをアンケートにも適用。「〜あったら使いますか」ではなく「直近1ヶ月で何回〜しましたか」。入力頻度・1on1回数・声をかけた回数を先に取ると、自己申告の実感値を補正して読めます。</td></tr>
-          <tr><td class="num">4</td><td><strong>管理職版は「メンバーの状態」と「自分の関わり」を必ず分ける</strong></td><td>水野様の事前回答（関わり系1点／状態系10点）が示す通り、この2つは独立して動きます。混ぜると読めません。</td></tr>
-          <tr><td class="num">5</td><td><strong>指標は「目標」ではなく「目安」として提示する</strong></td><td>3月のヒアリングアジェンダに書かれた自社の運用思想をそのまま踏襲します。「数字を追い求めるのではなく、良い活動をしたら指標が改善したという順番」。設問の前文でもこの姿勢を示し、回答者が点数を作りにいくのを防ぎます。</td></tr>
-          <tr><td class="num">6</td><td><strong>記名式にする（匿名にしない）</strong></td><td>個人別の事前→中間の変化を追うため。ただし「回答は Givin' Back が集計し、個人が特定される形では社内共有しない」旨を冒頭に明記します。三宅様・林様の率直さは、この安心感の上に成り立っています。</td></tr>
+          <tr><td><strong>入力が業務ワークフローと切れている</strong></td><td>「ワークの部分と結びつけた方が分かりやすい。そうじゃないと、やらないといけない理由を探すと思う」（三宅様）</td><td class="num">A1–A5</td></tr>
+          <tr><td><strong>AIフィードバックに新鮮味と実用性が足りない</strong></td><td>「毎日褒めてくれるだけだと、結局毎日同じ内容で返ってくる印象」「感情的に訴えるのとは別に、実務に役立つ部分がもう少し欲しい」（林様）</td><td class="num">A9–A10</td></tr>
+          <tr><td><strong>上司からの反応がなく、壁打ち感がある</strong></td><td>「現状、壁に向かってしゃべっている感じ」「確認しました、くらいの反応が返ってくるとモチベーションが下がらない」（フィードバックPDF）</td><td class="num">A11–A12／B1–B4</td></tr>
+          <tr><td><strong>目標設定シート（年2回）と未来設計が二重</strong></td><td>「一致させてはいない」「そこには中身があるだろうかという疑問が結構ある」（三宅様）／「紙に書く方はあんまり真面目に書いてない」（林様）</td><td class="num">A3／B10</td></tr>
+          <tr><td><strong>お互いのことを、そもそも見せ合っていない</strong></td><td>西内様「メンバーからは管理者ってどう見えてるんだろう、というコメントがあって。<strong>お互いに見せてって言わないんだな、と今回ヒアリングして初めて気づいた</strong>」「職場会議もない」「分断されちゃってる」</td><td class="num">A13–A14</td></tr>
+          <tr><td><strong>管理職が声をかけるタイミングを掴めない</strong></td><td>石田様「いつ声かけしていいか、それがその人にとって適切かどうかが分からない」／水野様「まだ充分に関係性を築けてないメンバーがいて、いきなりぶつけられない」</td><td class="num">B2–B4</td></tr>
         </tbody>
       </table>
     </div>
     <div class="note">
-      <h4>あわせて決めておきたいこと</h4>
-      <ul>
-        <li>所要時間の上限：<strong>メンバー10〜12分／管理職12〜15分</strong>。これを超えると自由記述が空になります。</li>
-        <li>本書では各設問に <span class="chip chip-core">コア</span> を付けています。時間が厳しい場合、コア以外を落として8分版にできます。</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 4 ============ -->
-<section id="member">
-  <div class="sec-head">
-    <span class="sec-num">04</span>
-    <h2>メンバー用アンケート｜たたき台</h2>
-    <p>対象8名（松原様・野澤様・三宅様・戸田様・林様・秋山様・伊藤様・CHEN様）。全47問／10〜12分。うち短縮版でも残すコア設問は36問。</p>
-  </div>
-  <div class="body">
-    <p class="legend">
-      <span><span class="chip chip-keep">定点</span> 事前と同一・変更不可</span>
-      <span><span class="chip chip-new">新設</span> 今回から追加</span>
-      <span><span class="chip chip-core">コア</span> 短縮版でも残す</span>
-    </p>
-
-    <p style="font-size:.92rem;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;max-width:none">
-      <strong>冒頭文（案）</strong><br>
-      Core Uniq をご利用いただき、ありがとうございます。導入から約5ヶ月が経ちました。このアンケートは、皆さまを評価するためのものではありません。<strong>「どこまで前進したか」「どこがまだ難しいか」を正確に把握し、残りの期間とその先の取り組みを一緒に考えるため</strong>のものです。点数は目標ではなく、うまくいっているかどうかの目安として扱います。うまく使えていない項目こそ、そのまま正直にお答えいただけると助かります。回答は Givin' Back が集計し、個人が特定される形で社内に共有することはありません。所要時間の目安は10分程度です。
-    </p>
-
-    <div class="qgroup">
-      <header><h4>S0. 基本情報</h4><span class="hint">3問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M1</span><div><div class="qtext">お名前 <span class="chip chip-core">コア</span></div><div class="qmeta">記述式（必須）</div></div></li>
-        <li><span class="qid">M2</span><div><div class="qtext">所属チーム <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">石田チーム／水野チーム</span></div></div></li>
-        <li><span class="qid">M3</span><div><div class="qtext">現在の Core Uniq の利用状況を、いちばん近いもので教えてください</div><div class="qmeta"><span class="opt">継続的に使えている／使ったり使わなかったり／ほとんど使えていない</span></div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S1. 定点観測 <span class="chip chip-keep">定点</span></h4><span class="hint">12問・すべてコア</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M4</span><div><div class="qtext">あなたは、自分の「らしさ」や強みが明確になっていますか</div></div></li>
-        <li><span class="qid">M5</span><div><div class="qtext">あなたは、自分が大事にしている価値観が明確になっていますか</div></div></li>
-        <li><span class="qid">M6</span><div><div class="qtext">あなたは、自分の頑張りや変化を実感できていますか</div></div></li>
-        <li><span class="qid">M7</span><div><div class="qtext">あなたは、自分から率先して意見やアイディアを提案できていますか</div></div></li>
-        <li><span class="qid">M8</span><div><div class="qtext">あなたは、今の仕事に目的を持って取り組めていますか</div></div></li>
-        <li><span class="qid">M9</span><div><div class="qtext">あなたは、自分の頑張りに周囲が気づいてくれていると感じますか</div></div></li>
-        <li><span class="qid">M10</span><div><div class="qtext">あなたは、自分が伸ばしたいことが明確になっていますか</div></div></li>
-        <li><span class="qid">M11</span><div><div class="qtext">あなたは、一緒に働くメンバーの強みを理解できていますか</div></div></li>
-        <li><span class="qid">M12</span><div><div class="qtext">あなたは、チームで協力して成果を出せていますか</div></div></li>
-        <li><span class="qid">M13</span><div><div class="qtext">あなたは、職場で自分の強みを発揮できていますか</div></div></li>
-        <li><span class="qid">M14</span><div><div class="qtext">あなたは、メンバーの違いがチームの強みになっていると実感しますか</div></div></li>
-        <li><span class="qid">M15</span><div><div class="qtext">あなたは、自分のチームを他の人に勧めたいと思いますか</div><div class="qmeta">すべて1〜10の10段階。<strong>設問文・スケールとも事前アンケートと完全に同一にすること。</strong></div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S2. 変化の自覚と、その要因 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M16</span><div><div class="qtext">3月の導入時と比べて、あなた自身にいちばん変化があったと感じるのはどれですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">自己理解（強み・価値観）／目標の明確さ／振り返りの習慣／上司との対話／チームへの関わり方／仕事の進め方／特に変化は感じない</span></div></div></li>
-        <li><span class="qid">M17</span><div><div class="qtext">その変化が起きたきっかけを、具体的に教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">「特に変化がない」と答えた方は、なぜ変化が起きなかったと思うかをお書きください。</span></div></div></li>
-        <li><span class="qid">M18</span><div><div class="qtext">その変化に、Core Uniq はどの程度きっかけとして影響しましたか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10。<strong>成果をツールに帰属させてよいかを測る設問。</strong>結果報告で「ツールの効果」と言い切るための裏付けになります。</div></div></li>
-        <li><span class="qid">M19</span><div><div class="qtext">逆に、この5ヶ月で「かえって難しくなった」「モヤモヤが増えた」と感じたことがあれば教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>「新たに何が顕在化したか」を拾う中心設問。</strong></div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S3. 行動事実（実感の前に事実を取る） <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M20</span><div><div class="qtext">直近1ヶ月の日報の入力頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週3〜4回／週1〜2回／月に数回／ほとんど入力していない</span></div></div></li>
-        <li><span class="qid">M21</span><div><div class="qtext">週次の振り返りの使い方 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">毎週、内容を確認している／ときどき確認する／生成はしているが読んでいない／使っていない</span></div></div></li>
-        <li><span class="qid">M22</span><div><div class="qtext">1回あたりの入力にかかる時間</div><div class="qmeta"><span class="opt">3分未満／3〜5分／5〜10分／10分以上</span></div></div></li>
-        <li><span class="qid">M23</span><div><div class="qtext">入力が止まった、または減った時期はありましたか。あれば、その時期と理由を教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">例：出張が続いて翌日に持ち越すようになった、書くことが尽きた、など</span></div></div></li>
-        <li><span class="qid">M24</span><div><div class="qtext">導入時に入力した「3年後のビジョン／1年後の目標／今から始めること」を、その後見直しましたか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">見直して書き換えた／見返したが書き換えていない／見ようとしたが手が止まった／見ていない</span></div></div></li>
-        <li><span class="qid">M25</span><div><div class="qtext">M24でそう答えた理由を教えてください</div><div class="qmeta">自由記述</div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S4. 機能ごとの効き方 <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M26</span><div><div class="qtext">経験の棚卸し・価値観の言語化（導入セッションで実施した部分）</div></div></li>
-        <li><span class="qid">M27</span><div><div class="qtext">未来設計（3年後のビジョン・1年後の目標・今から始めること）</div></div></li>
-        <li><span class="qid">M28</span><div><div class="qtext">日々の成長記録（日報） <span class="chip chip-core">コア</span></div></div></li>
-        <li><span class="qid">M29</span><div><div class="qtext">AIバディからのフィードバック <span class="chip chip-core">コア</span></div></div></li>
-        <li><span class="qid">M30</span><div><div class="qtext">週次の振り返りレポート</div><div class="qmeta">M26〜M30 はいずれも「今の自分にとって役に立っている度合い」を1〜10で。<strong>どこが効いていて、どこが効いていないかを機能単位で切り分けます。</strong></div></div></li>
-        <li><span class="qid">M31</span><div><div class="qtext">上のうち、いちばん改善してほしいものはどれですか。また、どう変わると使いたくなりますか <span class="chip chip-core">コア</span></div><div class="qmeta">選択＋自由記述</div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S5. 上司・チームとの関係（組織運営／チームビルディングの原因を探る） <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M32</span><div><div class="qtext">直属の上司と1対1で話す頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">週1回以上／2週に1回／月1回／2ヶ月に1回／ほとんどない</span></div></div></li>
-        <li><span class="qid">M33</span><div><div class="qtext">自分が書いた日報や取り組みについて、上司から反応をもらったことはありますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">何度もある／数回ある／ない</span></div></div></li>
-        <li><span class="qid">M34</span><div><div class="qtext">上司からのフィードバックは、次の行動に活かせる具体性があると感じますか</div><div class="qmeta">1〜10</div></div></li>
-        <li><span class="qid">M35</span><div><div class="qtext">チームの中で、お互いの強みや価値観を共有する機会はありますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">定期的にある／年に数回ある／ほとんどない</span></div></div></li>
-        <li><span class="qid">M36</span><div><div class="qtext">職場で、率直に意見や違和感を口に出せる雰囲気があると感じますか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10</div></div></li>
-        <li><span class="qid">M37</span><div><div class="qtext">「チームで協力して成果を出せている」と感じにくいとしたら、理由に近いものをすべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">業務が個人で完結する／物理的に離れていて会わない／お互いの仕事内容を知らない／チームの目標が共有されていない／話す機会・雑談がない／忙しくて余裕がない／特に感じにくいことはない</span><br><strong>事前アンケートQ9・Q10が低かった原因を、仮説のまま終わらせないための設問。</strong></div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S6. キャリア開発 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M38</span><div><div class="qtext">3年後の自分の姿を、どのくらい具体的に描けていますか</div><div class="qmeta">1〜10</div></div></li>
-        <li><span class="qid">M39</span><div><div class="qtext">会社の目標設定シート（年2回）と Core Uniq の未来設計は、あなたの中でつながっていますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">つながっている／方向性は同じだが別々に書いている／まったく別物として書いている／片方しか書いていない</span></div></div></li>
-        <li><span class="qid">M40</span><div><div class="qtext">社内公募・社内インターンシップなどのキャリア制度について、当てはまるものを選んでください</div><div class="qmeta">複数選択：<span class="opt">制度を知っている／内容まで理解している／使ってみたいと思う／使ったことがある／知らなかった</span></div></div></li>
-        <li><span class="qid">M41</span><div><div class="qtext">キャリアについて、いまいちばん相談したいこと・困っていることを教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S7. 継続意向と残課題</h4><span class="hint">4問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M42</span><div><div class="qtext">仮に Core Uniq が使えなくなった場合、あなたの仕事や成長にどんな影響がありそうですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">とても困る／少し困る／あまり困らない／まったく困らない</span>　※既存の事後アンケートと同一選択肢にし、他社事例と横比較できるようにします。</div></div></li>
-        <li><span class="qid">M43</span><div><div class="qtext">M42でそう答えた理由を教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
-        <li><span class="qid">M44</span><div><div class="qtext">残りの期間で、こう使えたら意味がありそうだと思うことがあれば教えてください</div><div class="qmeta">自由記述</div></div></li>
-        <li><span class="qid">M45</span><div><div class="qtext">あなたが日々書いている内容を、上司が評価やフィードバックの材料として見ることについて、どう感じますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">むしろ見てほしい／内容によっては見てもらってよい／評価に使われるのは抵抗がある／わからない</span><br><strong>管理職版 L27 と対になる設問。</strong>「育成の記録が評価の材料になる」という方向に進めてよいかを、使う側の同意から確認します。ここが割れる場合、その方向は現場を壊します。</div></div></li>
-      </ul>
-    </div>
-
-    <div class="qgroup">
-      <header><h4>S8. これからの支援ニーズ（Givin' Back として何ができるか） <span class="chip chip-new">新設</span></h4><span class="hint">2問</span></header>
-      <ul class="qlist">
-        <li><span class="qid">M46</span><div><div class="qtext">いまのチーム・職場にあったらよいと思う取り組みを、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">お互いの強みを共有するチームビルディングの場／上司との1on1をより有意義にする仕組み／キャリアを考えるワークショップ／目標設定の書き方の型・研修／生成AIを仕事に使いこなす実践の場／社外の人からフィードバックをもらえる機会／新しいアイデアを出す・検証する進め方の型／特にない</span></div></div></li>
-        <li><span class="qid">M47</span><div><div class="qtext">選んだものについて、どんな形・どのくらいの時間なら参加したいですか</div><div class="qmeta">自由記述</div></div></li>
-      </ul>
+      <h4>設計思想として、意図的にやっていないこと</h4>
+      <ul><li>管理職から「全員のコメントに返信したい」という要望が出ていますが、<strong>返信機能は意図的に付けていません</strong>（木下様・04-23）。「忙しくなったら絶対できない。返せる人と返せない人で比較差が生まれる」。この判断は報告の場でも説明できるようにしておくべきで、代わりに <strong>「日報3日未入力で声をかけるのがベスト」</strong>（全ユーザーの傾向・06-05）という運用知見をセットで示すのが有効です。</li></ul>
     </div>
   </div>
 </section>
 
 <!-- ============ 5 ============ -->
-<section id="manager">
+<section id="member">
   <div class="sec-head">
     <span class="sec-num">05</span>
-    <h2>管理職用アンケート｜たたき台</h2>
-    <p>対象：水野様・石田様（チームリーダー）＋中屋敷様・西内様（事務局）。全36問。事務局のお二人には S1・S3 を任意とし、S6 を必須にします。</p>
+    <h2>メンバー用｜現行17問＋追加16問</h2>
+    <p>対象8名（松原様・野澤様・三宅様・戸田様・林様・秋山様・伊藤様・CHEN様）。合計33問／10〜12分。</p>
   </div>
   <div class="body">
+    <p class="legend">
+      <span><span class="chip chip-keep">現行</span> そのまま維持</span>
+      <span><span class="chip chip-new">追加</span> 今回足す</span>
+      <span><span class="chip chip-core">要</span> 削るなら最後</span>
+    </p>
+
     <p style="font-size:.92rem;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;max-width:none">
-      <strong>冒頭文（案）</strong><br>
-      導入から約5ヶ月が経ちました。このアンケートは、<strong>トライアルの結果を社内にご報告いただく際の材料をつくること</strong>と、<strong>残りの期間・その先に何が必要かを一緒に決めること</strong>を目的としています。点数は達成すべき目標ではなく、うまくいっているかどうかの目安として扱います。「使いこなせていない」というご回答こそ、私たちが改善すべき点を示すものですので、そのままお書きください。所要時間の目安は12〜15分です。
+      <strong>冒頭文（現行文への追記案）</strong><br>
+      現行：「Core Uniqの先行導入にご参加いただき、ありがとうございます。このアンケートは、導入前後の変化を可視化し、『多様性を活かすチームづくり』の成果を一緒に確認するためのものです。…」<br>
+      <span style="color:var(--signal)">＋追記：</span>「あわせて、<strong>うまく使えなかったところ・続かなかったところも同じように大切な情報</strong>としてお聞きします。点数は目標ではなく、うまくいっているかどうかの目安として扱います。正直にお答えいただくことが、残りの期間と、この先の取り組みを決める材料になります。」
     </p>
 
     <div class="qgroup">
-      <header><h4>S0. 基本情報</h4><span class="hint">2問</span></header>
+      <header><h4>Q1〜Q12　定点観測 <span class="chip chip-keep">現行</span></h4><span class="hint">変更なし</span></header>
       <ul class="qlist">
-        <li><span class="qid">L1</span><div><div class="qtext">お名前</div></div></li>
-        <li><span class="qid">L2</span><div><div class="qtext">お立場</div><div class="qmeta"><span class="opt">チームリーダー（部下の日報を見る立場）／事務局・推進担当</span>　※分岐に使用</div></div></li>
+        <li><span class="qid">Q1-12</span><div><div class="qtext">「あなたは、自分の『らしさ』や強みが明確になっていますか」ほか計12問（1〜10）</div><div class="qmeta"><strong>一字一句、尺度とも変更しないこと。</strong>ここが定点観測の生命線です</div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S1. 定点観測（リーダー版） <span class="chip chip-keep">定点</span></h4><span class="hint">12問・チームリーダーのみ</span></header>
+      <header><h4>A1〜A5　行動事実 <span class="chip chip-new">追加</span></h4><span class="hint">Q12の直後に挿入／5問</span></header>
       <ul class="qlist">
-        <li><span class="qid">L3</span><div><div class="qtext">あなたは、メンバーの強みを理解できていますか</div></div></li>
-        <li><span class="qid">L4</span><div><div class="qtext">あなたは、メンバーの価値観を理解できていますか</div></div></li>
-        <li><span class="qid">L5</span><div><div class="qtext">あなたは、メンバーの頑張りを本人に伝えられていますか</div></div></li>
-        <li><span class="qid">L6</span><div><div class="qtext">あなたは、メンバーの頑張りを言葉で認められていますか</div></div></li>
-        <li><span class="qid">L7</span><div><div class="qtext">あなたは、メンバーのやりたいことを把握できていますか</div></div></li>
-        <li><span class="qid">L8</span><div><div class="qtext">あなたは、メンバーの意見を引き出せていますか</div></div></li>
-        <li><span class="qid">L9</span><div><div class="qtext">メンバー同士が、お互いの強みを理解できていますか</div></div></li>
-        <li><span class="qid">L10</span><div><div class="qtext">メンバーが協力して成果を出せていますか</div></div></li>
-        <li><span class="qid">L11</span><div><div class="qtext">メンバーが自分で考えて動けていますか</div></div></li>
-        <li><span class="qid">L12</span><div><div class="qtext">メンバーが得意なことで貢献できていますか</div></div></li>
-        <li><span class="qid">L13</span><div><div class="qtext">チームとして強みを活かして成果を出せていますか</div></div></li>
-        <li><span class="qid">L14</span><div><div class="qtext">あなたのチームなら、誰もが管理職になれると思いますか</div><div class="qmeta">すべて1〜10。<strong>L3〜L8＝自分の関わり／L9〜L14＝メンバー・チームの状態。この2ブロックは必ず分けて読みます。</strong></div></div></li>
+        <li><span class="qid">A1</span><div><div class="qtext">直近1ヶ月の日報の入力頻度を教えてください <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週3〜4回／週1〜2回／月に数回／ほとんど入力していない</span></div></div></li>
+        <li><span class="qid">A2</span><div><div class="qtext">週次レポート（金曜16時）の使い方に近いものを教えてください <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">毎週、内容を確認している／ときどき確認する／生成はしているが読んでいない／使っていない</span></div></div></li>
+        <li><span class="qid">A3</span><div><div class="qtext">導入時に入力した「3年後のビジョン／1年後の目標／今から始めること」を、その後見直しましたか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">見直して書き換えた／見返したが書き換えていない／見ようとしたが手が止まった／見ていない</span><br>キックオフ当日、ほぼ全員が「入力が足りない」と言っていました。<strong>その後どうなったかを直接測る設問です</strong></div></div></li>
+        <li><span class="qid">A4</span><div><div class="qtext">入力が止まった、または減った時期はありましたか。あれば、その時期と理由を教えてください <span class="chip chip-core">要</span></div><div class="qmeta">自由記述。<span class="opt">例：出張が続いて翌日に持ち越すようになった、書くことが尽きた、など</span></div></div></li>
+        <li><span class="qid">A5</span><div><div class="qtext">現在の利用状況にいちばん近いものを教えてください</div><div class="qmeta"><span class="opt">継続的に使えている／使ったり使わなかったり／ほとんど使えていない</span></div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S2. 自分の関わりの「行動事実」 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
+      <header><h4>A6〜A8　変化の中身と要因 <span class="chip chip-new">追加</span></h4><span class="hint">現行Q13・Q14を挟む形／3問</span></header>
       <ul class="qlist">
-        <li><span class="qid">L15</span><div><div class="qtext">直近1ヶ月で、Core Uniq の管理画面を開いた頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週に数回／週1回程度／月に数回／ほとんど開いていない</span></div></div></li>
-        <li><span class="qid">L16</span><div><div class="qtext">メンバーの日報を見て、実際に声をかけた回数（直近1ヶ月） <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3〜5回／6回以上</span></div></div></li>
-        <li><span class="qid">L17</span><div><div class="qtext">1on1や面談で、Core Uniq に書かれていた内容を話題にした回数（直近1ヶ月） <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3回以上</span></div></div></li>
-        <li><span class="qid">L18</span><div><div class="qtext">声をかけられなかった・かけにくかった理由を、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">時間が取れない／何と言えばよいか分からない／見るタイミングが業務に組み込めていない／本人が入力していない／物理的に離れている／踏み込みすぎに感じる／ツール上で返信する機能がない／特に理由はない</span><br><strong>「日報を確認するにとどまっている」という6月のご記述を、選択肢化して原因を特定します。</strong></div></div></li>
+        <li><span class="qid">A6</span><div><div class="qtext">3月の導入時と比べて、あなた自身にいちばん変化があったと感じるのはどれですか <span class="chip chip-core">要</span></div><div class="qmeta">Q13の<strong>直前</strong>に置きます。選択で方向を絞ってから自由記述に入る方が、書きやすくなります<br><span class="opt">自己理解（強み・価値観）／目標の明確さ／振り返りの習慣／上司との対話／チームへの関わり方／仕事の進め方／特に変化は感じない</span></div></div></li>
+        <li><span class="qid">A7</span><div><div class="qtext">その変化に、Core Uniq はどの程度きっかけとして影響しましたか <span class="chip chip-core">要</span></div><div class="qmeta">Q13の<strong>直後</strong>。1〜10。<strong>成果をツールに帰属させてよいかを測ります。</strong>情シスへの報告で「ツールの効果」と言い切るための裏付けです</div></div></li>
+        <li><span class="qid">A8</span><div><div class="qtext">逆に、この5ヶ月で「かえって難しくなった」「モヤモヤが増えた」と感じたことがあれば教えてください <span class="chip chip-core">要</span></div><div class="qmeta">Q14の<strong>直後</strong>。自由記述。<strong>現行案でいちばん大きな欠落を埋める設問です。</strong>Q14が「良い変化」限定である以上、これがないと「新たに何が顕在化したか」は永遠に取れません</div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S3. メンバーの変化の観測 <span class="chip chip-new">新設</span></h4><span class="hint">4問・チームリーダーのみ</span></header>
+      <header><h4>A9〜A10　機能ごとの効き方 <span class="chip chip-new">追加</span></h4><span class="hint">2問</span></header>
       <ul class="qlist">
-        <li><span class="qid">L19</span><div><div class="qtext">この5ヶ月で、何らかの変化を感じたメンバーは何人いますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0人／1人／2人／3人／4人以上</span></div></div></li>
-        <li><span class="qid">L20</span><div><div class="qtext">具体的に、どなたの、どんな変化を感じましたか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>結果報告に載せるエピソードは、ここから取れます。</strong>スコアの変化より、この一文の方が社内では効きます。</div></div></li>
-        <li><span class="qid">L21</span><div><div class="qtext">変化が見えないメンバーについて、要因は何だと思いますか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
-        <li><span class="qid">L22</span><div><div class="qtext">Core Uniq を通じて得た情報が、上司としての判断や関わり方を変えるきっかけになりましたか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10</div></div></li>
+        <li><span class="qid">A9</span><div><div class="qtext">次のそれぞれについて、今のあなたにとって役に立っている度合いを教えてください <span class="chip chip-core">要</span></div><div class="qmeta">グリッド形式・各1〜10：<span class="opt">①経験の棚卸し・価値観の言語化　②未来設計（3年後・1年後・今から始めること）　③日々の成長記録（日報）　④AIバディからのフィードバック　⑤週次レポート</span></div></div></li>
+        <li><span class="qid">A10</span><div><div class="qtext">上のうち、いちばん改善してほしいものはどれですか。また、どう変わると使いたくなりますか <span class="chip chip-core">要</span></div><div class="qmeta">選択＋自由記述</div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S4. 育成と評価の「接点」 <span class="chip chip-new">新設</span></h4><span class="hint">5問・全員必須</span></header>
+      <header><h4>A11〜A14　上司・チームとの関係 <span class="chip chip-new">追加</span></h4><span class="hint">4問</span></header>
       <ul class="qlist">
-        <li><span class="qid">L23</span><div><div class="qtext">忙しくなったとき、いちばん最初に後回しになるのはどれですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">評価の入力・提出／1on1・面談／メンバーの日報を見ること／育成計画を考えること／メンバーへの声かけ・雑談／後回しになるものはない</span><br><strong>「評価はサボれない／育成はサボれてしまう」という構造が、ニデック様でも成立するかの検証。</strong></div></div></li>
-        <li><span class="qid">L24</span><div><div class="qtext">会社や上位者から、管理職として最も求められていると感じるのはどれですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">メンバーを育てること／評価を適切に終わらせること／チームの数字・成果をつくること／その他</span><br><strong>三角測量の設問。</strong>リーダーお二人（現場）と、中屋敷様・西内様（推進側）の答えのズレが、そのまま次の打ち手の設計図になります。</div></div></li>
-        <li><span class="qid">L25</span><div><div class="qtext">評価やフィードバックを書くとき、メンバーの日々の行動や成長の「材料」が足りずに困ったことはありますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">何度もある／たまにある／ない</span></div></div></li>
-        <li><span class="qid">L26</span><div><div class="qtext">そのとき、どうされましたか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">例：記憶をたどった／本人に聞いた／メールやチャットを遡った　など</span></div></div></li>
-        <li><span class="qid">L27</span><div><div class="qtext">Core Uniq に日々書かれている内容は、評価やフィードバックの材料として使えそうですか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10＋理由（自由記述）。<strong>メンバー版 M45 と対。</strong>使う側の同意と管理側の実用性、両方が揃って初めてこの方向に進めます。</div></div></li>
+        <li><span class="qid">A11</span><div><div class="qtext">直属の上司と1対1で話す頻度を教えてください <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">週1回以上／2週に1回／月1回／2ヶ月に1回／ほとんどない</span>　※会社の制度は2ヶ月に1回</div></div></li>
+        <li><span class="qid">A12</span><div><div class="qtext">自分が書いた日報や取り組みについて、上司から反応をもらったことはありますか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">何度もある／数回ある／ない</span>　管理職版 B2 と突き合わせます</div></div></li>
+        <li><span class="qid">A13</span><div><div class="qtext">チームの中で、お互いの強みや価値観を共有する機会はありますか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">定期的にある／年に数回ある／ほとんどない</span></div></div></li>
+        <li><span class="qid">A14</span><div><div class="qtext">「チームで協力して成果を出せている」と感じにくいとしたら、理由に近いものをすべて選んでください <span class="chip chip-core">要</span></div><div class="qmeta">複数選択：<span class="opt">業務が個人で完結する／物理的に離れていて会わない／お互いの仕事内容を知らない／チームの目標が共有されていない／話す機会・雑談がない／忙しくて余裕がない／そもそもチームで動く仕事ではない／特に感じにくいことはない</span><br>Q9・Q10 が低かった原因を、仮説のまま終わらせないための設問。<strong>最後から2番目の選択肢は松原様のケースを拾うために入れています</strong></div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S5. 管理職としての難しさ <span class="chip chip-new">新設</span></h4><span class="hint">3問</span></header>
+      <header><h4>A15　組織サーベイの3項目 <span class="chip chip-new">追加</span></h4><span class="hint">1問（3スケール）・最重要</span></header>
       <ul class="qlist">
-        <li><span class="qid">L28</span><div><div class="qtext">いま管理職として難しいと感じることを、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">メンバーの本音・状態が見えない／評価と育成の切り分け／時間が取れない／管理職になって日が浅く、型がない／全員に均等に関われない／キャリアの相談に答えられない／チームとして動く機会をつくれていない／特にない</span></div></div></li>
-        <li><span class="qid">L29</span><div><div class="qtext">選んだ内容について、具体的な場面を教えてください</div><div class="qmeta">自由記述</div></div></li>
-        <li><span class="qid">L30</span><div><div class="qtext">その難しさに対して、Core Uniq はどこに効いていますか。また、どこには効いていませんか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
+        <li><span class="qid">A15</span><div><div class="qtext">いまのお気持ちに近いところを選んでください（各1〜10） <span class="chip chip-core">要</span></div><div class="qmeta">
+          ① 自分に期待されている役割は明確だ<br>
+          ② いまの仕事に、前向きなエネルギーを持って取り組めている<br>
+          ③ 他部署とのやりとりで、言葉を選んだり駆け引きをする必要を感じる　<span class="opt">※逆転項目</span><br><br>
+          <strong>この3項目が、稟議を通した根拠そのものです。</strong>組織サーベイで「役割の曖昧さ／燃え尽き／駆け引きの多さ」のスコアが低かったことを理由にトライアルが承認されています。情報システム部への報告で「稟議で挙げた課題はこうなりました」と言えるかどうかが、ここにかかっています。設問文は組織サーベイの原文に寄せるのが理想なので、<strong>原文をお借りできれば差し替えます</strong>
+        </div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S6. 社内報告・継続判断のための設問 <span class="chip chip-new">新設</span></h4><span class="hint">4問・全員必須</span></header>
+      <header><h4>A16　これからの支援ニーズ <span class="chip chip-new">追加</span></h4><span class="hint">1問＋自由記述</span></header>
       <ul class="qlist">
-        <li><span class="qid">L31</span><div><div class="qtext">会社の目標設定シート（年2回）・1on1制度と、Core Uniq の役割分担は整理できていますか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10＋自由記述。<strong>メンバー側 M39 と対になる設問。</strong>二重管理感の有無を上下で突き合わせます。</div></div></li>
-        <li><span class="qid">L32</span><div><div class="qtext">トライアルの結果を社内にご報告される際、どの材料があれば説明しやすいですか <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">アンケートスコアの事前→中間の変化／入力の継続率・利用状況／1on1や対話の質の変化／メンバーの具体的な行動変化のエピソード／管理職の関わり方の変化／新規事業の審査会など既存KPIとの関係／セキュリティ・運用ルールの遵守状況／費用対効果の考え方</span><br><strong>この設問が今回いちばん重要です。</strong>ここで選ばれた項目が、そのまま結果報告書の目次になります。</div></div></li>
-        <li><span class="qid">L33</span><div><div class="qtext">仮に対象を広げるとしたら、どこから広げるのが現実的だと思われますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">同じ本部の他チーム／新任・若手管理職層／新規事業に関わるメンバー全員／他部門へ／現時点では広げる想定はない</span>＋理由。<strong>1,689名の組織に対する10名のパイロットである以上、「次の一手」を今のうちに言葉にしておきます。</strong></div></div></li>
-        <li><span class="qid">L34</span><div><div class="qtext">トライアル終了後の継続について、現時点でのお考えに近いものを選んでください <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">継続したい／条件が整えば継続したい／現時点では判断できない／継続は難しい</span>＋「その条件・理由」「社内で説明しづらい・指摘されそうな点」を自由記述で</div></div></li>
+        <li><span class="qid">A16</span><div><div class="qtext">いまのチーム・職場にあったらよいと思う取り組みを、すべて選んでください <span class="chip chip-core">要</span></div><div class="qmeta">複数選択：<span class="opt">お互いの強みを共有するチームビルディングの場／上司との1on1をより有意義にする仕組み／キャリアを考えるワークショップ／目標設定の書き方の型・研修／生成AIを仕事に使いこなす実践の場／社外の人からフィードバックをもらえる機会／新しいアイデアを出す・検証する進め方の型／特にない</span><br>＋「選んだものについて、どんな形・どのくらいの時間なら参加したいですか」（自由記述）<br>三宅様は8月5日、競合他社インタビューの話に対して「<strong>自分たち持ってない観点だから、そういうのはすごい助かる</strong>」とおっしゃっています。選択肢の6・7はここから起こしています</div></div></li>
       </ul>
     </div>
 
     <div class="qgroup">
-      <header><h4>S7. これからの支援ニーズ <span class="chip chip-new">新設</span></h4><span class="hint">2問</span></header>
+      <header><h4>Q15〜Q17　属性 <span class="chip chip-keep">現行</span></h4><span class="hint">末尾のまま</span></header>
       <ul class="qlist">
-        <li><span class="qid">L35</span><div><div class="qtext">チーム・組織づくりの中で、外部に手伝ってほしいと思うことをすべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">管理職向けの1on1・フィードバックのトレーニング／チームビルディングの場の設計とファシリテート／メンバーのキャリア面談への同席・支援／目標設定の型づくり／生成AIを活用した実践ワークショップ／新規事業の外部インタビュー先の開拓支援／Core Uniq の運用設計の伴走／特にない</span></div></div></li>
-        <li><span class="qid">L36</span><div><div class="qtext">半年後（2027年3月ごろ）、「この取り組みをやってよかった」と言えるのは、どんな状態になっているときですか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>3月のヒアリング議題2「本来どうなっていたいか」を、導入後の言葉で聞き直す設問。</strong>次の提案は、この一文に対して組み立てます。</div></div></li>
+        <li><span class="qid">Q15-17</span><div><div class="qtext">所属会社・部門名／お名前／性別</div><div class="qmeta">変更なし。<span class="opt">※「所属チーム（石田チーム／水野チーム）」を足すと、集計が一段楽になります</span></div></div></li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- ============ 6 ============ -->
-<section id="ops">
+<section id="manager">
   <div class="sec-head">
     <span class="sec-num">06</span>
-    <h2>運用と、集計後のアウトプット</h2>
-    <p>取ったあとに何を出すかまで決めておくと、設問の過不足が事前に分かります。</p>
+    <h2>管理職用｜現行17問＋追加15問</h2>
+    <p>対象：水野様・石田様（チームリーダー）＋中屋敷様・西内様（事務局）。合計32問／12〜15分。事務局のお二人には Q1〜Q12・B5〜B7 を任意とし、B11〜B15 を必須にします。</p>
   </div>
   <div class="body">
 
-    <h3>6-1. 定点観測のカレンダー</h3>
-    <div class="timeline">
-      <div class="tl-row"><span class="tl-when">2026.03</span><span class="tl-what"><b>ヒアリング（4層フレーム）</b><span>課題・ゴール・阻害要因・成功指標を顧客と定義</span></span></div>
-      <div class="tl-row"><span class="tl-when">2025.12</span><span class="tl-what"><b>事前アンケート（第1回）</b><span>メンバー12問／リーダー12問　※ベースライン</span></span></div>
-      <div class="tl-row"><span class="tl-when">2026.03.31</span><span class="tl-what"><b>導入セッション・事後アンケート</b><span>オンボーディング直後の所感</span></span></div>
-      <div class="tl-row"><span class="tl-when">2026.09 上旬</span><span class="tl-what"><b>中間アンケート（第2回）← 本書</b><span>定点12問＋変化の要因＋接点検証＋残課題＋支援ニーズ</span></span></div>
-      <div class="tl-row"><span class="tl-when">2026.09 下旬</span><span class="tl-what"><b>結果報告会</b><span>稟議時に約束した「トライアル終了後の結果報告」。中間アンケートの集計をそのまま資料化</span></span></div>
-      <div class="tl-row"><span class="tl-when">2027.03</span><span class="tl-what"><b>定点アンケート（第3回）</b><span>継続する場合。同一12問のみの短縮版でよい</span></span></div>
+    <p style="font-size:.92rem;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;max-width:none">
+      <strong>冒頭文（追記案）</strong><br>
+      「このアンケートは、<strong>情報システム部へのご報告に使える材料をつくること</strong>と、残りの期間・その先に何が必要かを一緒に決めることを目的としています。<strong>使いこなせていない、というご回答こそ、私たちが改善すべき点を示すものです。</strong>そのままお書きください。」
+    </p>
+
+    <div class="qgroup">
+      <header><h4>Q1〜Q12　定点観測（リーダー版） <span class="chip chip-keep">現行</span></h4><span class="hint">変更なし</span></header>
+      <ul class="qlist">
+        <li><span class="qid">Q1-12</span><div><div class="qtext">「あなたは、メンバーの強みを理解できていますか」ほか計12問（1〜10）</div><div class="qmeta">Q1〜Q6＝自分の関わり／Q7〜Q12＝メンバー・チームの状態。<strong>水野様の事前回答（関わり系1点／状態系10点）が示す通り、この2ブロックは必ず分けて読みます</strong></div></div></li>
+      </ul>
     </div>
 
-    <div class="keypoint">
-      <b>ひとつご相談です。</b>「中間」という名前ですが、半年プラン（2026年3月開始）に対して9月実施は<strong>実質的に終盤</strong>にあたります。①9月上旬に実施して結果報告会にそのまま使う、②中間として8月中に実施し、終了時にもう一度短縮版を取る、のどちらかを決めておく必要があります。<strong>推奨は①</strong>です。回答者の負担が1回で済み、結果報告の鮮度も保てます。
+    <div class="qgroup">
+      <header><h4>B1〜B4　自分の関わりの行動事実 <span class="chip chip-new">追加</span></h4><span class="hint">Q12の直後／4問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">B1</span><div><div class="qtext">直近1ヶ月で、Core Uniq の管理画面を開いた頻度 <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週に数回／週1回程度／月に数回／ほとんど開いていない</span></div></div></li>
+        <li><span class="qid">B2</span><div><div class="qtext">メンバーの日報を見て、実際に声をかけた回数（直近1ヶ月） <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3〜5回／6回以上</span>　メンバー版 A12 と突き合わせます</div></div></li>
+        <li><span class="qid">B3</span><div><div class="qtext">1on1や面談で、Core Uniq に書かれていた内容を話題にした回数（直近1ヶ月） <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3回以上</span></div></div></li>
+        <li><span class="qid">B4</span><div><div class="qtext">声をかけられなかった・かけにくかった理由を、すべて選んでください <span class="chip chip-core">要</span></div><div class="qmeta">複数選択：<span class="opt">時間が取れない／何と言えばよいか分からない／見るタイミングが業務に組み込めていない／本人が入力していない／物理的に離れている／まだ充分に関係性を築けていないメンバーがいる／踏み込みすぎに感じる／ツール上で返信する機能がない／特に理由はない</span><br>選択肢はすべて6月5日にお二人が実際に挙げられた言葉から起こしています。<strong>推測ではなく、ご本人の言葉に選んでいただく形にします</strong></div></div></li>
+      </ul>
     </div>
 
-    <h3>6-2. 集計後に出すもの（5点）</h3>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>アウトプット</th><th>形式</th><th>誰に効くか</th></tr></thead>
-        <tbody>
-          <tr><td><strong>個人別 事前→中間 比較表</strong></td><td>12問×10名を横並び。SOEI様の事後アンケート集計と同じ形式</td><td>Givin' Back（分析）／中屋敷様・西内様（社内報告）</td></tr>
-          <tr><td><strong>チーム別サマリー</strong></td><td>石田チーム／水野チームで平均を分ける。管理職2名は個別表示</td><td>水野様・石田様（自チームの現在地）</td></tr>
-          <tr><td><strong>変化のエピソード集</strong></td><td>M17・M19・L20 の自由記述を、匿名化して抜粋</td><td>社内報告資料の「やった意味」のパート</td></tr>
-          <tr><td><strong>三角測量マップ</strong></td><td>L24 の答えを、現場リーダー2名／事務局2名で並べる。ズレがあればそこが打ち手の場所</td><td>Givin' Back（次の提案）／ニデック様（役割認識のすり合わせ）</td></tr>
-          <tr><td><strong>残課題と打ち手の対応表</strong></td><td>M19・M31・M37・M46・L28・L32・L35 を突き合わせ、「課題 → 誰が → 何をする」の3列に整理</td><td>次の提案（Givin' Back）／来期の育成計画（ニデック様）</td></tr>
-        </tbody>
-      </table>
+    <div class="qgroup">
+      <header><h4>B5〜B7　メンバーの変化の観測 <span class="chip chip-new">追加</span></h4><span class="hint">3問・チームリーダーのみ</span></header>
+      <ul class="qlist">
+        <li><span class="qid">B5</span><div><div class="qtext">この5ヶ月で、何らかの変化を感じたメンバーは何人いますか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">0人／1人／2人／3人／4人</span></div></div></li>
+        <li><span class="qid">B6</span><div><div class="qtext">変化が見えないメンバーについて、要因は何だと思いますか <span class="chip chip-core">要</span></div><div class="qmeta">自由記述。<span class="opt">※現行Q14が「ポジティブな変化のエピソード」なので、その裏を取る設問です</span></div></div></li>
+        <li><span class="qid">B7</span><div><div class="qtext">逆に、かえって難しくなったこと・想定と違ったことがあれば教えてください <span class="chip chip-core">要</span></div><div class="qmeta">自由記述</div></div></li>
+      </ul>
     </div>
 
-    <h3>6-3. 配信と回収</h3>
-    <ul class="plain">
-      <li>配信は Givin' Back から個別メールで（オンボーディング時と同じ導線）。西内様に BCC。</li>
-      <li>回答期限は<strong>配信から5営業日</strong>。3営業日目にリマインドを1回。事前アンケートは全員回答が取れているので、同じ運用で問題ないはずです。</li>
-      <li>管理職版は、メンバー版の回収が終わってから配信します（L19〜L21 でメンバーの変化を答えていただくため）。</li>
-    </ul>
+    <div class="qgroup">
+      <header><h4>B8〜B10　育成と評価のあいだ <span class="chip chip-new">追加</span></h4><span class="hint">3問・全員</span></header>
+      <ul class="qlist">
+        <li><span class="qid">B8</span><div><div class="qtext">忙しくなったとき、いちばん最初に後回しになるのはどれですか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">評価の入力・提出／1on1・面談／メンバーの日報を見ること／育成計画を考えること／メンバーへの声かけ・雑談／後回しになるものはない</span><br>「評価は締切があるからサボれない／育成は後回しにできてしまう」という構造が、ニデック様でも成立するかの検証です</div></div></li>
+        <li><span class="qid">B9</span><div><div class="qtext">会社や上位者から、管理職として最も求められていると感じるのはどれですか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">メンバーを育てること／評価を適切に終わらせること／チームの数字・成果をつくること／その他</span><br><strong>現場リーダー2名と事務局2名の答えのズレが、そのまま次の打ち手の設計図になります</strong></div></div></li>
+        <li><span class="qid">B10</span><div><div class="qtext">評価や年2回の目標設定シートを書くとき、メンバーの日々の行動や成長の「材料」が足りずに困ったことはありますか <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">何度もある／たまにある／ない</span>＋「そのとき、どうされましたか」（自由記述）<br>メンバー側では三宅様が「一致させてはいない」「そこには中身があるだろうかという疑問がある」と話されています。<strong>上下で突き合わせると、二重管理の実態が見えます</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>B11〜B13　情報システム部への報告 <span class="chip chip-new">追加</span></h4><span class="hint">3問・全員必須・最重要</span></header>
+      <ul class="qlist">
+        <li><span class="qid">B11</span><div><div class="qtext">結果報告の際、どの材料があれば説明しやすいですか <span class="chip chip-core">要</span></div><div class="qmeta">複数選択：<span class="opt">アンケートスコアの事前→中間の変化／入力の継続率・利用状況／組織サーベイ3項目（役割の明確さ・燃え尽き・駆け引き）の変化／1on1や対話の質の変化／メンバーの具体的な行動変化のエピソード／管理職の関わり方の変化／セキュリティ・運用ルールの遵守状況／費用対効果の考え方</span><br><strong>今回いちばん重要な設問です。</strong>ここで選ばれた項目が、そのまま結果報告書の目次になります。平井氏の言う「人事が使い始めるのは役員報告に使われる時だけ」という構造に、正面から乗る設計です</div></div></li>
+        <li><span class="qid">B12</span><div><div class="qtext">稟議時に挙げた「役割の曖昧さ／燃え尽き／他部署との駆け引き」について、3月と比べて現場の実感は変わりましたか <span class="chip chip-core">要</span></div><div class="qmeta">各1〜10＋自由記述。<strong>メンバー版 A15 と対になります。</strong>変わっていないなら「変わっていない」と出すべきで、その事実自体が次の打ち手の根拠になります</div></div></li>
+        <li><span class="qid">B13</span><div><div class="qtext">いま社内で説明しづらい、あるいは指摘されそうだと感じている点はありますか <span class="chip chip-core">要</span></div><div class="qmeta">自由記述。<span class="opt">例：効果を数字で示しにくい／参加メンバーの選び方／SSO非対応の運用ルール／費用　など</span><br>山崎様の「結局なんだったの、と言われかねない」という懸念に、正面から向き合う設問です</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>B14〜B15　この先 <span class="chip chip-new">追加</span></h4><span class="hint">2問・全員必須</span></header>
+      <ul class="qlist">
+        <li><span class="qid">B14</span><div><div class="qtext">トライアル終了後の継続について、現時点でのお考えに近いものを選んでください <span class="chip chip-core">要</span></div><div class="qmeta"><span class="opt">継続したい／条件が整えば継続したい／現時点では判断できない／継続は難しい</span>＋「その条件・理由」（自由記述）<br>＋「仮に対象を広げるとしたら、どこから広げるのが現実的だと思われますか」<span class="opt">（同じ本部の他チーム／新任・若手管理職層／新規事業に関わるメンバー全員／他部門へ／広げる想定はない）</span></div></div></li>
+        <li><span class="qid">B15</span><div><div class="qtext">半年後（2027年3月ごろ）、「この取り組みをやってよかった」と言えるのは、どんな状態になっているときですか <span class="chip chip-core">要</span></div><div class="qmeta">自由記述。＋「チーム・組織づくりで外部に手伝ってほしいこと」（複数選択：<span class="opt">管理職向けの1on1・フィードバックのトレーニング／チームビルディングの場の設計とファシリテート／キャリア面談への同席・支援／目標設定の型づくり／生成AIを活用した実践ワークショップ／新規事業の外部インタビュー先の開拓支援／Core Uniq の運用設計の伴走／特にない</span>）<br><strong>2月に未回答のまま残った「効果測定をどう決めるか」に、顧客ご自身の言葉で答えていただく設問です</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>Q13〜Q17 <span class="chip chip-keep">現行</span></h4><span class="hint">維持</span></header>
+      <ul class="qlist">
+        <li><span class="qid">Q13-17</span><div><div class="qtext">意識・行動の変化（自由）／ポジティブな変化のエピソード（自由）／所属・お名前・性別</div><div class="qmeta">変更なし。B6・B7 が裏側を補います</div></div></li>
+      </ul>
+    </div>
   </div>
 </section>
 
 <!-- ============ 7 ============ -->
-<section id="open">
+<section id="ops">
   <div class="sec-head">
     <span class="sec-num">07</span>
+    <h2>実施上、先に潰しておきたいこと</h2>
+    <p>設問より先に、こちらの方が事故になります。</p>
+  </div>
+  <div class="body">
+
+    <div class="note">
+      <h4>① Googleフォームの個人アカウントログイン</h4>
+      <ul>
+        <li>3月23日、山崎様から報告があります。<strong>「Googleフォーム、個人のGoogleアカウントでログインしなきゃいけなくて。会社としてサインするものに個人のGoogleアカウントに入るのはどうなんだ問題があって、情報システムにも確認して、本来はやめてほしいと言われた。今回はごめんなさい許してくださいという感じで一旦スルーはできた」</strong></li>
+        <li>現行の中間アンケートは、この状態のままログイン必須になっています（フォーム上部に「y_tanaka@givinback.co.jp／アカウントを切り替える」の表示）。<strong>2回目は「一旦スルー」が効かない可能性があります。</strong></li>
+        <li><strong>対策：</strong>フォーム設定で「メールアドレスを収集する」「回答を1回に制限する」を<strong>オフ</strong>にし、ログイン不要にする。記名は Q16「お名前」の自由記述で取れているので、実質的な影響はありません。</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <h4>② CHEN LIWEI 様の言語</h4>
+      <ul>
+        <li>3月13日、西内様のご説明。<strong>「中国語がベストで、英語が二番目、日本語が三番目」</strong>。入社1年目、日本歴5年ほど。</li>
+        <li>4月23日には、事前アンケートのスコアが低かったことについて「言語の壁もあってうまく自己表現ができていない可能性がある。そこで自信をなくしているかもしれない」と分析されています。</li>
+        <li><strong>対策：</strong>選択式の設問文に英語を併記するだけでも精度が上がります。自由記述は「日本語・英語・中国語のどれでも構いません」と明記する。<strong>これをやらないと、CHEN様のスコアが動かなかった理由が、言語なのか実態なのか永久に分かりません。</strong></li>
+      </ul>
+    </div>
+
+    <h3>7-2. 実施時期</h3>
+    <div class="keypoint">
+      半年プラン（2026年3月開始）に対して、いま5か月目。<strong>推奨は9月上旬に1回だけ実施し、そのまま情報システム部への結果報告に使うこと</strong>です。回答者の負担が1回で済み、報告の鮮度も保てます。5月の中間報告が実施されていない以上、これが唯一の機会になります。
+    </div>
+
+    <h3>7-3. 配信と回収</h3>
+    <ul class="plain">
+      <li>配信は Givin' Back から個別メールで。西内様に BCC（オンボーディング時と同じ導線）。</li>
+      <li>回答期限は<strong>配信から5営業日</strong>、3営業日目にリマインド1回。事前アンケートは全員回答が取れているので、同じ運用で問題ありません（当時、水野様が送信ボタンの押し忘れで未提出になった例があるので、<strong>提出状況の確認は必ず行う</strong>）。</li>
+      <li>管理職版は、メンバー版の回収が終わってから配信します（B5〜B6 でメンバーの変化を答えていただくため）。</li>
+    </ul>
+
+    <h3>7-4. 集計後に出すもの</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>アウトプット</th><th>形式</th><th>誰に効くか</th></tr></thead>
+        <tbody>
+          <tr><td><strong>個人別 事前→中間 比較表</strong></td><td>12問×10名を横並び。松原様はチーム関連4項目を別枠注記</td><td>Givin' Back（分析）／中屋敷様・西内様（報告）</td></tr>
+          <tr><td><strong>稟議3項目の変化</strong></td><td>A15・B12 を3月の組織サーベイと並べる</td><td><strong>情報システム部（最重要）</strong></td></tr>
+          <tr><td><strong>「使った量」と「変化」の散布</strong></td><td>A1（入力頻度）を横軸、12問の変化幅を縦軸に。選定バイアスへの反論材料</td><td>報告時の質疑対応</td></tr>
+          <tr><td><strong>変化のエピソード集</strong></td><td>Q13・Q14・A8・B6・B7 を匿名化して抜粋。良い話と難しかった話を必ず両方載せる</td><td>報告資料の「やった意味」のパート</td></tr>
+          <tr><td><strong>残課題と打ち手の対応表</strong></td><td>A8・A10・A14・A16・B4・B11・B15 を突き合わせ、「課題 → 誰が → 何をする」の3列に</td><td>次の提案／来期の育成計画</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="open">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
     <h2>決めたい論点</h2>
-    <p>ここだけ判断をいただければ、フォームに落とし込めます。</p>
+    <p>ここだけ判断をいただければ、フォームに反映できます。</p>
   </div>
   <div class="body">
     <div class="scroll">
       <table>
-        <thead><tr><th class="num">#</th><th>論点</th><th>推奨案</th></tr></thead>
+        <thead><tr><th class="num">#</th><th>論点</th><th>推奨</th></tr></thead>
         <tbody>
-          <tr><td class="num">1</td><td>現行の中間アンケート案（メンバー用・管理職用）との差分をどう扱うか</td><td>現行案の設問文をテキストでいただければ、本書と突き合わせて統合版を作成します。<strong>この確認が最優先です。</strong></td></tr>
-          <tr><td class="num">2</td><td>Plaudの13本をどう渡すか</td><td>木下代表のPlaudアカウントをコネクタに追加、または13本を workspace <code>ws_clPu5NvvBm</code> に共有。特に <strong>08-28／09-12（導入前の課題認識）と 03-31 キックオフ</strong>を確認したいです</td></tr>
-          <tr><td class="num">3</td><td>実施時期（前記6-1）</td><td>9月上旬に1回、結果報告会とセットで</td></tr>
-          <tr><td class="num">4</td><td>記名か匿名か</td><td>記名。ただし「個人が特定される形では社内共有しない」旨を明記</td></tr>
-          <tr><td class="num">5</td><td>管理職版 L20 で、メンバーの実名を書いていただくか</td><td>実名可とする。西内様・中屋敷様には集計後の匿名版のみ共有</td></tr>
-          <tr><td class="num">6</td><td>M45・L27（評価材料としての利用）を今回入れるか</td><td>入れる。ただし<strong>結果は Givin' Back 内部の判断材料に留め、ニデック様への報告では「今後の設計の参考として聞いた」と位置づける</strong>。現場の同意が取れていない段階でこの方向を打ち出すと、日報の率直さが失われます</td></tr>
-          <tr><td class="num">7</td><td>設問数（メンバー47問／管理職36問）</td><td>そのまま実施。厳しければ <span class="chip chip-core">コア</span> 以外を削って8分版に</td></tr>
+          <tr><td class="num">1</td><td><strong>組織サーベイの原文</strong>（役割の曖昧さ／燃え尽き／駆け引き）をお借りできるか</td><td>借りる。A15・B12 を原文に差し替えれば、3月のサーベイと直接比較できる形になります。<strong>これが取れるかどうかで報告の説得力が変わります</strong></td></tr>
+          <tr><td class="num">2</td><td>Googleフォームのログイン必須をどうするか</td><td>メール収集オフでログイン不要に。情シスの指摘は2回目には通りません</td></tr>
+          <tr><td class="num">3</td><td>CHEN様への言語配慮</td><td>選択肢に英語併記、自由記述は3言語可と明記</td></tr>
+          <tr><td class="num">4</td><td>実施時期</td><td>9月上旬に1回。結果報告会とセットで</td></tr>
+          <tr><td class="num">5</td><td>設問数（メンバー33問／管理職32問）</td><td>そのまま。厳しければ <span class="chip chip-core">要</span> 以外を落として8分版に</td></tr>
+          <tr><td class="num">6</td><td>事務局のお二人（中屋敷様・西内様）の回答範囲</td><td>Q1〜Q12・B5〜B7 は任意、B8〜B15 は必須</td></tr>
+          <tr><td class="num">7</td><td>B4・B8 のように、管理職に「できていない理由」を選ばせる設問を入れてよいか</td><td>入れる。ただし<strong>集計はチーム別に出さず、管理職2名分をまとめて提示する</strong>。石田様の利用状況を個人の問題として報告に載せない配慮が必要です</td></tr>
         </tbody>
       </table>
     </div>
@@ -851,10 +860,10 @@
       <summary>参考：この設計で「4つの問い」がどこで拾えるか</summary>
       <div class="inner">
         <ul>
-          <li><strong>なぜ課題が生じているのか</strong> → M37（チームで協力できない理由の選択式）、M39・L31（目標設定シートとの二重感）、L18（声をかけられない理由）、L23（忙しいとき最初に後回しになるもの）、L28（管理職の難しさ）</li>
-          <li><strong>どこまで前進したのか</strong> → M4〜M15・L3〜L14（定点12問の事前比較）、M16〜M18（変化の自覚と帰属度）、L19・L20（上司から見た変化）、L22</li>
-          <li><strong>新たに何が顕在化したのか</strong> → M19（かえって難しくなったこと）、M23（入力が止まった時期と理由）、M31（機能の改善要望）、L21（変化が見えない要因）、L24（三角測量のズレ）</li>
-          <li><strong>どのような課題が残っているのか</strong> → M41（キャリアの相談事）、M44、L30（効いていないところ）、L34（継続判断の条件と説明しづらい点）、L33（広げるとしたらどこから）</li>
+          <li><strong>なぜ課題が生じているのか</strong> → A14（チームで協力できない理由）、A15・B12（稟議3項目）、B4（声をかけられない理由）、B8（忙しいとき最初に後回しになるもの）、B10（評価の材料不足）</li>
+          <li><strong>どこまで前進したのか</strong> → Q1〜Q12（定点比較）、A6・A7（変化の中身と帰属度）、B5（上司から見た変化人数）、Q13・Q14（現行の自由記述）</li>
+          <li><strong>新たに何が顕在化したのか</strong> → A8（かえって難しくなったこと）、A4（入力が止まった時期と理由）、A3（未来設計の見直し）、A10（機能の改善要望）、B6・B7、B9（現場と事務局の認識のズレ）</li>
+          <li><strong>どのような課題が残っているのか</strong> → A16（支援ニーズ）、B13（説明しづらい点）、B14（継続の条件・横展開先）、B15（半年後の状態）</li>
         </ul>
       </div>
     </details>
@@ -863,7 +872,7 @@
 
 <footer class="end">
   <span>Core Uniq 中間アンケート設計書｜Givin' Back 株式会社</span>
-  <span>本書は Google Drive・Gmail 上の一次資料をもとに作成しています。Plaud の音声13本は接続済みアカウントに存在せず（別アカウント所有）、現行フォーム2本もネットワークポリシーにより未確認です（詳細は 00 参照）。</span>
+  <span>音声13本（うち9本全文・4本要点）と現行フォーム2本、Google Drive・Gmail 上の一次資料をもとに作成。</span>
 </footer>
 
 </div>
