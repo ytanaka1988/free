@@ -1,0 +1,551 @@
+<title>中間アンケート確定稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #EFF2F1;
+    --surface: #FFFFFF;
+    --surface-2: #F6F8F7;
+    --ink: #131E1C;
+    --ink-2: #35443F;
+    --muted: #5E6E6A;
+    --line: #D6DEDB;
+    --line-strong: #B9C6C2;
+    --accent: #0D555C;
+    --accent-ink: #0D555C;
+    --accent-soft: #DDEBEA;
+    --signal: #9C5417;
+    --signal-soft: #F3E5D6;
+    --shadow: 0 1px 2px rgba(19,30,28,.05), 0 8px 24px -16px rgba(19,30,28,.28);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0C1211; --surface: #141C1B; --surface-2: #182120;
+      --ink: #E7EDEB; --ink-2: #C3D0CD; --muted: #93A29E;
+      --line: #253130; --line-strong: #354442;
+      --accent: #59B6BB; --accent-ink: #7CCBCF; --accent-soft: #10322F;
+      --signal: #D89452; --signal-soft: #332415;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0C1211; --surface: #141C1B; --surface-2: #182120;
+    --ink: #E7EDEB; --ink-2: #C3D0CD; --muted: #93A29E;
+    --line: #253130; --line-strong: #354442;
+    --accent: #59B6BB; --accent-ink: #7CCBCF; --accent-soft: #10322F;
+    --signal: #D89452; --signal-soft: #332415;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+    font-size: 16px; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 54rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  header.masthead { padding: 4rem 0 2rem; border-bottom: 2px solid var(--ink); }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace; font-size: .72rem;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 1rem;
+  }
+  h1 {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif; font-weight: 700;
+    font-size: clamp(1.9rem,5vw,2.9rem); line-height: 1.28; margin: 0 0 .9rem; text-wrap: balance;
+  }
+  .standfirst { font-size: 1.02rem; color: var(--ink-2); max-width: 42em; margin: 0 0 1.6rem; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .4rem 2rem; font-size: .8rem;
+    color: var(--muted); font-family: "IBM Plex Mono", monospace;
+  }
+  .meta b { color: var(--ink-2); font-weight: 500; }
+
+  section { padding-top: 3.2rem; }
+  .form-head {
+    border-top: 3px solid var(--accent); padding-top: 1.1rem; margin-bottom: 1.4rem;
+  }
+  .form-head h2 {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif;
+    font-size: clamp(1.4rem,3.4vw,1.9rem); font-weight: 700; margin: 0 0 .5rem; line-height: 1.4;
+  }
+  .form-head p { margin: 0; color: var(--muted); font-size: .92rem; max-width: 44em; }
+
+  .intro {
+    background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 3px; padding: 1.1rem 1.3rem; font-size: .94rem; color: var(--ink-2);
+    margin: 1.2rem 0 2rem; line-height: 1.9;
+  }
+  .intro b { color: var(--ink); }
+  .intro .lbl {
+    display: block; font-family: "IBM Plex Mono", monospace; font-size: .7rem;
+    letter-spacing: .12em; color: var(--accent-ink); margin-bottom: .5rem; text-transform: uppercase;
+  }
+
+  .sec {
+    margin: 0 0 1.5rem; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 3px; overflow: hidden; box-shadow: var(--shadow);
+  }
+  .sec > header {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem .8rem;
+    padding: .8rem 1.1rem; background: var(--surface-2); border-bottom: 1px solid var(--line);
+  }
+  .sec > header h3 { margin: 0; font-size: .98rem; font-weight: 700; }
+  .sec > header .hint {
+    margin-left: auto; font-family: "IBM Plex Mono", monospace; font-size: .78rem; color: var(--muted);
+  }
+  .sec > header .note-inline { flex-basis: 100%; font-size: .82rem; color: var(--muted); margin: 0; }
+
+  ol.q { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+  ol.q > li {
+    display: grid; grid-template-columns: 2.6rem 1fr; gap: 0 .5rem;
+    padding: .85rem 1.1rem; border-bottom: 1px solid var(--line);
+  }
+  ol.q > li:last-child { border-bottom: none; }
+  .n {
+    font-family: "IBM Plex Mono", monospace; font-size: .84rem; color: var(--accent-ink);
+    padding-top: .18rem; font-variant-numeric: tabular-nums;
+  }
+  .qt { font-size: .96rem; line-height: 1.75; }
+  .req { color: var(--signal); font-weight: 700; }
+  .meta-row {
+    grid-column: 2; margin-top: .4rem; display: flex; flex-wrap: wrap; gap: .35rem .5rem; align-items: center;
+  }
+  .type {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .06em;
+    padding: .14rem .5rem; border-radius: 2px; background: var(--accent-soft); color: var(--accent-ink); white-space: nowrap;
+  }
+  .type.keep { background: var(--ink); color: var(--ground); }
+  .type.new { background: var(--signal-soft); color: var(--signal); }
+  .opts {
+    grid-column: 2; margin-top: .35rem; font-size: .86rem; color: var(--ink-2);
+    line-height: 1.85; background: var(--surface-2); border-radius: 3px; padding: .5rem .7rem;
+  }
+  .opts b { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .06em; display: block; margin-bottom: .15rem; }
+  .why { grid-column: 2; margin-top: .35rem; font-size: .84rem; color: var(--muted); line-height: 1.8; }
+  .why strong { color: var(--ink-2); }
+
+  .flag {
+    background: var(--signal-soft); border-radius: 3px; padding: .9rem 1.1rem;
+    font-size: .88rem; color: var(--ink-2); margin: 0 0 1.4rem; line-height: 1.85;
+  }
+  .flag b { color: var(--signal); }
+
+  .setup { display: grid; gap: .55rem; margin: 1rem 0 0; padding-left: 1.15rem; }
+  .setup li { font-size: .9rem; color: var(--ink-2); }
+
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 26rem; font-size: .88rem; }
+  th, td { text-align: left; padding: .65rem .85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { background: var(--surface-2); font-size: .74rem; letter-spacing: .06em; color: var(--muted); font-weight: 700; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  h4.sub {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif;
+    font-size: 1.08rem; font-weight: 700; margin: 2.2rem 0 .8rem;
+  }
+  p.body-p { font-size: .94rem; color: var(--ink-2); max-width: 44em; margin: 0 0 1rem; }
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  footer.end {
+    margin-top: 4rem; padding-top: 1.4rem; border-top: 2px solid var(--ink);
+    font-size: .84rem; color: var(--muted); display: grid; gap: .35rem;
+  }
+
+  @media (max-width: 560px) {
+    ol.q > li { grid-template-columns: 1fr; }
+    .n { padding-top: 0; }
+    .meta-row, .opts, .why { grid-column: 1; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Core Uniq × 株式会社ニデック様｜2026.09 実施</p>
+  <h1>中間アンケート確定稿</h1>
+  <p class="standfirst">そのままGoogleフォームに入力できる形にしました。<b>現行フォームの設問は文言・順序とも変えていません。</b>追加分を挟み込んだ最終形です。設計の根拠は別紙の設計書にあります。</p>
+  <div class="meta">
+    <span><b>メンバー用</b> 36設問／10〜12分</span>
+    <span><b>管理職用</b> 38設問／12〜15分</span>
+    <span><b>回答形式</b> 記名式・ログイン不要</span>
+  </div>
+</header>
+
+<section>
+  <div class="flag">
+    <b>フォームを作る前に、必ず2つ。</b><br>
+    <b>①</b> フォーム設定で「メールアドレスを収集する」「回答を1回に制限する」を<strong>オフ</strong>にしてください。3月23日に情報システム部から「会社としてサインするものに個人のGoogleアカウントで入るのはやめてほしい」と指摘され、前回は例外で通した経緯があります。記名はQ33（お名前）で取れるので支障ありません。<br>
+    <b>②</b> CHEN LIWEI 様は中国語が第一言語、英語が第二、日本語が第三です。<strong>選択肢に英語を併記し、自由記述には「日本語・英語・中国語のいずれでも構いません」と添えてください。</strong>これがないと、スコアが動かなかった理由が言語なのか実態なのか分かりません。
+  </div>
+</section>
+
+<!-- ============ MEMBER ============ -->
+<section id="member">
+  <div class="form-head">
+    <h2>【Core Uniq】中間アンケートのお願い（メンバー向け）</h2>
+    <p>対象8名：松原様・野澤様・三宅様・戸田様／林様・秋山様・伊藤様・CHEN様</p>
+  </div>
+
+  <div class="intro">
+    <span class="lbl">フォームの説明文</span>
+    Core Uniqの先行導入にご参加いただき、ありがとうございます。このアンケートは、導入前後の変化を可視化し、「多様性を活かすチームづくり」の成果を一緒に確認するためのものです。<b>あわせて、うまく使えなかったところ・続かなかったところも、同じように大切な情報としてお聞きします。</b>点数は目標ではなく、うまくいっているかどうかの目安として扱います。正直にお答えいただくことが、残りの期間と、この先の取り組みを決める材料になります。回答は Givin' Back が集計し、個人が特定される形で社内に共有することはありません。所要時間の目安は10分程度です。ご協力のほど、何卒よろしくお願いいたします。
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション1　いまのご自身について</h3><span class="hint">Q1–Q12</span>
+      <p class="note-inline">現行フォームのまま。設問文・尺度とも一字も変えないでください。事前アンケートとの比較が成立しなくなります。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q1</span><div><div class="qt">あなたは、自分の「らしさ」や強みが明確になっていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q2</span><div><div class="qt">あなたは、自分が大事にしている価値観が明確になっていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q3</span><div><div class="qt">あなたは、自分の頑張りや変化を実感できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q4</span><div><div class="qt">あなたは、自分から率先して意見やアイディアを提案できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q5</span><div><div class="qt">あなたは、今の仕事に目的を持って取り組めていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q6</span><div><div class="qt">あなたは、自分の頑張りに周囲が気づいてくれていると感じますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q7</span><div><div class="qt">あなたは、自分が伸ばしたいことが明確になっていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q8</span><div><div class="qt">あなたは、一緒に働くメンバーの強みを理解できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q9</span><div><div class="qt">あなたは、チームで協力して成果を出せていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q10</span><div><div class="qt">あなたは、職場で自分の強みを発揮できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q11</span><div><div class="qt">あなたは、メンバーの違いがチームの強みになっていると実感しますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q12</span><div><div class="qt">あなたは、自分のチームを他の人に勧めたいと思いますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">均等目盛 1–10</span></div>
+        <div class="opts"><b>ラベル</b>Q1〜Q11：1＝当てはまらない ／ 10＝当てはまる　　Q12：1＝全くそう思わない ／ 10＝強くそう思う</div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション2　この5ヶ月の使い方</h3><span class="hint">Q13–Q17</span>
+      <p class="note-inline">実感を聞く前に、事実を取ります。スコアが動かなかったとき「効かなかった」のか「使っていない」のかを分けるための5問です。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q13</span><div><div class="qt">直近1ヶ月の日報の入力頻度を教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">ほぼ毎日 ／ 週3〜4回 ／ 週1〜2回 ／ 月に数回 ／ ほとんど入力していない</div></li>
+      <li><span class="n">Q14</span><div><div class="qt">週次レポート（金曜16時）の使い方に、いちばん近いものを教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">毎週、内容を確認している ／ ときどき確認する ／ 生成はしているが読んでいない ／ 使っていない</div></li>
+      <li><span class="n">Q15</span><div><div class="qt">現在の利用状況に、いちばん近いものを教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">継続的に使えている ／ 使ったり使わなかったり ／ ほとんど使えていない</div></li>
+      <li><span class="n">Q16</span><div><div class="qt">導入時に入力した「3年後のビジョン／1年後の目標／今から始めること」を、その後見直しましたか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">見直して書き換えた ／ 見返したが書き換えていない ／ 見ようとしたが手が止まった ／ 見ていない</div>
+        <div class="why">3月31日のキックオフ当日、参加者のほぼ全員が「入力がまだ足りない」と発言されています。<strong>その後どうなったかを直接測る設問です。</strong></div></li>
+      <li><span class="n">Q17</span><div><div class="qt">入力が止まった、または減った時期はありましたか。あれば、その時期と理由を教えてください</div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div>
+        <div class="opts">プレースホルダ：例）出張が続いて翌日に持ち越すようになった／書くことが尽きた／特にありません</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション3　この5ヶ月の変化</h3><span class="hint">Q18–Q22</span>
+      <p class="note-inline">現行の自由記述2問（Q19・Q21）はそのまま。その前後に3問を挟みます。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q18</span><div><div class="qt">3月の導入時と比べて、あなた自身にいちばん変化があったと感じるのはどれですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">自己理解（強み・価値観） ／ 目標の明確さ ／ 振り返りの習慣 ／ 上司との対話 ／ チームへの関わり方 ／ 仕事の進め方 ／ 特に変化は感じない</div>
+        <div class="why">選択で方向を絞ってから自由記述に入る方が、Q19が書きやすくなります。</div></li>
+      <li><span class="n">Q19</span><div><div class="qt">Core Uniq導入後、ご自身の意識や行動にどのような変化がありましたか？ <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（長文）</span></div>
+        <div class="opts">補足を追記：「変化を感じていない場合は、なぜそうなったと思うかをお書きください」</div></li>
+      <li><span class="n">Q20</span><div><div class="qt">Q19に書いていただいた変化に、Core Uniq はどの程度きっかけとして影響しましたか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">均等目盛 1–10</span></div>
+        <div class="opts"><b>ラベル</b>1＝ほとんど関係ない ／ 10＝Core Uniq がきっかけだった</div>
+        <div class="why">情報システム部への報告で「ツールの効果」と言い切るための裏付けです。<strong>これがないと、変化があってもツールに帰属させられません。</strong></div></li>
+      <li><span class="n">Q21</span><div><div class="qt">チームメンバーとの関わり方で、良い変化を感じた具体的なエピソードを教えてください。 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（長文）</span></div></li>
+      <li><span class="n">Q22</span><div><div class="qt">逆に、この5ヶ月で「かえって難しくなった」「モヤモヤが増えた」と感じたことがあれば教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div>
+        <div class="why"><strong>現行案でいちばん大きな欠落を埋める設問です。</strong>Q19・Q21がどちらも「良い変化」限定である以上、これがないと「新たに何が顕在化したか」は取れません。日報も「吐き溜めではない」設計なので、ネガティブな実感を書ける場所は構造上ここだけです。</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション4　機能ごとの効き方</h3><span class="hint">Q23–Q25</span></header>
+    <ol class="q">
+      <li><span class="n">Q23</span><div><div class="qt">次のそれぞれについて、今のあなたにとって役に立っている度合いを教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">均等目盛のグリッド 1–10</span></div>
+        <div class="opts"><b>行（5項目）</b>① 経験の棚卸し・価値観の言語化　② 未来設計（3年後・1年後・今から始めること）　③ 日々の成長記録（日報）　④ AIバディからのフィードバック　⑤ 週次レポート</div></li>
+      <li><span class="n">Q24</span><div><div class="qt">上のうち、いちばん改善してほしいものはどれですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">経験の棚卸し ／ 未来設計 ／ 日報 ／ AIバディのフィードバック ／ 週次レポート ／ 特にない</div></li>
+      <li><span class="n">Q25</span><div><div class="qt">それは、どう変わると使いたくなりますか</div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション5　上司・チームとの関わり</h3><span class="hint">Q26–Q29</span></header>
+    <ol class="q">
+      <li><span class="n">Q26</span><div><div class="qt">直属の上司と1対1で話す頻度を教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">週1回以上 ／ 2週に1回 ／ 月1回 ／ 2ヶ月に1回 ／ ほとんどない</div>
+        <div class="why">会社の制度は2ヶ月に1回。実態がそれを上回るか下回るかを見ます。</div></li>
+      <li><span class="n">Q27</span><div><div class="qt">自分が書いた日報や取り組みについて、上司から反応をもらったことはありますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">何度もある ／ 数回ある ／ ない</div>
+        <div class="why">管理職用のQ14（声をかけた回数）と突き合わせます。上下で答えが食い違うなら、それ自体が発見です。</div></li>
+      <li><span class="n">Q28</span><div><div class="qt">チームの中で、お互いの強みや価値観を共有する機会はありますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">定期的にある ／ 年に数回ある ／ ほとんどない</div></li>
+      <li><span class="n">Q29</span><div><div class="qt">「チームで協力して成果を出せている」と感じにくいとしたら、理由に近いものをすべて選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">チェックボックス</span></div>
+        <div class="opts">業務が個人で完結する ／ 物理的に離れていて会わない ／ お互いの仕事内容を知らない ／ チームの目標が共有されていない ／ 話す機会・雑談がない ／ 忙しくて余裕がない ／ そもそもチームで動く仕事ではない ／ 特に感じにくいことはない</div>
+        <div class="why">事前アンケートでQ9・Q10が低かった原因を、仮説のまま終わらせないための設問。<strong>7番目の選択肢は、チームに所属せず働いている方のケースを拾うために入れています。</strong></div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション6　いまの職場の実感</h3><span class="hint">Q30</span>
+      <p class="note-inline">稟議を通した根拠にあたる3項目です。この設問だけは、報告の成否を左右します。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q30</span><div><div class="qt">いまのお気持ちに近いところを選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">均等目盛のグリッド 1–10</span></div>
+        <div class="opts"><b>行（3項目）</b>① 自分に期待されている役割は明確だ　② いまの仕事に、前向きなエネルギーを持って取り組めている　③ 他部署とのやりとりで、言葉を選んだり駆け引きをする必要を感じる（※逆転項目）</div>
+        <div class="why">トライアルは、組織サーベイで<strong>「役割の曖昧さ／燃え尽き／仕事上の駆け引きの多さ」</strong>のスコアが低かったことを根拠に承認されています。<strong>組織サーベイの原文をお借りできれば、そちらに差し替えてください。</strong>直接比較できる形になり、報告の説得力が変わります。</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション7　これから</h3><span class="hint">Q31–Q32</span></header>
+    <ol class="q">
+      <li><span class="n">Q31</span><div><div class="qt">いまのチーム・職場にあったらよいと思う取り組みを、すべて選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">チェックボックス</span></div>
+        <div class="opts">お互いの強みを共有するチームビルディングの場 ／ 上司との1on1をより有意義にする仕組み ／ キャリアを考えるワークショップ ／ 目標設定の書き方の型・研修 ／ 生成AIを仕事に使いこなす実践の場 ／ 社外の人からフィードバックをもらえる機会 ／ 新しいアイデアを出す・検証する進め方の型 ／ 特にない</div></li>
+      <li><span class="n">Q32</span><div><div class="qt">選んだものについて、どんな形・どのくらいの時間なら参加したいですか</div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション8　ご記入者について</h3><span class="hint">Q33–Q36</span></header>
+    <ol class="q">
+      <li><span class="n">Q33</span><div><div class="qt">お名前 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（短文）</span></div></li>
+      <li><span class="n">Q34</span><div><div class="qt">所属会社・部門名 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（短文）</span></div></li>
+      <li><span class="n">Q35</span><div><div class="qt">所属チーム <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">石田チーム ／ 水野チーム</div>
+        <div class="why">石田チームは新規事業専任の課、水野チームは技術ベースの課で、<strong>スタート地点が違います。</strong>混ぜて平均を出すとどちらの結果も読めなくなるため、この1問を足してください。</div></li>
+      <li><span class="n">Q36</span><div><div class="qt">性別 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">男性 ／ 女性</div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ MANAGER ============ -->
+<section id="manager">
+  <div class="form-head">
+    <h2>Core Uniq 中間アンケート（管理者向け）</h2>
+    <p>対象4名：水野様・石田様（チームリーダー）／中屋敷様・西内様（事務局）</p>
+  </div>
+
+  <div class="intro">
+    <span class="lbl">フォームの説明文</span>
+    Core Uniqの先行導入にご協力いただき、ありがとうございます。このアンケートは、導入前後の変化を可視化することに加えて、<b>情報システム部へのご報告に使える材料をつくること</b>と、残りの期間・その先に何が必要かを一緒に決めることを目的としています。点数は達成すべき目標ではなく、うまくいっているかどうかの目安として扱います。<b>「使いこなせていない」というご回答こそ、私たちが改善すべき点を示すものです。</b>そのままお書きください。所要時間の目安は12〜15分です。
+  </div>
+
+  <div class="flag">
+    <b>分岐の設定。</b>Q37「お立場」を<strong>フォームの冒頭（セクション0）</strong>に置き、「事務局・推進担当」を選んだ方はセクション1（Q1〜Q12）とセクション3（Q17〜Q21）を<strong>スキップ</strong>する設定にしてください。中屋敷様・西内様は部下の日報を直接見る立場ではないため、答えようがない設問が並びます。セクション4以降は全員必須です。
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション1　あなたとメンバー・チームについて</h3><span class="hint">Q1–Q12</span>
+      <p class="note-inline">現行フォームのまま。チームリーダーのみ。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q1</span><div><div class="qt">あなたは、メンバーの強みを理解できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q2</span><div><div class="qt">あなたは、メンバーの価値観を理解できていますか <span class="req">*</span></div>
+        <div class="why">Q1・Q2 は現行フォームの該当箇所が読み取れなかったため、事前アンケートの文言を置いています。<strong>実物と照合してください。</strong>Q3以降は現行フォームから確認済みです。</div></div></li>
+      <li><span class="n">Q3</span><div><div class="qt">あなたは、メンバーの頑張りや変化を、本人に伝えられていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q4</span><div><div class="qt">あなたは、メンバーの頑張りを、言葉で認められていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q5</span><div><div class="qt">あなたは、メンバーのやりたいことを把握できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q6</span><div><div class="qt">あなたは、メンバーの意見を引き出せていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q7</span><div><div class="qt">あなたのチームでは、メンバー同士がお互いの強みを理解していますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q8</span><div><div class="qt">あなたのチームでは、メンバーが協力して成果を出せていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q9</span><div><div class="qt">あなたのチームでは、メンバーが自分で考えて動いていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q10</span><div><div class="qt">あなたのチームでは、メンバーが得意なことで貢献できていますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q11</span><div><div class="qt">あなたは、チームとして強みを活かして成果を出せていると感じますか <span class="req">*</span></div></div></li>
+      <li><span class="n">Q12</span><div><div class="qt">あなたは、自分のチームなら誰もが管理職になってもうまくいくと思いますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">均等目盛 1–10</span></div>
+        <div class="opts"><b>ラベル</b>1＝当てはまらない ／ 10＝当てはまる</div>
+        <div class="why">Q1〜Q6は「ご自身の関わり」、Q7〜Q12は「メンバー・チームの状態」。<strong>集計時は必ず2ブロックに分けて読みます。</strong>事前アンケートで水野様は前半が全問1点、後半が全問10点でした。</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション2　ご自身の関わり方</h3><span class="hint">Q13–Q16</span>
+      <p class="note-inline">全員必須。選択肢はすべて、6月5日にお二人が実際に挙げられた言葉から起こしています。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q13</span><div><div class="qt">直近1ヶ月で、Core Uniq の管理画面を開いた頻度を教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">ほぼ毎日 ／ 週に数回 ／ 週1回程度 ／ 月に数回 ／ ほとんど開いていない</div></li>
+      <li><span class="n">Q14</span><div><div class="qt">メンバーの日報を見て、実際に声をかけた回数を教えてください（直近1ヶ月） <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">0回 ／ 1〜2回 ／ 3〜5回 ／ 6回以上</div></li>
+      <li><span class="n">Q15</span><div><div class="qt">1on1や面談で、Core Uniq に書かれていた内容を話題にした回数を教えてください（直近1ヶ月） <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">0回 ／ 1〜2回 ／ 3回以上</div></li>
+      <li><span class="n">Q16</span><div><div class="qt">声をかけられなかった・かけにくかった理由を、すべて選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">チェックボックス</span></div>
+        <div class="opts">時間が取れない ／ 何と言えばよいか分からない ／ 見るタイミングが業務に組み込めていない ／ 本人が入力していない ／ 物理的に離れている ／ まだ充分に関係性を築けていないメンバーがいる ／ 踏み込みすぎに感じる ／ ツール上で返信する機能がない ／ 特に理由はない</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション3　メンバーに起きた変化</h3><span class="hint">Q17–Q21</span>
+      <p class="note-inline">チームリーダーのみ。現行の自由記述2問（Q18・Q19）はそのまま。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q17</span><div><div class="qt">この5ヶ月で、何らかの変化を感じたメンバーは何人いますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">0人 ／ 1人 ／ 2人 ／ 3人 ／ 4人</div></li>
+      <li><span class="n">Q18</span><div><div class="qt">Core Uniq導入後、マネジメントやメンバーへの声かけにおいて、ご自身の意識や行動にどのような変化がありましたか？ <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（長文）</span></div></li>
+      <li><span class="n">Q19</span><div><div class="qt">チーム全体、または特定のメンバーに起きたポジティブな変化（行動や発言など）の具体的なエピソードを教えてください。 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（長文）</span></div>
+        <div class="why"><strong>結果報告に載せるエピソードは、ここから取れます。</strong>スコアの変化より、この一文の方が社内では効きます。実名でお書きいただいて構いません（報告時は匿名化します）。</div></li>
+      <li><span class="n">Q20</span><div><div class="qt">変化が見えないメンバーについて、要因は何だと思いますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+      <li><span class="n">Q21</span><div><div class="qt">逆に、かえって難しくなったこと・想定と違ったことがあれば教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション4　育成と評価のあいだ</h3><span class="hint">Q22–Q25</span>
+      <p class="note-inline">全員必須。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q22</span><div><div class="qt">忙しくなったとき、いちばん最初に後回しになるのはどれですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">評価の入力・提出 ／ 1on1・面談 ／ メンバーの日報を見ること ／ 育成計画を考えること ／ メンバーへの声かけ・雑談 ／ 後回しになるものはない</div>
+        <div class="why">「評価は締切があるからサボれない／育成は後回しにできてしまう」という構造が、ニデック様でも成立するかの検証です。</div></li>
+      <li><span class="n">Q23</span><div><div class="qt">会社や上位者から、管理職として最も求められていると感じるのはどれですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">メンバーを育てること ／ 評価を適切に終わらせること ／ チームの数字・成果をつくること ／ その他</div>
+        <div class="why"><strong>現場リーダー2名と事務局2名の答えのズレが、そのまま次の打ち手の設計図になります。</strong></div></li>
+      <li><span class="n">Q24</span><div><div class="qt">評価や年2回の目標設定シートを書くとき、メンバーの日々の行動や成長の「材料」が足りずに困ったことはありますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">何度もある ／ たまにある ／ ない</div></li>
+      <li><span class="n">Q25</span><div><div class="qt">そのとき、どうされましたか</div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div>
+        <div class="opts">プレースホルダ：例）記憶をたどった／本人に聞いた／メールやチャットを遡った</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション5　社内へのご報告のために</h3><span class="hint">Q26–Q29</span>
+      <p class="note-inline">全員必須。<strong>Q26が今回いちばん重要な設問です。</strong></p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q26</span><div><div class="qt">トライアルの結果を情報システム部にご報告される際、どの材料があれば説明しやすいですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">チェックボックス</span></div>
+        <div class="opts">アンケートスコアの事前→中間の変化 ／ 入力の継続率・利用状況 ／ 組織サーベイ3項目（役割の明確さ・燃え尽き・駆け引き）の変化 ／ 1on1や対話の質の変化 ／ メンバーの具体的な行動変化のエピソード ／ 管理職の関わり方の変化 ／ セキュリティ・運用ルールの遵守状況 ／ 費用対効果の考え方</div>
+        <div class="why"><strong>ここで選ばれた項目が、そのまま結果報告書の目次になります。</strong>「人事が使い始めるのは役員報告に使われる時だけ」という構造に、正面から乗る設計です。</div></li>
+      <li><span class="n">Q27</span><div><div class="qt">稟議時に挙げた次の3点について、3月と比べて現場の実感は変わりましたか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">均等目盛のグリッド 1–10</span></div>
+        <div class="opts"><b>行（3項目）</b>① メンバーの役割は明確になっている　② メンバーは前向きなエネルギーを持って働けている　③ 他部署とのやりとりで、駆け引きや気遣いが必要な場面が多い（※逆転項目）</div>
+        <div class="why">メンバー用Q30と対になります。<strong>変わっていないなら「変わっていない」と出すべきで、その事実自体が次の打ち手の根拠になります。</strong></div></li>
+      <li><span class="n">Q28</span><div><div class="qt">Q27について、補足があれば教えてください</div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+      <li><span class="n">Q29</span><div><div class="qt">いま社内で説明しづらい、あるいは指摘されそうだと感じている点はありますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div>
+        <div class="opts">プレースホルダ：例）効果を数字で示しにくい／参加メンバーの選び方／SSO非対応の運用ルール／費用</div>
+        <div class="why">「結局なんだったの、と言われかねない」という2月時点のご懸念に、正面から向き合う設問です。</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション6　この先について</h3><span class="hint">Q30–Q34</span>
+      <p class="note-inline">全員必須。</p>
+    </header>
+    <ol class="q">
+      <li><span class="n">Q30</span><div><div class="qt">トライアル終了後の継続について、現時点でのお考えに近いものを選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">継続したい ／ 条件が整えば継続したい ／ 現時点では判断できない ／ 継続は難しい</div>
+        <div class="why">2月17日の特約で<strong>自動更新は適用外</strong>になっています。放っておくと満了で終わるため、9月末までに明示的な判断が必要です。</div></li>
+      <li><span class="n">Q31</span><div><div class="qt">その条件・理由を教えてください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div></li>
+      <li><span class="n">Q32</span><div><div class="qt">仮に対象を広げるとしたら、どこから広げるのが現実的だと思われますか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン＋記述</span></div>
+        <div class="opts">同じ本部の他チーム ／ 新任・若手管理職層 ／ 新規事業に関わるメンバー全員 ／ 他部門へ ／ 現時点では広げる想定はない　＋「その理由」（記述式）</div></li>
+      <li><span class="n">Q33</span><div><div class="qt">半年後（2027年3月ごろ）、「この取り組みをやってよかった」と言えるのは、どんな状態になっているときですか <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">記述式（長文）</span></div>
+        <div class="why">2月に「効果測定をどう決めるか、ある程度決めておかないとまずい」という宿題が出たまま、未回答で来ています。<strong>その答えを、顧客ご自身の言葉で書いていただく設問です。</strong></div></li>
+      <li><span class="n">Q34</span><div><div class="qt">チーム・組織づくりの中で、外部に手伝ってほしいと思うことを、すべて選んでください <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">チェックボックス</span></div>
+        <div class="opts">管理職向けの1on1・フィードバックのトレーニング ／ チームビルディングの場の設計とファシリテート ／ メンバーのキャリア面談への同席・支援 ／ 目標設定の型づくり ／ 生成AIを活用した実践ワークショップ ／ 新規事業の外部インタビュー先の開拓支援 ／ Core Uniq の運用設計の伴走 ／ 特にない</div></li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <header><h3>セクション7　ご記入者について</h3><span class="hint">Q35–Q38</span></header>
+    <ol class="q">
+      <li><span class="n">Q35</span><div><div class="qt">お名前 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（短文）</span></div></li>
+      <li><span class="n">Q36</span><div><div class="qt">所属会社・部門名 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">記述式（短文）</span></div></li>
+      <li><span class="n">Q37</span><div><div class="qt">お立場 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type new">追加</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">チームリーダー（メンバーの日報を見る立場） ／ 事務局・推進担当</div>
+        <div class="why"><strong>この設問だけはフォームの冒頭に置き、分岐に使ってください。</strong>末尾ではセクションのスキップが効きません。</div></li>
+      <li><span class="n">Q38</span><div><div class="qt">性別 <span class="req">*</span></div></div>
+        <div class="meta-row"><span class="type keep">現行のまま</span><span class="type">ラジオボタン</span></div>
+        <div class="opts">男性 ／ 女性</div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ OPS ============ -->
+<section id="ops">
+  <div class="form-head">
+    <h2>配信と回収</h2>
+    <p>フォームができたら、この順で。</p>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>いつ</th><th>やること</th></tr></thead>
+      <tbody>
+        <tr><td class="num">9月上旬 火</td><td>メンバー用を Givin' Back から個別メールで配信（西内様に BCC）。オンボーディング時と同じ導線</td></tr>
+        <tr><td class="num">＋3営業日</td><td>未回答者にリマインド1回。<strong>提出状況を必ず確認</strong>（事前アンケートで水野様が送信ボタンの押し忘れで未提出になった例があります）</td></tr>
+        <tr><td class="num">＋5営業日</td><td>メンバー用を締切・回収</td></tr>
+        <tr><td class="num">その翌日</td><td>管理職用を配信。<strong>メンバー用の回収後に出します</strong>（Q17〜Q20でメンバーの変化を答えていただくため）</td></tr>
+        <tr><td class="num">＋5営業日</td><td>管理職用を締切</td></tr>
+        <tr><td class="num">9月下旬</td><td>集計 → 結果報告会。稟議時に約束した「トライアル終了後の結果報告」に充てる</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 class="sub">集計で必ず出すもの</h4>
+  <ol class="setup">
+    <li><strong>個人別 事前→中間 比較表</strong>：Q1〜Q12 × 10名を横並び</li>
+    <li><strong>チーム別サマリー</strong>：石田チーム（新規事業専任）／水野チーム（技術ベース）で必ず分ける。管理職2名は個別表示</li>
+    <li><strong>稟議3項目の変化</strong>：メンバーQ30・管理職Q27 を3月の組織サーベイと並べる ← 報告の本体</li>
+    <li><strong>使った量 × 変化</strong>：Q13（入力頻度）を横軸、Q1〜Q12の変化幅を縦軸に。「前向きな人を集めただけでは」への反論材料</li>
+    <li><strong>エピソード集</strong>：Q19・Q21・Q22（メンバー）、Q19・Q20・Q21（管理職）を匿名化して抜粋。<strong>良い話と難しかった話を必ず両方載せる</strong></li>
+    <li><strong>残課題と打ち手の対応表</strong>：Q22・Q24・Q29・Q31（メンバー）、Q16・Q26・Q34（管理職）を「課題 → 誰が → 何をする」の3列に</li>
+  </ol>
+
+  <h4 class="sub">お預かりしたい情報</h4>
+  <p class="body-p"><strong>3月の組織サーベイの原文（役割の曖昧さ／燃え尽き／駆け引きの3項目の設問文）。</strong>これがあれば、メンバーQ30と管理職Q27をそちらに差し替えます。稟議で挙げた課題とアンケート結果が直接つながり、報告の説得力がまったく変わります。</p>
+</section>
+
+<footer class="end">
+  <span>Core Uniq 中間アンケート 確定稿｜Givin' Back 株式会社</span>
+  <span>現行フォーム2本の設問は文言・順序とも維持しています。設計の根拠は別紙「中間アンケート設計書」に記載。</span>
+</footer>
+
+</div>
