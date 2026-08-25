@@ -92,6 +92,8 @@
   #done .fname{font-weight:bold;color:var(--accent);word-break:break-all;}
   #done .pwline{font-size:13px;color:#555;margin-top:8px;word-break:break-all;}
   .mono{font-family:ui-monospace,Menlo,Consolas,monospace;}
+  #dirLabel{color:#888;}
+  #dirLabel.set{color:var(--accent);font-weight:bold;}
   .section{display:none;}
   .section.active{display:block;}
   .empty{color:#999;font-size:13px;text-align:center;padding:10px 0;}
@@ -164,6 +166,11 @@
         <label><input type="radio" name="outext" value="zip" checked> .zip で保存</label>
         <label><input type="radio" name="outext" value="zi_"> .zi_ で保存（メール添付用）</label>
       </div>
+      <div class="row">
+        <label><input type="radio" name="savemode" value="download" checked> ダウンロードフォルダに保存</label>
+        <label><input type="radio" name="savemode" value="pick" id="savePick"> 保存先フォルダを選ぶ</label>
+      </div>
+      <div class="hint" id="saveHint"></div>
       <div class="actions">
         <button class="primary" id="makeBtn">パスワード付きZIPを作成</button>
       </div>
@@ -208,7 +215,14 @@
     </div>
 
     <div class="card" id="listCard">
-      <h2>3. ダウンロード</h2>
+      <h2>3. 保存</h2>
+      <div class="field" id="dirRow">
+        <span>保存先</span>
+        <span id="dirLabel" class="mono">ダウンロードフォルダ</span>
+        <button class="ghost" id="dirPick">フォルダを選ぶ</button>
+        <button class="ghost" id="dirReset" style="display:none;">ダウンロードフォルダに戻す</button>
+      </div>
+      <div class="hint" id="dirHint" style="margin-bottom:12px;"></div>
       <table>
         <thead>
           <tr><th>元のファイル名</th><th></th><th>変換後</th><th class="size">サイズ</th><th></th><th></th></tr>
@@ -216,11 +230,11 @@
         <tbody id="tbody"></tbody>
       </table>
       <div class="actions">
-        <button class="primary" id="allBtn">すべてダウンロード</button>
+        <button class="primary" id="allBtn">すべて保存</button>
         <button class="secondary" id="clearBtn">リストを空にする</button>
       </div>
       <div class="note">
-        <p>※ ブラウザによっては複数ファイルの連続ダウンロードに許可が必要です。ブロックされた場合は個別の「保存」ボタンをお使いください。</p>
+        <p>※ ダウンロードフォルダへ保存する場合、ブラウザによっては複数ファイルの連続ダウンロードに許可が必要です。ブロックされた場合は個別の「保存」ボタンをお使いください。</p>
         <p>※ 受け取った側は <b>.zi_</b> を <b>.zip</b> に戻してから展開してください。</p>
       </div>
     </div>
@@ -673,6 +687,52 @@ var ZipTool = (function(){
     return { base: name.slice(0, i), ext: name.slice(i + 1) };
   }
 
+  /* ---- 保存先の指定（File System Access API / Chrome・Edge など） ---- */
+  var FS_SAVE_OK = typeof window.showSaveFilePicker === "function";
+  var FS_DIR_OK  = typeof window.showDirectoryPicker === "function";
+  var FS_NG_HINT = "このブラウザは保存先の指定に対応していないため、ダウンロードフォルダに保存されます。" +
+                   "Chrome・Edge なら選択できます（他のブラウザでは、設定の「ダウンロード前に各ファイルの保存場所を確認する」が使えます）。";
+
+  function isAbort(e){ return e && (e.name === "AbortError" || e.name === "NotAllowedError"); }
+
+  async function ensurePermission(handle){
+    if(!handle || !handle.queryPermission) return true;
+    var opts = { mode: "readwrite" };
+    if(await handle.queryPermission(opts) === "granted") return true;
+    return (await handle.requestPermission(opts)) === "granted";
+  }
+
+  async function writeHandle(handle, blob){
+    var w = await handle.createWritable();
+    await w.write(blob);
+    await w.close();
+  }
+
+  // 保存ダイアログを開いて保存先ハンドルを得る（キャンセル時は null）
+  async function pickSaveHandle(filename){
+    var opts = { suggestedName: filename };
+    if(/\.zip$/i.test(filename)){
+      // 「.zi_」はファイル種別として指定できないため、.zip のときだけ絞り込む
+      opts.types = [{ description: "ZIPファイル", accept: { "application/zip": [".zip"] } }];
+    }
+    try {
+      return await window.showSaveFilePicker(opts);
+    } catch(e){
+      if(isAbort(e)) return null;
+      throw e;
+    }
+  }
+
+  // 選んだフォルダへ書き出す（上書き時は確認）
+  async function saveIntoDir(dirHandle, name, blob){
+    var exists = false;
+    try { await dirHandle.getFileHandle(name); exists = true; } catch(e){ exists = false; }
+    if(exists && !window.confirm("保存先に「" + name + "」が既にあります。上書きしますか？")) return false;
+    var fh = await dirHandle.getFileHandle(name, { create: true });
+    await writeHandle(fh, blob);
+    return true;
+  }
+
   function saveBlob(blob, filename){
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -867,6 +927,19 @@ var ZipTool = (function(){
   });
   updateEncHint();
 
+  // 保存先の指定（未対応ブラウザでは選べないようにする）
+  function saveMode(){
+    var el = document.querySelector('input[name="savemode"]:checked');
+    return el ? el.value : "download";
+  }
+  if(!FS_SAVE_OK){
+    $("savePick").disabled = true;
+    $("savePick").parentNode.style.color = "#aaa";
+    $("saveHint").textContent = FS_NG_HINT;
+  } else {
+    $("saveHint").textContent = "「保存先フォルダを選ぶ」にすると、作成前に保存ダイアログが開きます。";
+  }
+
   // 作成
   var lastBlob = null, lastName = "";
 
@@ -895,6 +968,18 @@ var ZipTool = (function(){
     var base = $("outName").value.trim() || defaultOutName() || "archive";
     var ext = document.querySelector('input[name="outext"]:checked').value;
     var outName = base + "." + ext;
+
+    // 保存ダイアログはクリック直後に開く（重い処理の後だと開けなくなるため）
+    var handle = null;
+    if(saveMode() === "pick" && FS_SAVE_OK){
+      try {
+        handle = await pickSaveHandle(outName);
+      } catch(e){
+        err.textContent = "保存先を開けませんでした：" + (e && e.message ? e.message : e);
+        return;
+      }
+      if(!handle) return;   // キャンセル
+    }
 
     $("makeBtn").disabled = true;
     $("progress").style.display = "block";
@@ -937,8 +1022,16 @@ var ZipTool = (function(){
 
       setProgress(1, 1);
       $("plabel").textContent = "完了（" + formatSize(blob.size) + "）";
-      lastBlob = blob; lastName = outName;
-      saveBlob(blob, outName);
+      lastBlob = blob;
+      if(handle){
+        $("plabel").textContent = "保存しています…";
+        await writeHandle(handle, blob);
+        outName = handle.name || outName;
+        $("plabel").textContent = "完了（" + formatSize(blob.size) + "）";
+      } else {
+        saveBlob(blob, outName);
+      }
+      lastName = outName;
       $("doneName").textContent = outName;
       $("donePw").textContent = pw;
       $("done").style.display = "block";
@@ -993,8 +1086,57 @@ var ZipTool = (function(){
     renderList();
   }
 
-  function download(item){
-    saveBlob(item.file, targetName(item.file.name, currentMode()));
+  var dirHandle = null;
+
+  function updateDirLabel(){
+    $("dirLabel").textContent = dirHandle ? dirHandle.name : "ダウンロードフォルダ";
+    $("dirLabel").className = "mono" + (dirHandle ? " set" : "");
+    $("dirReset").style.display = dirHandle ? "inline-block" : "none";
+  }
+
+  if(!FS_DIR_OK){
+    $("dirPick").disabled = true;
+    $("dirHint").textContent = FS_NG_HINT;
+  } else {
+    $("dirHint").textContent = "フォルダを選ぶと、以降はダウンロードを経由せずそのフォルダへ直接保存します。";
+  }
+
+  $("dirPick").addEventListener("click", async function(){
+    try {
+      var h = await window.showDirectoryPicker({ mode: "readwrite" });
+      if(!(await ensurePermission(h))){
+        $("dirHint").textContent = "そのフォルダへの書き込みが許可されませんでした。";
+        return;
+      }
+      dirHandle = h;
+      $("dirHint").textContent = "以降はダウンロードを経由せず、このフォルダへ直接保存します。";
+      updateDirLabel();
+    } catch(e){
+      if(!isAbort(e)) $("dirHint").textContent = "フォルダを開けませんでした：" + (e && e.message ? e.message : e);
+    }
+  });
+
+  $("dirReset").addEventListener("click", function(){
+    dirHandle = null;
+    updateDirLabel();
+  });
+
+  async function download(item){
+    var name = targetName(item.file.name, currentMode());
+    if(dirHandle){
+      try {
+        if(!(await ensurePermission(dirHandle))){
+          $("dirHint").textContent = "そのフォルダへの書き込みが許可されませんでした。";
+          return;
+        }
+        if(!(await saveIntoDir(dirHandle, name, item.file))) return;  // 上書きしない場合
+      } catch(e){
+        $("dirHint").textContent = "保存できませんでした：" + (e && e.message ? e.message : e);
+        return;
+      }
+    } else {
+      saveBlob(item.file, name);
+    }
     item.done = true;
     renderList();
   }
@@ -1046,12 +1188,18 @@ var ZipTool = (function(){
     });
   }
 
+  updateDirLabel();
   setupDrop($("drop"), addFiles, null);
   $("picker").addEventListener("change", function(){ addFiles(this.files); this.value = ""; });
   document.querySelectorAll('input[name="mode"]').forEach(function(r){
     r.addEventListener("change", renderList);
   });
-  $("allBtn").addEventListener("click", function(){
+  $("allBtn").addEventListener("click", async function(){
+    if(dirHandle){
+      // フォルダ保存なら順番に書き出す
+      for(var i = 0; i < items.length; i++) await download(items[i]);
+      return;
+    }
     items.forEach(function(item, i){ setTimeout(function(){ download(item); }, i * 400); });
   });
   $("clearBtn").addEventListener("click", function(){ items = []; renderList(); });
