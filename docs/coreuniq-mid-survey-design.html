@@ -1,0 +1,825 @@
+<title>中間アンケート設計書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #EFF2F1;
+    --surface: #FFFFFF;
+    --surface-2: #F6F8F7;
+    --ink: #131E1C;
+    --ink-2: #35443F;
+    --muted: #5E6E6A;
+    --line: #D6DEDB;
+    --line-strong: #B9C6C2;
+    --accent: #0D555C;
+    --accent-ink: #0D555C;
+    --accent-soft: #DDEBEA;
+    --signal: #9C5417;
+    --signal-soft: #F3E5D6;
+    --shadow: 0 1px 2px rgba(19, 30, 28, .05), 0 8px 24px -16px rgba(19, 30, 28, .28);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0C1211;
+      --surface: #141C1B;
+      --surface-2: #182120;
+      --ink: #E7EDEB;
+      --ink-2: #C3D0CD;
+      --muted: #93A29E;
+      --line: #253130;
+      --line-strong: #354442;
+      --accent: #59B6BB;
+      --accent-ink: #7CCBCF;
+      --accent-soft: #10322F;
+      --signal: #D89452;
+      --signal-soft: #332415;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -18px rgba(0, 0, 0, .9);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0C1211;
+    --surface: #141C1B;
+    --surface-2: #182120;
+    --ink: #E7EDEB;
+    --ink-2: #C3D0CD;
+    --muted: #93A29E;
+    --line: #253130;
+    --line-strong: #354442;
+    --accent: #59B6BB;
+    --accent-ink: #7CCBCF;
+    --accent-soft: #10322F;
+    --signal: #D89452;
+    --signal-soft: #332415;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -18px rgba(0, 0, 0, .9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 61rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    padding: 4.5rem 0 2.5rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 1.1rem;
+  }
+  h1 {
+    font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.28;
+    letter-spacing: .01em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 1.05rem;
+    color: var(--ink-2);
+    max-width: 42em;
+    margin: 0 0 2rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 2.25rem;
+    font-size: .82rem;
+    color: var(--muted);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  .meta b { color: var(--ink-2); font-weight: 500; }
+
+  /* ---------- sections ---------- */
+  section { padding-top: 3.6rem; }
+  .sec-head {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    align-items: baseline;
+    gap: 0 .25rem;
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+  .sec-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .82rem;
+    color: var(--accent-ink);
+    letter-spacing: .04em;
+  }
+  .sec-head h2 {
+    font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
+    font-size: clamp(1.4rem, 3vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .sec-head p {
+    grid-column: 2;
+    margin: .55rem 0 0;
+    color: var(--muted);
+    font-size: .93rem;
+    max-width: 44em;
+  }
+
+  .body { display: grid; gap: 1.15rem; }
+  .body > * { margin: 0; }
+  .body p { max-width: 44em; }
+  h3 {
+    font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
+    font-size: 1.12rem;
+    font-weight: 700;
+    margin: 1.4rem 0 0;
+    line-height: 1.5;
+  }
+  h4 {
+    font-size: .96rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--ink);
+  }
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  strong { font-weight: 700; }
+
+  ul.plain { padding-left: 1.15rem; margin: 0; display: grid; gap: .35rem; }
+  ul.plain li { max-width: 44em; }
+
+  /* ---------- callout ---------- */
+  .note {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--signal);
+    border-radius: 2px;
+    padding: 1.1rem 1.3rem;
+    font-size: .92rem;
+    color: var(--ink-2);
+    display: grid;
+    gap: .5rem;
+  }
+  .note h4 { color: var(--signal); font-size: .78rem; letter-spacing: .1em; font-family: "IBM Plex Mono", monospace; text-transform: uppercase; }
+  .note ul { padding-left: 1.1rem; margin: 0; display: grid; gap: .3rem; }
+
+  .keypoint {
+    background: var(--accent-soft);
+    border-radius: 2px;
+    padding: 1.15rem 1.35rem;
+    font-size: .95rem;
+    color: var(--ink);
+    border: 1px solid transparent;
+  }
+  .keypoint b { color: var(--accent-ink); }
+
+  /* ---------- purpose cards ---------- */
+  .purposes { display: grid; gap: .9rem; }
+  @media (min-width: 720px) { .purposes { grid-template-columns: 1fr 1fr; } }
+  .purpose {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1.25rem 1.35rem 1.35rem;
+    box-shadow: var(--shadow);
+    display: grid;
+    gap: .55rem;
+    align-content: start;
+  }
+  .purpose .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .7rem;
+    letter-spacing: .12em;
+    color: var(--accent-ink);
+  }
+  .purpose h4 { font-size: 1.02rem; line-height: 1.55; }
+  .purpose p { margin: 0; font-size: .9rem; color: var(--ink-2); line-height: 1.8; }
+  .purpose .src {
+    font-size: .78rem;
+    color: var(--muted);
+    border-top: 1px dashed var(--line-strong);
+    padding-top: .55rem;
+    margin-top: .2rem;
+  }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .9rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th {
+    background: var(--surface-2);
+    font-size: .76rem;
+    letter-spacing: .07em;
+    color: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .low { color: var(--signal); font-weight: 500; }
+
+  /* ---------- question blocks ---------- */
+  .qgroup {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .qgroup > header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .5rem .8rem;
+    padding: .85rem 1.1rem;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .qgroup > header h4 { font-size: .98rem; }
+  .qgroup > header .hint { font-size: .8rem; color: var(--muted); margin-left: auto; font-family: "IBM Plex Mono", monospace; }
+  .qlist { list-style: none; margin: 0; padding: 0; }
+  .qlist > li {
+    display: grid;
+    grid-template-columns: 3.1rem 1fr;
+    gap: 0 .5rem;
+    padding: .8rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .qlist > li:last-child { border-bottom: none; }
+  .qid {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .82rem;
+    color: var(--muted);
+    padding-top: .2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .qtext { font-size: .94rem; line-height: 1.75; }
+  .qmeta {
+    grid-column: 2;
+    font-size: .82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: .3rem;
+  }
+  .qmeta .opt { color: var(--ink-2); }
+
+  .chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .66rem;
+    letter-spacing: .08em;
+    padding: .12rem .45rem;
+    border-radius: 2px;
+    vertical-align: .12em;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .chip-keep { background: var(--accent-soft); color: var(--accent-ink); }
+  .chip-new { background: var(--signal-soft); color: var(--signal); }
+  .chip-core { background: var(--ink); color: var(--ground); }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.2rem;
+    font-size: .82rem;
+    color: var(--muted);
+    align-items: center;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline { display: grid; gap: 0; }
+  .tl-row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0 1rem;
+    padding: .8rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-row:last-child { border-bottom: none; }
+  .tl-when {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .84rem;
+    color: var(--accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .tl-what { font-size: .92rem; }
+  .tl-what b { display: block; }
+  .tl-what span { color: var(--muted); font-size: .86rem; }
+
+  details {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: .85rem 1.1rem;
+  }
+  summary { cursor: pointer; font-weight: 700; font-size: .94rem; }
+  details[open] summary { margin-bottom: .7rem; }
+  details .inner { font-size: .89rem; color: var(--ink-2); display: grid; gap: .55rem; }
+  details .inner ul { padding-left: 1.15rem; margin: 0; display: grid; gap: .3rem; }
+
+  footer.end {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--ink);
+    font-size: .84rem;
+    color: var(--muted);
+    display: grid;
+    gap: .4rem;
+  }
+
+  @media (max-width: 560px) {
+    .sec-head { grid-template-columns: 1fr; }
+    .sec-head p { grid-column: 1; }
+    .qlist > li { grid-template-columns: 1fr; }
+    .qid { padding-top: 0; }
+    .qmeta { grid-column: 1; }
+    .tl-row { grid-template-columns: 1fr; gap: .2rem; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Core Uniq × 株式会社ニデック様｜トライアル中間振り返り</p>
+  <h1>中間アンケート設計書</h1>
+  <p class="standfirst">「成果が出たか」だけでなく、「なぜその課題が起きているのか」「どこまで前進したのか」「新たに何が見えたのか」「何が残っているのか」まで可視化する。そのための目的整理と、メンバー用・管理職用の設問たたき台。</p>
+  <div class="meta">
+    <span><b>作成</b> 2026.08.25</span>
+    <span><b>対象</b> メンバー8名／管理職2名＋事務局</span>
+    <span><b>トライアル</b> 2026.03 開始・半年プラン</span>
+    <span><b>想定実施</b> 2026.09 上旬</span>
+  </div>
+</header>
+
+<!-- ============ 0 ============ -->
+<section id="sources">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <h2>はじめに：参照できた材料と、できなかった材料</h2>
+    <p>結論の土台を先に開示します。ご指定の13本の音声と2本のフォームには到達できていません。</p>
+  </div>
+  <div class="body">
+    <div class="note">
+      <h4>アクセスできなかったもの</h4>
+      <ul>
+        <li><strong>Plaud の共有リンク13本すべて</strong>（web.plaud.ai）— このセッションのネットワークポリシーで <code>403</code> 拒否。回避は行っていません。</li>
+        <li><strong>ご提示の Google フォーム2本</strong>（docs.google.com）— 同じく <code>403</code> 拒否。Google Drive 連携からもフォーム形式は本文を取得できませんでした（現行の中間アンケート案の設問文は未確認です）。</li>
+      </ul>
+    </div>
+    <p>そのため本書は、Drive と Gmail から取得できた一次資料をもとに組み立てています。時系列・論点・現場の生の声は、下記でほぼ再現できています。</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>参照した一次資料</th><th>そこから取れた情報</th></tr></thead>
+        <tbody>
+          <tr><td>ニデック様_アジェンダ（議事録集約ドキュメント）<br><span style="color:var(--muted);font-size:.84rem">2025.12.25／2026.02.10／04.23／06.05／06.18／08.06</span></td><td>稟議の MUST／WANT、トライアル設計、導入セッション内容、事前アンケート結果と仮説、生成AIワークショップ提案の背景</td></tr>
+          <tr><td>【Core Uniq】事前アンケート（メンバー向け）回答シート</td><td>定点観測12問の<strong>正確な設問文</strong>と10段階スケール</td></tr>
+          <tr><td>ニデック様フィードバック（PDF・2026.06 提出分）</td><td>管理職／メンバーの不具合・リクエスト・所感の生コメント</td></tr>
+          <tr><td>ニデック様ユーザーインタビュー全文（2026.07.17／三宅様・林様）</td><td>入力が止まる理由、AIフィードバックへの本音、目標設定シートとの二重感、組織文化の課題</td></tr>
+          <tr><td>SOEI様 事前／事後アンケート回答シート</td><td>「事前→事後を同一設問で並べる」比較テーブルの型</td></tr>
+          <tr><td>Core Uniq 事後アンケート（回答）</td><td>継続意向・支払意向・導入懸念の設問設計の型</td></tr>
+          <tr><td>ニデック様との往復メール（2025.12〜2026.08）</td><td>参加者名簿、担当者交代、契約・スケジュール</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted)">音声13本とフォーム2本を確認できれば、本書の設問は微調整で確定できます。ネットワーク許可、もしくは文字起こし・フォームの設問文をテキストでいただければ差分を反映します。</p>
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section id="purpose">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>このアンケートを、何のために実施するのか</h2>
+    <p>目的は1つではなく4つ。しかも「誰のための材料か」が違います。ここを分けておかないと設問が混ざります。</p>
+  </div>
+  <div class="body">
+    <div class="purposes">
+      <div class="purpose">
+        <span class="tag">PURPOSE A ／ 顧客のため</span>
+        <h4>中屋敷様・西内様が、社内に「やった意味」を説明できる材料をつくる</h4>
+        <p>2025.12.25 の稟議整理で、他部門・部門長からの <strong>MUST として「トライアルが終わった後の結果報告」</strong> が明記されています。これは努力目標ではなく、導入時に社内へ約束した宿題です。中間アンケートは、その報告書の骨格を先に用意する場になります。</p>
+        <p class="src">出典：ニデック様_アジェンダ 2025.12.25／2026.02.10「◆他部門、部門長からの指摘内容（稟議申請時に盛り込む）MUST ②」</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">PURPOSE B ／ 共通</span>
+        <h4>変化を「点」ではなく「線」で見る（定点観測の起点にする）</h4>
+        <p>2026.06.05 のアジェンダに、Givin' Back 側の提案としてすでに <strong>「アンケートの定期取得による定点観察（自己評価の変化のスコアリング）」</strong> が挙がっています。今回はその2回目にあたります。事前（2025.12／2026.03）の12問を<strong>一字一句変えずに</strong>再掲することが、この目的の生命線です。</p>
+        <p class="src">出典：ニデック様_アジェンダ 2026.06.05「その他」</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">PURPOSE C ／ 共通</span>
+        <h4>スコアの裏にある「なぜ」を、組織運営／チームビルディング／キャリア開発の3層で構造化する</h4>
+        <p>事前アンケートでチーム関連の4項目が軒並み低かった（4.6〜5.2点）ことに対し、Givin' Back 側は「個人の不満ではなく、チームとして動く機会が少ないのでは」という<strong>仮説</strong>を置いた段階で止まっています。中間では、この仮説を検証する選択式設問を入れて、原因の当たりをつけます。</p>
+        <p class="src">出典：ニデック様_アジェンダ 2026.04.23「【仮説】」</p>
+      </div>
+      <div class="purpose">
+        <span class="tag">PURPOSE D ／ Givin' Back のため</span>
+        <h4>次の提案・次の打ち手の材料を、今のうちに取っておく</h4>
+        <p>SOEI様と同じ形です。すでにニデック様には生成AIワークショップの提案が並走しており、現場からは「チームで強みを共有する機会がない」「1on1の型がない」「目標設定シートの書き方が分からない」といった声が出ています。<strong>支援ニーズを直接聞く設問</strong>を最後に置き、押し売りでなく現場発の要望として拾います。</p>
+        <p class="src">出典：ユーザーインタビュー 2026.07.17／フィードバックPDF 2026.06</p>
+      </div>
+    </div>
+
+    <div class="keypoint">
+      <b>設計上の含意。</b>目的A・Bは「同じ設問を繰り返す」ことで達成され、目的C・Dは「今回だけの新しい設問」で達成されます。<strong>触ってはいけない12問</strong>と<strong>今回足す設問</strong>を明確に分けることが、この設計書の中心です。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="baseline">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>いまの現在地</h2>
+    <p>中間アンケートは、この数字と、この生の声の「その後」を測るために設計します。</p>
+  </div>
+  <div class="body">
+
+    <h3>2-1. 事前アンケートのベースライン（メンバー8名平均）</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>区分</th><th>設問</th><th class="num">平均</th></tr></thead>
+        <tbody>
+          <tr><td>強み</td><td>Q2. 自分が大事にしている価値観が明確</td><td class="num">7.8</td></tr>
+          <tr><td>強み</td><td>Q5. 仕事に目的を持って取り組めている</td><td class="num">7.4</td></tr>
+          <tr><td>課題</td><td>Q8. 一緒に働くメンバーの強みを理解</td><td class="num low">5.2</td></tr>
+          <tr><td>課題</td><td>Q9. チームで協力して成果を出せている</td><td class="num low">5.1</td></tr>
+          <tr><td>課題</td><td>Q12. 自分のチームを他の人に勧めたい</td><td class="num low">4.9</td></tr>
+          <tr><td>課題</td><td>Q10. 職場で自分の強みを発揮できている</td><td class="num low">4.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>構造：</strong>個人の自己理解は高く、チームとしての実感が低い。個人が8名分そろっているのに、チームになっていない。</p>
+
+    <p>管理職お二人は、事前アンケートの回答パターンが正反対でした。水野様は「自分が関わる」系（Q1〜Q6）がすべて1点、「メンバー／チームの状態」系（Q8〜Q11）がすべて10点。石田様は全体が7点前後で、Q12「誰もが管理職になれる」だけ3点。<strong>管理職2名は母数が小さく平均に意味がないため、中間でも個別に並べて読む前提</strong>で設計します。</p>
+
+    <h3>2-2. その後、新たに顕在化したこと（6〜7月）</h3>
+    <p>ここが中間アンケートで数値として押さえるべきポイントです。すべて現場の実際の発言・記述から拾っています。</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>顕在化した課題</th><th>根拠となった声</th><th>中間で聞く設問</th></tr></thead>
+        <tbody>
+          <tr><td><strong>入力が業務ワークフローと切れている</strong></td><td>「ワークの部分と結びつけた方が分かりやすい」「そうじゃないと、やらないといけない理由を探すと思う」（三宅様）</td><td class="num">M20–M25</td></tr>
+          <tr><td><strong>AIフィードバックに新鮮味と実用性が足りない</strong></td><td>「毎日褒めてくれるだけだと、結局毎日同じ内容で返ってくる印象」「感情的に訴えるのとは別に、実務に役立つ部分がもう少し欲しい」（林様）</td><td class="num">M26–M31</td></tr>
+          <tr><td><strong>上司からの反応がなく、壁打ち感がある</strong></td><td>「現状、壁に向かってしゃべっている感じ」「確認しました、くらいの反応が返ってくるとモチベーションが下がらない」（フィードバックPDF）</td><td class="num">M32–M34／L15–L18</td></tr>
+          <tr><td><strong>会社の目標設定シート（年2回）と未来設計が二重・非連動</strong></td><td>「一致させてはいない」「そこには中身があるだろうかという疑問が結構ある」（三宅様）／「紙に書く方はあんまり真面目に書いてない」（林様）</td><td class="num">M39／L26</td></tr>
+          <tr><td><strong>管理職がダッシュボードの使い方を掴めていない</strong></td><td>「管理者目線では、現時点ではメンバーの日報を確認するにとどまっております」「メンバーに返信機能がないのが残念」（フィードバックPDF）</td><td class="num">L15–L18</td></tr>
+          <tr><td><strong>フィードバックし合う文化そのものが薄い</strong></td><td>「決める文化がないんですよ、多分うちの会社」「成長実感がない。こうすればもっと良くなるとか、そういう風にしてる人があんまりいなかった」（三宅様）</td><td class="num">M35–M37／L23</td></tr>
+          <tr><td><strong>キャリア制度は整いはじめたが、手を挙げた人にしか届いていない</strong></td><td>「自主的にキャリアを築こうとしてる人にしか、そういうところは出てないかな」（社内インターンシップ制度について）</td><td class="num">M40</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="policy">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>設計方針</h2>
+    <p>設問を書く前に、5つのルールを決めます。</p>
+  </div>
+  <div class="body">
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>方針</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td><strong>事前の12問は一字一句変えない</strong></td><td>文言を変えた瞬間に、事前との比較が成立しなくなります。追加はしても、既存は触らない。</td></tr>
+          <tr><td class="num">2</td><td><strong>「成果」と「原因」を別の設問で聞く</strong></td><td>スコアが動いた／動かなかった理由を後から推測せずに済むように、同じ回で原因側も取っておきます。</td></tr>
+          <tr><td class="num">3</td><td><strong>「実感」の前に「行動事実」を聞く</strong></td><td>入力頻度・1on1回数・見直し有無といった事実を先に取ると、自己申告の実感値を補正して読めます。管理職側の「声をかけた回数」も同じ狙いです。</td></tr>
+          <tr><td class="num">4</td><td><strong>管理職版は「メンバーの状態」と「自分の関わり」を必ず分ける</strong></td><td>水野様の事前回答（関わり系1点／状態系10点）が示す通り、この2つは独立して動きます。混ぜると読めません。</td></tr>
+          <tr><td class="num">5</td><td><strong>記名式にする（匿名にしない）</strong></td><td>個人別の事前→中間の変化を追うため。ただし「回答は Givin' Back が集計し、個人が特定される形では社内共有しない」旨を冒頭に明記します。三宅様・林様の率直さは、この安心感の上に成り立っています。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <h4>あわせて決めておきたいこと</h4>
+      <ul>
+        <li>所要時間の上限：<strong>メンバー10〜12分／管理職12〜15分</strong>。これを超えると自由記述が空になります。</li>
+        <li>本書では各設問に <span class="chip chip-core">コア</span> を付けています。時間が厳しい場合、コア以外を落として8分版にできます。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="member">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>メンバー用アンケート｜たたき台</h2>
+    <p>対象8名（松原様・野澤様・三宅様・戸田様・林様・秋山様・伊藤様・CHEN様）。全46問／10〜12分。うち短縮版でも残すコア設問は35問。</p>
+  </div>
+  <div class="body">
+    <p class="legend">
+      <span><span class="chip chip-keep">定点</span> 事前と同一・変更不可</span>
+      <span><span class="chip chip-new">新設</span> 今回から追加</span>
+      <span><span class="chip chip-core">コア</span> 短縮版でも残す</span>
+    </p>
+
+    <p style="font-size:.92rem;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;max-width:none">
+      <strong>冒頭文（案）</strong><br>
+      Core Uniq をご利用いただき、ありがとうございます。導入から約5ヶ月が経ちました。このアンケートは、皆さまの評価をするためのものではなく、<strong>「どこまで前進したか」「どこがまだ難しいか」を正確に把握し、残りの期間とその先の取り組みを一緒に考えるため</strong>のものです。うまく使えていない項目こそ、そのまま正直にお答えいただけると助かります。回答は Givin' Back が集計し、個人が特定される形で社内に共有することはありません。所要時間の目安は10分程度です。
+    </p>
+
+    <div class="qgroup">
+      <header><h4>S0. 基本情報</h4><span class="hint">3問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M1</span><div><div class="qtext">お名前 <span class="chip chip-core">コア</span></div><div class="qmeta">記述式（必須）</div></div></li>
+        <li><span class="qid">M2</span><div><div class="qtext">所属チーム <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">石田チーム／水野チーム</span></div></div></li>
+        <li><span class="qid">M3</span><div><div class="qtext">現在の Core Uniq の利用状況を、いちばん近いもので教えてください</div><div class="qmeta"><span class="opt">継続的に使えている／使ったり使わなかったり／ほとんど使えていない</span></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S1. 定点観測 <span class="chip chip-keep">定点</span></h4><span class="hint">12問・すべてコア</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M4</span><div><div class="qtext">あなたは、自分の「らしさ」や強みが明確になっていますか</div></div></li>
+        <li><span class="qid">M5</span><div><div class="qtext">あなたは、自分が大事にしている価値観が明確になっていますか</div></div></li>
+        <li><span class="qid">M6</span><div><div class="qtext">あなたは、自分の頑張りや変化を実感できていますか</div></div></li>
+        <li><span class="qid">M7</span><div><div class="qtext">あなたは、自分から率先して意見やアイディアを提案できていますか</div></div></li>
+        <li><span class="qid">M8</span><div><div class="qtext">あなたは、今の仕事に目的を持って取り組めていますか</div></div></li>
+        <li><span class="qid">M9</span><div><div class="qtext">あなたは、自分の頑張りに周囲が気づいてくれていると感じますか</div></div></li>
+        <li><span class="qid">M10</span><div><div class="qtext">あなたは、自分が伸ばしたいことが明確になっていますか</div></div></li>
+        <li><span class="qid">M11</span><div><div class="qtext">あなたは、一緒に働くメンバーの強みを理解できていますか</div></div></li>
+        <li><span class="qid">M12</span><div><div class="qtext">あなたは、チームで協力して成果を出せていますか</div></div></li>
+        <li><span class="qid">M13</span><div><div class="qtext">あなたは、職場で自分の強みを発揮できていますか</div></div></li>
+        <li><span class="qid">M14</span><div><div class="qtext">あなたは、メンバーの違いがチームの強みになっていると実感しますか</div></div></li>
+        <li><span class="qid">M15</span><div><div class="qtext">あなたは、自分のチームを他の人に勧めたいと思いますか</div><div class="qmeta">すべて1〜10の10段階。<strong>設問文・スケールとも事前アンケートと完全に同一にすること。</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S2. 変化の自覚と、その要因 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M16</span><div><div class="qtext">3月の導入時と比べて、あなた自身にいちばん変化があったと感じるのはどれですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">自己理解（強み・価値観）／目標の明確さ／振り返りの習慣／上司との対話／チームへの関わり方／仕事の進め方／特に変化は感じない</span></div></div></li>
+        <li><span class="qid">M17</span><div><div class="qtext">その変化が起きたきっかけを、具体的に教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">「特に変化がない」と答えた方は、なぜ変化が起きなかったと思うかをお書きください。</span></div></div></li>
+        <li><span class="qid">M18</span><div><div class="qtext">その変化に、Core Uniq はどの程度きっかけとして影響しましたか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10。<strong>成果をツールに帰属させてよいかを測る設問。</strong>結果報告で「ツールの効果」と言い切るための裏付けになります。</div></div></li>
+        <li><span class="qid">M19</span><div><div class="qtext">逆に、この5ヶ月で「かえって難しくなった」「モヤモヤが増えた」と感じたことがあれば教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>「新たに何が顕在化したか」を拾う中心設問。</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S3. 行動事実（実感の前に事実を取る） <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M20</span><div><div class="qtext">直近1ヶ月の日報の入力頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週3〜4回／週1〜2回／月に数回／ほとんど入力していない</span></div></div></li>
+        <li><span class="qid">M21</span><div><div class="qtext">週次の振り返りの使い方 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">毎週、内容を確認している／ときどき確認する／生成はしているが読んでいない／使っていない</span></div></div></li>
+        <li><span class="qid">M22</span><div><div class="qtext">1回あたりの入力にかかる時間</div><div class="qmeta"><span class="opt">3分未満／3〜5分／5〜10分／10分以上</span></div></div></li>
+        <li><span class="qid">M23</span><div><div class="qtext">入力が止まった、または減った時期はありましたか。あれば、その時期と理由を教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">例：出張が続いて翌日に持ち越すようになった、書くことが尽きた、など</span></div></div></li>
+        <li><span class="qid">M24</span><div><div class="qtext">導入時に入力した「3年後のビジョン／1年後の目標／今から始めること」を、その後見直しましたか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">見直して書き換えた／見返したが書き換えていない／見ようとしたが手が止まった／見ていない</span></div></div></li>
+        <li><span class="qid">M25</span><div><div class="qtext">M24でそう答えた理由を教えてください</div><div class="qmeta">自由記述</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S4. 機能ごとの効き方 <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M26</span><div><div class="qtext">経験の棚卸し・価値観の言語化（導入セッションで実施した部分）</div></div></li>
+        <li><span class="qid">M27</span><div><div class="qtext">未来設計（3年後のビジョン・1年後の目標・今から始めること）</div></div></li>
+        <li><span class="qid">M28</span><div><div class="qtext">日々の成長記録（日報） <span class="chip chip-core">コア</span></div></div></li>
+        <li><span class="qid">M29</span><div><div class="qtext">AIバディからのフィードバック <span class="chip chip-core">コア</span></div></div></li>
+        <li><span class="qid">M30</span><div><div class="qtext">週次の振り返りレポート</div><div class="qmeta">M26〜M30 はいずれも「今の自分にとって役に立っている度合い」を1〜10で。<strong>どこが効いていて、どこが効いていないかを機能単位で切り分けます。</strong></div></div></li>
+        <li><span class="qid">M31</span><div><div class="qtext">上のうち、いちばん改善してほしいものはどれですか。また、どう変わると使いたくなりますか <span class="chip chip-core">コア</span></div><div class="qmeta">選択＋自由記述</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S5. 上司・チームとの関係（組織運営／チームビルディングの原因を探る） <span class="chip chip-new">新設</span></h4><span class="hint">6問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M32</span><div><div class="qtext">直属の上司と1対1で話す頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">週1回以上／2週に1回／月1回／2ヶ月に1回／ほとんどない</span></div></div></li>
+        <li><span class="qid">M33</span><div><div class="qtext">自分が書いた日報や取り組みについて、上司から反応をもらったことはありますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">何度もある／数回ある／ない</span></div></div></li>
+        <li><span class="qid">M34</span><div><div class="qtext">上司からのフィードバックは、次の行動に活かせる具体性があると感じますか</div><div class="qmeta">1〜10</div></div></li>
+        <li><span class="qid">M35</span><div><div class="qtext">チームの中で、お互いの強みや価値観を共有する機会はありますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">定期的にある／年に数回ある／ほとんどない</span></div></div></li>
+        <li><span class="qid">M36</span><div><div class="qtext">職場で、率直に意見や違和感を口に出せる雰囲気があると感じますか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10</div></div></li>
+        <li><span class="qid">M37</span><div><div class="qtext">「チームで協力して成果を出せている」と感じにくいとしたら、理由に近いものをすべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">業務が個人で完結する／物理的に離れていて会わない／お互いの仕事内容を知らない／チームの目標が共有されていない／話す機会・雑談がない／忙しくて余裕がない／特に感じにくいことはない</span><br><strong>事前アンケートQ9・Q10が低かった原因を、仮説のまま終わらせないための設問。</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S6. キャリア開発 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M38</span><div><div class="qtext">3年後の自分の姿を、どのくらい具体的に描けていますか</div><div class="qmeta">1〜10</div></div></li>
+        <li><span class="qid">M39</span><div><div class="qtext">会社の目標設定シート（年2回）と Core Uniq の未来設計は、あなたの中でつながっていますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">つながっている／方向性は同じだが別々に書いている／まったく別物として書いている／片方しか書いていない</span></div></div></li>
+        <li><span class="qid">M40</span><div><div class="qtext">社内公募・社内インターンシップなどのキャリア制度について、当てはまるものを選んでください</div><div class="qmeta">複数選択：<span class="opt">制度を知っている／内容まで理解している／使ってみたいと思う／使ったことがある／知らなかった</span></div></div></li>
+        <li><span class="qid">M41</span><div><div class="qtext">キャリアについて、いまいちばん相談したいこと・困っていることを教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S7. 継続意向と残課題</h4><span class="hint">3問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M42</span><div><div class="qtext">仮に Core Uniq が使えなくなった場合、あなたの仕事や成長にどんな影響がありそうですか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">とても困る／少し困る／あまり困らない／まったく困らない</span>　※既存の事後アンケートと同一選択肢にし、他社事例と横比較できるようにします。</div></div></li>
+        <li><span class="qid">M43</span><div><div class="qtext">M42でそう答えた理由を教えてください <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
+        <li><span class="qid">M44</span><div><div class="qtext">残りの期間で、こう使えたら意味がありそうだと思うことがあれば教えてください</div><div class="qmeta">自由記述</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S8. これからの支援ニーズ（Givin' Back として何ができるか） <span class="chip chip-new">新設</span></h4><span class="hint">2問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M45</span><div><div class="qtext">いまのチーム・職場にあったらよいと思う取り組みを、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">お互いの強みを共有するチームビルディングの場／上司との1on1をより有意義にする仕組み／キャリアを考えるワークショップ／目標設定の書き方の型・研修／生成AIを仕事に使いこなす実践の場／社外の人からフィードバックをもらえる機会／新しいアイデアを出す・検証する進め方の型／特にない</span></div></div></li>
+        <li><span class="qid">M46</span><div><div class="qtext">選んだものについて、どんな形・どのくらいの時間なら参加したいですか</div><div class="qmeta">自由記述</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="manager">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>管理職用アンケート｜たたき台</h2>
+    <p>対象：水野様・石田様（チームリーダー）＋中屋敷様・西内様（事務局）。全31問。事務局のお二人には S1・S3 を任意とし、S5 を必須にします。</p>
+  </div>
+  <div class="body">
+    <p style="font-size:.92rem;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;max-width:none">
+      <strong>冒頭文（案）</strong><br>
+      導入から約5ヶ月が経ちました。このアンケートは、<strong>トライアルの結果を社内にご報告いただく際の材料をつくること</strong>と、<strong>残りの期間・その先に何が必要かを一緒に決めること</strong>を目的としています。「使いこなせていない」というご回答こそ、私たちが改善すべき点を示すものですので、そのままお書きください。所要時間の目安は12〜15分です。
+    </p>
+
+    <div class="qgroup">
+      <header><h4>S0. 基本情報</h4><span class="hint">2問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L1</span><div><div class="qtext">お名前</div></div></li>
+        <li><span class="qid">L2</span><div><div class="qtext">お立場</div><div class="qmeta"><span class="opt">チームリーダー（部下の日報を見る立場）／事務局・推進担当</span>　※分岐に使用</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S1. 定点観測（リーダー版） <span class="chip chip-keep">定点</span></h4><span class="hint">12問・チームリーダーのみ</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L3</span><div><div class="qtext">あなたは、メンバーの強みを理解できていますか</div></div></li>
+        <li><span class="qid">L4</span><div><div class="qtext">あなたは、メンバーの価値観を理解できていますか</div></div></li>
+        <li><span class="qid">L5</span><div><div class="qtext">あなたは、メンバーの頑張りを本人に伝えられていますか</div></div></li>
+        <li><span class="qid">L6</span><div><div class="qtext">あなたは、メンバーの頑張りを言葉で認められていますか</div></div></li>
+        <li><span class="qid">L7</span><div><div class="qtext">あなたは、メンバーのやりたいことを把握できていますか</div></div></li>
+        <li><span class="qid">L8</span><div><div class="qtext">あなたは、メンバーの意見を引き出せていますか</div></div></li>
+        <li><span class="qid">L9</span><div><div class="qtext">メンバー同士が、お互いの強みを理解できていますか</div></div></li>
+        <li><span class="qid">L10</span><div><div class="qtext">メンバーが協力して成果を出せていますか</div></div></li>
+        <li><span class="qid">L11</span><div><div class="qtext">メンバーが自分で考えて動けていますか</div></div></li>
+        <li><span class="qid">L12</span><div><div class="qtext">メンバーが得意なことで貢献できていますか</div></div></li>
+        <li><span class="qid">L13</span><div><div class="qtext">チームとして強みを活かして成果を出せていますか</div></div></li>
+        <li><span class="qid">L14</span><div><div class="qtext">あなたのチームなら、誰もが管理職になれると思いますか</div><div class="qmeta">すべて1〜10。<strong>L3〜L8＝自分の関わり／L9〜L14＝メンバー・チームの状態。この2ブロックは必ず分けて読みます。</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S2. 自分の関わりの「行動事実」 <span class="chip chip-new">新設</span></h4><span class="hint">4問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L15</span><div><div class="qtext">直近1ヶ月で、Core Uniq の管理画面を開いた頻度 <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">ほぼ毎日／週に数回／週1回程度／月に数回／ほとんど開いていない</span></div></div></li>
+        <li><span class="qid">L16</span><div><div class="qtext">メンバーの日報を見て、実際に声をかけた回数（直近1ヶ月） <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3〜5回／6回以上</span></div></div></li>
+        <li><span class="qid">L17</span><div><div class="qtext">1on1や面談で、Core Uniq に書かれていた内容を話題にした回数（直近1ヶ月） <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0回／1〜2回／3回以上</span></div></div></li>
+        <li><span class="qid">L18</span><div><div class="qtext">声をかけられなかった・かけにくかった理由を、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">時間が取れない／何と言えばよいか分からない／見るタイミングが業務に組み込めていない／本人が入力していない／物理的に離れている／踏み込みすぎに感じる／ツール上で返信する機能がない／特に理由はない</span><br><strong>「日報を確認するにとどまっている」という6月のご記述を、選択肢化して原因を特定します。</strong></div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S3. メンバーの変化の観測 <span class="chip chip-new">新設</span></h4><span class="hint">4問・チームリーダーのみ</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L19</span><div><div class="qtext">この5ヶ月で、何らかの変化を感じたメンバーは何人いますか <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">0人／1人／2人／3人／4人以上</span></div></div></li>
+        <li><span class="qid">L20</span><div><div class="qtext">具体的に、どなたの、どんな変化を感じましたか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>結果報告に載せるエピソードは、ここから取れます。</strong>スコアの変化より、この一文の方が社内では効きます。</div></div></li>
+        <li><span class="qid">L21</span><div><div class="qtext">変化が見えないメンバーについて、要因は何だと思いますか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
+        <li><span class="qid">L22</span><div><div class="qtext">Core Uniq を通じて得た情報が、上司としての判断や関わり方を変えるきっかけになりましたか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S4. 管理職としての難しさ（原因の構造化） <span class="chip chip-new">新設</span></h4><span class="hint">3問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L23</span><div><div class="qtext">いま管理職として難しいと感じることを、すべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">メンバーの本音・状態が見えない／評価と育成の切り分け／時間が取れない／管理職になって日が浅く、型がない／全員に均等に関われない／キャリアの相談に答えられない／チームとして動く機会をつくれていない／特にない</span></div></div></li>
+        <li><span class="qid">L24</span><div><div class="qtext">選んだ内容について、具体的な場面を教えてください</div><div class="qmeta">自由記述</div></div></li>
+        <li><span class="qid">L25</span><div><div class="qtext">その難しさに対して、Core Uniq はどこに効いていますか。また、どこには効いていませんか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S5. 社内報告・継続判断のための設問 <span class="chip chip-new">新設</span></h4><span class="hint">4問・全員必須</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L26</span><div><div class="qtext">会社の目標設定シート（年2回）・1on1制度と、Core Uniq の役割分担は整理できていますか <span class="chip chip-core">コア</span></div><div class="qmeta">1〜10＋自由記述。<strong>メンバー側 M39 と対になる設問。二重管理感の有無を上下で突き合わせます。</strong></div></div></li>
+        <li><span class="qid">L27</span><div><div class="qtext">トライアルの結果を社内にご報告される際、どの材料があれば説明しやすいですか <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">アンケートスコアの事前→中間の変化／入力の継続率・利用状況／1on1や対話の質の変化／メンバーの具体的な行動変化のエピソード／管理職の関わり方の変化／新規事業の審査会など既存KPIとの関係／セキュリティ・運用ルールの遵守状況／費用対効果の考え方</span><br><strong>この設問が今回いちばん重要です。</strong>ここで選ばれた項目が、そのまま結果報告書の目次になります。</div></div></li>
+        <li><span class="qid">L28</span><div><div class="qtext">社内で説明しづらい・指摘されそうだと感じている点はありますか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<span class="opt">例：効果を数字で示しにくい、他ツールとの重複、費用、SSO非対応の運用ルール　など</span></div></div></li>
+        <li><span class="qid">L29</span><div><div class="qtext">トライアル終了後の継続について、現時点でのお考えに近いものを選んでください <span class="chip chip-core">コア</span></div><div class="qmeta"><span class="opt">継続したい／条件が整えば継続したい／現時点では判断できない／継続は難しい</span>＋「その条件・理由」を自由記述で</div></div></li>
+      </ul>
+    </div>
+
+    <div class="qgroup">
+      <header><h4>S6. これからの支援ニーズ <span class="chip chip-new">新設</span></h4><span class="hint">2問</span></header>
+      <ul class="qlist">
+        <li><span class="qid">L30</span><div><div class="qtext">チーム・組織づくりの中で、外部に手伝ってほしいと思うことをすべて選んでください <span class="chip chip-core">コア</span></div><div class="qmeta">複数選択：<span class="opt">管理職向けの1on1・フィードバックのトレーニング／チームビルディングの場の設計とファシリテート／メンバーのキャリア面談への同席・支援／目標設定の型づくり／生成AIを活用した実践ワークショップ／新規事業の外部インタビュー先の開拓支援／Core Uniq の運用設計の伴走／特にない</span></div></div></li>
+        <li><span class="qid">L31</span><div><div class="qtext">半年後（2027年3月ごろ）、「この取り組みをやってよかった」と言えるのは、どんな状態になっているときですか <span class="chip chip-core">コア</span></div><div class="qmeta">自由記述。<strong>結果報告のゴール定義を、顧客ご自身の言葉で書いていただく設問。</strong>次の提案は、この一文に対して組み立てます。</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="ops">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>運用と、集計後のアウトプット</h2>
+    <p>取ったあとに何を出すかまで決めておくと、設問の過不足が事前に分かります。</p>
+  </div>
+  <div class="body">
+
+    <h3>6-1. 定点観測のカレンダー</h3>
+    <div class="timeline">
+      <div class="tl-row"><span class="tl-when">2025.12</span><span class="tl-what"><b>事前アンケート（第1回）</b><span>メンバー12問／リーダー12問　※ベースライン</span></span></div>
+      <div class="tl-row"><span class="tl-when">2026.03.31</span><span class="tl-what"><b>導入セッション・事後アンケート</b><span>オンボーディング直後の所感</span></span></div>
+      <div class="tl-row"><span class="tl-when">2026.09 上旬</span><span class="tl-what"><b>中間アンケート（第2回）← 本書</b><span>定点12問＋変化の要因＋残課題＋支援ニーズ</span></span></div>
+      <div class="tl-row"><span class="tl-when">2026.09 下旬</span><span class="tl-what"><b>結果報告会</b><span>稟議時に約束した「トライアル終了後の結果報告」の場。中間アンケートの集計をそのまま資料化</span></span></div>
+      <div class="tl-row"><span class="tl-when">2027.03</span><span class="tl-what"><b>定点アンケート（第3回）</b><span>継続する場合。同一12問のみの短縮版でよい</span></span></div>
+    </div>
+
+    <div class="keypoint">
+      <b>ひとつご相談です。</b>「中間」という名前ですが、半年プラン（2026年3月開始）に対して9月実施は<strong>実質的に終盤</strong>にあたります。①9月上旬に実施して結果報告会にそのまま使う、②中間として8月中に実施し、終了時にもう一度短縮版を取る、のどちらかを決めておく必要があります。<strong>推奨は①</strong>です。回答者の負担が1回で済み、結果報告の鮮度も保てます。
+    </div>
+
+    <h3>6-2. 集計後に出すもの（4点）</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>アウトプット</th><th>形式</th><th>誰に効くか</th></tr></thead>
+        <tbody>
+          <tr><td><strong>個人別 事前→中間 比較表</strong></td><td>12問×10名を横並び。SOEI様の事後アンケート集計と同じ形式</td><td>Givin' Back（分析）／中屋敷様・西内様（社内報告）</td></tr>
+          <tr><td><strong>チーム別サマリー</strong></td><td>石田チーム／水野チームで平均を分ける。管理職2名は個別表示</td><td>水野様・石田様（自チームの現在地）</td></tr>
+          <tr><td><strong>変化のエピソード集</strong></td><td>M17・M19・L20 の自由記述を、匿名化して抜粋</td><td>社内報告資料の「やった意味」のパート</td></tr>
+          <tr><td><strong>残課題と打ち手の対応表</strong></td><td>M19・M31・M37・M45・L23・L27・L30 を突き合わせ、「課題 → 誰が → 何をする」の3列に整理</td><td>次の提案（Givin' Back）／来期の育成計画（ニデック様）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>6-3. 配信と回収</h3>
+    <ul class="plain">
+      <li>配信は Givin' Back から個別メールで（オンボーディング時と同じ導線）。西内様に BCC。</li>
+      <li>回答期限は<strong>配信から5営業日</strong>。3営業日目にリマインドを1回。事前アンケートは全員回答が取れているので、同じ運用で問題ないはずです。</li>
+      <li>管理職版は、メンバー版の回収が終わってから配信します（L19〜L21 でメンバーの変化を答えていただくため）。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="open">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2>決めたい論点</h2>
+    <p>ここだけ判断をいただければ、フォームに落とし込めます。</p>
+  </div>
+  <div class="body">
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>論点</th><th>推奨案</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>現行の中間アンケート案（メンバー用・管理職用）との差分をどう扱うか</td><td>現行案の設問文をテキストでいただければ、本書と突き合わせて統合版を作成します。<strong>この確認が最優先です。</strong></td></tr>
+          <tr><td class="num">2</td><td>実施時期（前記6-1）</td><td>9月上旬に1回、結果報告会とセットで</td></tr>
+          <tr><td class="num">3</td><td>記名か匿名か</td><td>記名。ただし「個人が特定される形では社内共有しない」旨を明記</td></tr>
+          <tr><td class="num">4</td><td>管理職版 L20 で、メンバーの実名を書いていただくか</td><td>実名可とする。西内様・中屋敷様には集計後の匿名版のみ共有</td></tr>
+          <tr><td class="num">5</td><td>設問数（メンバー46問／管理職31問）</td><td>そのまま実施。厳しければ <span class="chip chip-core">コア</span> 以外を削って8分版に</td></tr>
+          <tr><td class="num">6</td><td>事務局のお二人（中屋敷様・西内様）に、管理職版のどこまで答えていただくか</td><td>S1・S3 は任意、S5・S6 は必須</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details>
+      <summary>参考：この設計で「4つの問い」がどこで拾えるか</summary>
+      <div class="inner">
+        <ul>
+          <li><strong>なぜ課題が生じているのか</strong> → M37（チームで協力できない理由の選択式）、M39・L26（目標設定シートとの二重感）、L18（声をかけられない理由）、L23（管理職の難しさ）</li>
+          <li><strong>どこまで前進したのか</strong> → M4〜M15・L3〜L14（定点12問の事前比較）、M16〜M18（変化の自覚と帰属度）、L19・L20（上司から見た変化）</li>
+          <li><strong>新たに何が顕在化したのか</strong> → M19（かえって難しくなったこと）、M23（入力が止まった時期と理由）、M31（機能の改善要望）、L21（変化が見えない要因）</li>
+          <li><strong>どのような課題が残っているのか</strong> → M41（キャリアの相談事）、M44、L25（効いていないところ）、L28（社内で説明しづらい点）、L29（継続判断の条件）</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer class="end">
+  <span>Core Uniq 中間アンケート設計書｜Givin' Back 株式会社</span>
+  <span>本書は Google Drive・Gmail 上の一次資料をもとに作成しています。Plaud の音声13本および現行フォーム2本は、ネットワークポリシーによりアクセスできていません（詳細は 00 参照）。</span>
+</footer>
+
+</div>
