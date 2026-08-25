@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>zip ⇄ zi_ 拡張子コンバータ</title>
+<title>パスワード付きZIP ＋ 拡張子コンバータ</title>
 <style>
   :root{
     --bg:#f6f7f9; --card:#ffffff; --accent:#2f6f4f; --accent2:#c0392b;
@@ -16,22 +16,44 @@
   }
   .wrap{max-width:900px;margin:0 auto;}
   h1{font-size:22px;margin-bottom:4px;}
-  .sub{color:#666;font-size:13px;margin-bottom:20px;line-height:1.7;}
+  .sub{color:#666;font-size:13px;margin-bottom:18px;line-height:1.7;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{
+    background:#fff;border:1px solid var(--border);border-bottom:none;
+    padding:10px 18px;border-radius:8px 8px 0 0;font-size:14px;cursor:pointer;color:#666;
+  }
+  .tab.active{color:var(--accent);font-weight:bold;border-color:var(--accent);border-bottom:none;}
   .card{
     background:var(--card); border:1px solid var(--border); border-radius:10px;
     padding:18px 20px; margin-bottom:18px;
   }
   .card h2{font-size:16px;margin:0 0 12px;border-left:4px solid var(--accent);padding-left:8px;}
-  #drop{
+  .drop{
     border:2px dashed #c8d3cc; border-radius:10px; background:#fbfdfc;
-    padding:38px 20px; text-align:center; color:#666; font-size:14px; cursor:pointer;
+    padding:34px 20px; text-align:center; color:#666; font-size:14px; cursor:pointer;
     transition:background .15s,border-color .15s;
   }
-  #drop.over{background:#eaf6ee;border-color:var(--accent);color:var(--accent);}
-  #drop b{display:block;font-size:16px;color:var(--text);margin-bottom:6px;}
-  #picker{display:none;}
-  .mode-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap;font-size:14px;margin-bottom:10px;}
-  .mode-row label{display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .drop.over{background:#eaf6ee;border-color:var(--accent);color:var(--accent);}
+  .drop b{display:block;font-size:16px;color:var(--text);margin-bottom:6px;}
+  input[type=file]{display:none;}
+  .subbtns{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .ghost{
+    background:#fff;color:#666;border:1px solid var(--border);padding:7px 14px;
+    border-radius:6px;font-size:12px;cursor:pointer;
+  }
+  .ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .row{display:flex;gap:20px;align-items:center;flex-wrap:wrap;font-size:14px;margin-bottom:10px;}
+  .row label{display:flex;align-items:center;gap:5px;cursor:pointer;}
+  .row:last-child{margin-bottom:0;}
+  .field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;margin-bottom:10px;}
+  .field > span:first-child{width:110px;color:#666;font-size:13px;}
+  input[type=text],input[type=password]{
+    border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:14px;
+    font-family:inherit;flex:1;min-width:180px;
+  }
+  input:focus{outline:2px solid #cfe3d7;border-color:var(--accent);}
+  .hint{font-size:12px;color:#888;line-height:1.7;margin-top:6px;}
+  .err{color:var(--accent2);font-size:12px;margin-top:6px;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
   th{text-align:left;color:#888;font-weight:normal;font-size:12px;border-bottom:1px solid var(--border);padding:6px 8px;}
   td{padding:9px 8px;border-bottom:1px solid #f0f0f0;vertical-align:middle;word-break:break-all;}
@@ -49,91 +71,894 @@
   .rm{background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;line-height:1;}
   .rm:hover{color:var(--accent2);}
   .actions{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
-  button#allBtn{
+  .primary{
     background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:8px;
     font-size:15px;cursor:pointer;
   }
-  button#allBtn:hover{opacity:.9;}
-  button#clearBtn{
+  .primary:hover{opacity:.9;}
+  .primary:disabled{background:#c3d2c9;cursor:not-allowed;}
+  .secondary{
     background:#fff;color:#666;border:1px solid var(--border);padding:12px 20px;
     border-radius:8px;font-size:14px;cursor:pointer;
   }
-  #listCard{display:none;}
-  .empty{color:#999;font-size:13px;text-align:center;padding:10px 0;}
   .note{font-size:12px;color:#777;line-height:1.8;margin-top:10px;}
   .note p{margin:6px 0;}
-  @media(max-width:600px){
-    .size{display:none;}
-  }
+  .total{font-size:12px;color:#888;text-align:right;margin-top:8px;}
+  #progress{display:none;margin-top:16px;}
+  .bar{height:8px;background:#eef2ef;border-radius:4px;overflow:hidden;}
+  .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .15s;}
+  .plabel{font-size:12px;color:#666;text-align:center;margin-top:6px;}
+  #done{display:none;background:#eaf6ee;border:1px solid #cfe3d7;border-radius:8px;padding:14px 16px;margin-top:16px;}
+  #done .fname{font-weight:bold;color:var(--accent);word-break:break-all;}
+  #done .pwline{font-size:13px;color:#555;margin-top:8px;word-break:break-all;}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;}
+  .section{display:none;}
+  .section.active{display:block;}
+  .empty{color:#999;font-size:13px;text-align:center;padding:10px 0;}
+  @media(max-width:600px){ .size{display:none;} .field > span:first-child{width:100%;} }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>zip ⇄ zi_ 拡張子コンバータ</h1>
+  <h1>パスワード付きZIP ＋ 拡張子コンバータ</h1>
   <div class="sub">
-    メールで <b>.zip</b> が受信できない相手に送るために <b>.zi_</b> へ、受け取った <b>.zi_</b> を <b>.zip</b> へ戻すためのツールです。<br>
-    ファイルの中身は一切変更せず、<b>拡張子（ファイル名）だけ</b>を付け替えて保存し直します。<br>
-    ※処理はすべてブラウザ内で完結し、ファイルはどこにもアップロードされません。
+    メール添付用に、<b>パスワード付きZIPの作成</b>と、<b>.zip ⇄ .zi_ の拡張子付け替え</b>ができます。<br>
+    処理はすべてブラウザ内で完結し、ファイルもパスワードもどこにも送信されません。
   </div>
 
-  <div class="card">
-    <h2>1. 変換の向き</h2>
-    <div class="mode-row">
-      <label><input type="radio" name="mode" value="auto" checked> 自動判定（.zip→.zi_ / .zi_→.zip）</label>
-      <label><input type="radio" name="mode" value="tozi"> .zip → .zi_ に統一</label>
-      <label><input type="radio" name="mode" value="tozip"> .zi_ → .zip に統一</label>
-    </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="pack">パスワード付きZIPを作る</button>
+    <button class="tab" data-tab="rename">拡張子を変える（zip ⇄ zi_）</button>
   </div>
 
-  <div class="card">
-    <h2>2. ファイルを選ぶ</h2>
-    <div id="drop">
-      <b>ここにファイルをドラッグ＆ドロップ</b>
-      クリックしてファイルを選択することもできます（複数可）
+  <!-- ============ パスワード付きZIP作成 ============ -->
+  <section class="section active" id="tab-pack">
+    <div class="card">
+      <h2>1. ファイルを選ぶ</h2>
+      <div class="drop" id="packDrop">
+        <b>ここにファイル／フォルダをドラッグ＆ドロップ</b>
+        クリックしてファイルを選択することもできます（複数可）
+      </div>
+      <input type="file" id="packPicker" multiple>
+      <input type="file" id="dirPicker" webkitdirectory directory multiple>
+      <div class="subbtns">
+        <button class="ghost" id="dirBtn">フォルダを選ぶ</button>
+        <button class="ghost" id="packClear">選択を取り消す</button>
+      </div>
+      <div id="packList"></div>
+      <div class="hint" id="rewrapNote" style="display:none;"></div>
     </div>
-    <input type="file" id="picker" multiple>
-  </div>
 
-  <div class="card" id="listCard">
-    <h2>3. ダウンロード</h2>
-    <table>
-      <thead>
-        <tr><th>元のファイル名</th><th></th><th>変換後</th><th class="size">サイズ</th><th></th><th></th></tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="actions">
-      <button id="allBtn">すべてダウンロード</button>
-      <button id="clearBtn">リストを空にする</button>
+    <div class="card">
+      <h2>2. パスワード</h2>
+      <div class="field">
+        <span>パスワード</span>
+        <input type="password" id="pw" autocomplete="new-password" placeholder="半角英数記号">
+        <button class="ghost" id="genBtn">自動生成</button>
+      </div>
+      <div class="field">
+        <span>確認のため再入力</span>
+        <input type="password" id="pw2" autocomplete="new-password">
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="showPw"> パスワードを表示する</label>
+      </div>
+      <div class="err" id="pwErr"></div>
+      <div class="hint">
+        パスワードは復元できません。控えを取ってから作成してください。
+      </div>
     </div>
-    <div class="note">
-      <p>※ ブラウザによっては複数ファイルの連続ダウンロードに許可が必要です。ブロックされた場合は個別の「保存」ボタンをお使いください。</p>
-      <p>※ 受け取った側は <b>.zi_</b> を <b>.zip</b> に戻してから展開してください。</p>
+
+    <div class="card">
+      <h2>3. 暗号化方式と出力</h2>
+      <div class="row">
+        <label><input type="radio" name="enc" value="zipcrypto" checked> 標準（ZipCrypto）</label>
+        <label><input type="radio" name="enc" value="aes"> AES-256</label>
+      </div>
+      <div class="hint" id="encHint"></div>
+      <div class="field" style="margin-top:14px;">
+        <span>出力ファイル名</span>
+        <input type="text" id="outName" placeholder="ファイル名">
+      </div>
+      <div class="row">
+        <label><input type="radio" name="outext" value="zip" checked> .zip で保存</label>
+        <label><input type="radio" name="outext" value="zi_"> .zi_ で保存（メール添付用）</label>
+      </div>
+      <div class="actions">
+        <button class="primary" id="makeBtn">パスワード付きZIPを作成</button>
+      </div>
+      <div id="progress">
+        <div class="bar"><i id="bar"></i></div>
+        <div class="plabel" id="plabel"></div>
+      </div>
+      <div class="err" id="makeErr"></div>
+      <div id="done">
+        作成しました：<span class="fname" id="doneName"></span>
+        <div class="pwline">パスワード：<span class="mono" id="donePw"></span></div>
+        <div class="actions">
+          <button class="dl" id="doneDl">もう一度ダウンロード</button>
+        </div>
+      </div>
+      <div class="note">
+        <p>※ 出力したZIPが正しく開けるか、送信前に一度ご自身で展開確認することをおすすめします。</p>
+        <p>※ 4GB以上のファイル（ZIP64形式）には対応していません。</p>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ============ 拡張子変換 ============ -->
+  <section class="section" id="tab-rename">
+    <div class="card">
+      <h2>1. 変換の向き</h2>
+      <div class="row">
+        <label><input type="radio" name="mode" value="auto" checked> 自動判定（.zip→.zi_ / .zi_→.zip）</label>
+        <label><input type="radio" name="mode" value="tozi"> .zip → .zi_ に統一</label>
+        <label><input type="radio" name="mode" value="tozip"> .zi_ → .zip に統一</label>
+      </div>
+      <div class="hint">ファイルの中身は一切変更せず、拡張子（ファイル名）だけを付け替えて保存し直します。</div>
+    </div>
+
+    <div class="card">
+      <h2>2. ファイルを選ぶ</h2>
+      <div class="drop" id="drop">
+        <b>ここにファイルをドラッグ＆ドロップ</b>
+        クリックしてファイルを選択することもできます（複数可）
+      </div>
+      <input type="file" id="picker" multiple>
+    </div>
+
+    <div class="card" id="listCard">
+      <h2>3. ダウンロード</h2>
+      <table>
+        <thead>
+          <tr><th>元のファイル名</th><th></th><th>変換後</th><th class="size">サイズ</th><th></th><th></th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="actions">
+        <button class="primary" id="allBtn">すべてダウンロード</button>
+        <button class="secondary" id="clearBtn">リストを空にする</button>
+      </div>
+      <div class="note">
+        <p>※ ブラウザによっては複数ファイルの連続ダウンロードに許可が必要です。ブロックされた場合は個別の「保存」ボタンをお使いください。</p>
+        <p>※ 受け取った側は <b>.zi_</b> を <b>.zip</b> に戻してから展開してください。</p>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
-(function(){
-  var ZIP_EXT = "zip", ALT_EXT = "zi_";
-  var items = [];
-  var seq = 0;
+/* =========================================================================
+   ZipTool : ZIP の作成・パスワード暗号化をブラウザ内だけで行うための小さな実装
+   - CRC32 / SHA-1 / HMAC-SHA1 / PBKDF2 / AES-256 は外部ライブラリなしで実装
+   - 暗号化方式は ZipCrypto（互換性重視）と WinZip AES-256 の 2 種類
+   ========================================================================= */
+var ZipTool = (function(){
+  "use strict";
 
-  var drop   = document.getElementById("drop");
-  var picker = document.getElementById("picker");
-  var tbody  = document.getElementById("tbody");
-  var listCard = document.getElementById("listCard");
+  /* ---------------- 基本ユーティリティ ---------------- */
+  function utf8(str){ return new TextEncoder().encode(str); }
 
-  function currentMode(){
-    return document.querySelector('input[name="mode"]:checked').value;
+  function randomBytes(n){
+    var b = new Uint8Array(n);
+    if(!(window.crypto && window.crypto.getRandomValues)){
+      throw new Error("この環境では安全な乱数が使えないため暗号化できません。");
+    }
+    window.crypto.getRandomValues(b);
+    return b;
   }
 
-  // 拡張子を除いた部分と拡張子（小文字）を返す
+  function tick(){ return new Promise(function(r){ setTimeout(r, 0); }); }
+
+  /* ---------------- CRC32 ---------------- */
+  var CRC_TABLE = (function(){
+    var t = new Uint32Array(256);
+    for(var n = 0; n < 256; n++){
+      var c = n;
+      for(var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[n] = c >>> 0;
+    }
+    return t;
+  })();
+
+  function crc32(buf, prev){
+    var crc = (prev === undefined ? 0 : prev) ^ 0xFFFFFFFF;
+    for(var i = 0; i < buf.length; i++) crc = CRC_TABLE[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  /* ---------------- SHA-1 / HMAC-SHA1 / PBKDF2 ---------------- */
+  function sha1(msg){
+    var ml = msg.length;
+    var total = (((ml + 8) >> 6) << 6) + 64;
+    var buf = new Uint8Array(total);
+    buf.set(msg);
+    buf[ml] = 0x80;
+    var dv = new DataView(buf.buffer);
+    dv.setUint32(total - 8, Math.floor(ml / 0x20000000) >>> 0);
+    dv.setUint32(total - 4, (ml << 3) >>> 0);
+
+    var h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+    var w = new Uint32Array(80);
+    for(var off = 0; off < total; off += 64){
+      for(var i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4);
+      for(i = 16; i < 80; i++){
+        var v = w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16];
+        w[i] = (v << 1) | (v >>> 31);
+      }
+      var a = h0, b = h1, c = h2, d = h3, e = h4;
+      for(i = 0; i < 80; i++){
+        var f, k;
+        if(i < 20){ f = (b & c) | (~b & d);          k = 0x5A827999; }
+        else if(i < 40){ f = b ^ c ^ d;              k = 0x6ED9EBA1; }
+        else if(i < 60){ f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
+        else { f = b ^ c ^ d;                        k = 0xCA62C1D6; }
+        var t = (((a << 5) | (a >>> 27)) + f + e + k + w[i]) >>> 0;
+        e = d; d = c; c = ((b << 30) | (b >>> 2)) >>> 0; b = a; a = t;
+      }
+      h0 = (h0 + a) >>> 0; h1 = (h1 + b) >>> 0; h2 = (h2 + c) >>> 0;
+      h3 = (h3 + d) >>> 0; h4 = (h4 + e) >>> 0;
+    }
+    var out = new Uint8Array(20), odv = new DataView(out.buffer);
+    odv.setUint32(0, h0); odv.setUint32(4, h1); odv.setUint32(8, h2);
+    odv.setUint32(12, h3); odv.setUint32(16, h4);
+    return out;
+  }
+
+  function hmacSha1Key(key){
+    var k = new Uint8Array(64);
+    k.set(key.length > 64 ? sha1(key) : key);
+    var ipad = new Uint8Array(64), opad = new Uint8Array(64);
+    for(var i = 0; i < 64; i++){ ipad[i] = k[i] ^ 0x36; opad[i] = k[i] ^ 0x5c; }
+    return { ipad: ipad, opad: opad };
+  }
+
+  function hmacSha1With(pads, msg){
+    var inner = new Uint8Array(64 + msg.length);
+    inner.set(pads.ipad); inner.set(msg, 64);
+    var ih = sha1(inner);
+    var outer = new Uint8Array(84);
+    outer.set(pads.opad); outer.set(ih, 64);
+    return sha1(outer);
+  }
+
+  function hmacSha1(key, msg){ return hmacSha1With(hmacSha1Key(key), msg); }
+
+  function pbkdf2Sha1(password, salt, iterations, dkLen){
+    var pads = hmacSha1Key(password);
+    var out = new Uint8Array(dkLen), pos = 0, block = 1;
+    while(pos < dkLen){
+      var msg = new Uint8Array(salt.length + 4);
+      msg.set(salt);
+      msg[salt.length]     = (block >>> 24) & 0xff;
+      msg[salt.length + 1] = (block >>> 16) & 0xff;
+      msg[salt.length + 2] = (block >>> 8) & 0xff;
+      msg[salt.length + 3] = block & 0xff;
+      var u = hmacSha1With(pads, msg);
+      var acc = u.slice();
+      for(var i = 1; i < iterations; i++){
+        u = hmacSha1With(pads, u);
+        for(var j = 0; j < 20; j++) acc[j] ^= u[j];
+      }
+      var n = Math.min(20, dkLen - pos);
+      out.set(acc.subarray(0, n), pos);
+      pos += n; block++;
+    }
+    return out;
+  }
+
+  /* ---------------- AES（暗号化のみ / 128・192・256bit 鍵） ---------------- */
+  var AES = (function(){
+    var sbox = new Uint8Array(256);
+    var Te0 = new Uint32Array(256), Te1 = new Uint32Array(256),
+        Te2 = new Uint32Array(256), Te3 = new Uint32Array(256);
+
+    (function build(){
+      // GF(2^8) 上で S-Box を生成する
+      var p = 1, q = 1;
+      do {
+        p = (p ^ ((p << 1) & 0xff) ^ ((p & 0x80) ? 0x1b : 0)) & 0xff;
+        q ^= q << 1; q ^= q << 2; q ^= q << 4; q &= 0xff;
+        if(q & 0x80) q ^= 0x09;
+        var x = (q ^ ((q << 1) | (q >>> 7)) ^ ((q << 2) | (q >>> 6)) ^
+                 ((q << 3) | (q >>> 5)) ^ ((q << 4) | (q >>> 4))) & 0xff;
+        sbox[p] = (x ^ 0x63) & 0xff;
+      } while(p !== 1);
+      sbox[0] = 0x63;
+
+      for(var i = 0; i < 256; i++){
+        var s = sbox[i];
+        var s2 = ((s << 1) ^ ((s & 0x80) ? 0x1b : 0)) & 0xff;
+        var s3 = (s2 ^ s) & 0xff;
+        var w = ((s2 << 24) | (s << 16) | (s << 8) | s3) >>> 0;
+        Te0[i] = w;
+        Te1[i] = ((w >>> 8) | (w << 24)) >>> 0;
+        Te2[i] = ((w >>> 16) | (w << 16)) >>> 0;
+        Te3[i] = ((w >>> 24) | (w << 8)) >>> 0;
+      }
+    })();
+
+    var RCON = [0x01000000,0x02000000,0x04000000,0x08000000,0x10000000,
+                0x20000000,0x40000000,0x80000000,0x1b000000,0x36000000];
+
+    function expandKey(key){
+      var nk = key.length / 4, nr = nk + 6, i;
+      var rk = new Uint32Array(4 * (nr + 1));
+      for(i = 0; i < nk; i++){
+        rk[i] = ((key[4*i] << 24) | (key[4*i+1] << 16) | (key[4*i+2] << 8) | key[4*i+3]) >>> 0;
+      }
+      for(i = nk; i < rk.length; i++){
+        var t = rk[i-1];
+        if(i % nk === 0){
+          t = ((t << 8) | (t >>> 24)) >>> 0;
+          t = ((sbox[(t >>> 24) & 0xff] << 24) | (sbox[(t >>> 16) & 0xff] << 16) |
+               (sbox[(t >>> 8) & 0xff] << 8) | sbox[t & 0xff]) >>> 0;
+          t = (t ^ RCON[i / nk - 1]) >>> 0;
+        } else if(nk > 6 && i % nk === 4){
+          t = ((sbox[(t >>> 24) & 0xff] << 24) | (sbox[(t >>> 16) & 0xff] << 16) |
+               (sbox[(t >>> 8) & 0xff] << 8) | sbox[t & 0xff]) >>> 0;
+        }
+        rk[i] = (rk[i - nk] ^ t) >>> 0;
+      }
+      return { rk: rk, nr: nr };
+    }
+
+    function encryptBlock(ks, input, out){
+      var rk = ks.rk, nr = ks.nr;
+      var s0 = (((input[0] << 24) | (input[1] << 16) | (input[2] << 8) | input[3]) >>> 0) ^ rk[0];
+      var s1 = (((input[4] << 24) | (input[5] << 16) | (input[6] << 8) | input[7]) >>> 0) ^ rk[1];
+      var s2 = (((input[8] << 24) | (input[9] << 16) | (input[10] << 8) | input[11]) >>> 0) ^ rk[2];
+      var s3 = (((input[12] << 24) | (input[13] << 16) | (input[14] << 8) | input[15]) >>> 0) ^ rk[3];
+      var t0, t1, t2, t3, r = 1;
+      for(; r < nr; r++){
+        var o = r * 4;
+        t0 = (Te0[(s0>>>24)&0xff] ^ Te1[(s1>>>16)&0xff] ^ Te2[(s2>>>8)&0xff] ^ Te3[s3&0xff] ^ rk[o]) >>> 0;
+        t1 = (Te0[(s1>>>24)&0xff] ^ Te1[(s2>>>16)&0xff] ^ Te2[(s3>>>8)&0xff] ^ Te3[s0&0xff] ^ rk[o+1]) >>> 0;
+        t2 = (Te0[(s2>>>24)&0xff] ^ Te1[(s3>>>16)&0xff] ^ Te2[(s0>>>8)&0xff] ^ Te3[s1&0xff] ^ rk[o+2]) >>> 0;
+        t3 = (Te0[(s3>>>24)&0xff] ^ Te1[(s0>>>16)&0xff] ^ Te2[(s1>>>8)&0xff] ^ Te3[s2&0xff] ^ rk[o+3]) >>> 0;
+        s0 = t0; s1 = t1; s2 = t2; s3 = t3;
+      }
+      var f = nr * 4;
+      var w0 = (((sbox[(s0>>>24)&0xff] << 24) | (sbox[(s1>>>16)&0xff] << 16) | (sbox[(s2>>>8)&0xff] << 8) | sbox[s3&0xff]) >>> 0) ^ rk[f];
+      var w1 = (((sbox[(s1>>>24)&0xff] << 24) | (sbox[(s2>>>16)&0xff] << 16) | (sbox[(s3>>>8)&0xff] << 8) | sbox[s0&0xff]) >>> 0) ^ rk[f+1];
+      var w2 = (((sbox[(s2>>>24)&0xff] << 24) | (sbox[(s3>>>16)&0xff] << 16) | (sbox[(s0>>>8)&0xff] << 8) | sbox[s1&0xff]) >>> 0) ^ rk[f+2];
+      var w3 = (((sbox[(s3>>>24)&0xff] << 24) | (sbox[(s0>>>16)&0xff] << 16) | (sbox[(s1>>>8)&0xff] << 8) | sbox[s2&0xff]) >>> 0) ^ rk[f+3];
+      out[0]=(w0>>>24)&0xff; out[1]=(w0>>>16)&0xff; out[2]=(w0>>>8)&0xff; out[3]=w0&0xff;
+      out[4]=(w1>>>24)&0xff; out[5]=(w1>>>16)&0xff; out[6]=(w1>>>8)&0xff; out[7]=w1&0xff;
+      out[8]=(w2>>>24)&0xff; out[9]=(w2>>>16)&0xff; out[10]=(w2>>>8)&0xff; out[11]=w2&0xff;
+      out[12]=(w3>>>24)&0xff; out[13]=(w3>>>16)&0xff; out[14]=(w3>>>8)&0xff; out[15]=w3&0xff;
+    }
+
+    return { expandKey: expandKey, encryptBlock: encryptBlock, sbox: sbox };
+  })();
+
+  /* ---------------- WinZip AES-256 ストリーム暗号（CTR モード） ---------------- */
+  function AesEncryptor(password){
+    this.salt = randomBytes(16);
+    // 鍵導出：暗号鍵32 + 認証鍵32 + パスワード検証値2
+    var material = pbkdf2Sha1(utf8(password), this.salt, 1000, 66);
+    this.ks = AES.expandKey(material.subarray(0, 32));
+    this.macPads = hmacSha1Key(material.subarray(32, 64));
+    this.pv = material.subarray(64, 66);
+    this.ctr = new Uint8Array(16);
+    this.stream = new Uint8Array(16);
+  }
+  // data を暗号文で上書きする（16 バイト単位で呼ぶこと。最後だけ端数可）
+  AesEncryptor.prototype.process = function(data){
+    var ctr = this.ctr, ks = this.stream;
+    for(var off = 0; off < data.length; off += 16){
+      // 128bit リトルエンディアンのカウンタを 1 増やす（桁上がりあり）
+      for(var i = 0; i < 16; i++){ ctr[i] = (ctr[i] + 1) & 0xff; if(ctr[i] !== 0) break; }
+      AES.encryptBlock(this.ks, ctr, ks);
+      var n = Math.min(16, data.length - off);
+      for(var j = 0; j < n; j++) data[off + j] ^= ks[j];
+    }
+  };
+  AesEncryptor.prototype.header = function(){
+    var h = new Uint8Array(18);
+    h.set(this.salt); h.set(this.pv, 16);
+    return h;
+  };
+  // 認証コード（暗号文全体に対する HMAC-SHA1 の先頭 10 バイト）
+  AesEncryptor.prototype.footer = function(cipherText){
+    return hmacSha1With(this.macPads, cipherText).subarray(0, 10);
+  };
+
+  /* ---------------- ZipCrypto（従来方式のストリーム暗号） ---------------- */
+  function ZipCrypto(password, checkByte){
+    this.k0 = 0x12345678; this.k1 = 0x23456789; this.k2 = 0x34567890;
+    var pw = utf8(password);
+    for(var i = 0; i < pw.length; i++) this.update(pw[i]);
+    // 先頭 12 バイトのランダムヘッダ（最終バイトは CRC 上位バイトで照合用）
+    var head = randomBytes(12);
+    head[11] = checkByte & 0xff;
+    this.head = head;
+    this.encrypt(head);
+  }
+  ZipCrypto.prototype.update = function(b){
+    this.k0 = (CRC_TABLE[(this.k0 ^ b) & 0xff] ^ (this.k0 >>> 8)) >>> 0;
+    this.k1 = (Math.imul((this.k1 + (this.k0 & 0xff)) >>> 0, 134775813) + 1) >>> 0;
+    this.k2 = (CRC_TABLE[(this.k2 ^ (this.k1 >>> 24)) & 0xff] ^ (this.k2 >>> 8)) >>> 0;
+  };
+  ZipCrypto.prototype.encrypt = function(data){
+    for(var i = 0; i < data.length; i++){
+      var t = (this.k2 | 2) & 0xffff;
+      var mask = ((Math.imul(t, t ^ 1) >>> 8) & 0xff);
+      var plain = data[i];
+      data[i] = plain ^ mask;
+      this.update(plain);
+    }
+  };
+  ZipCrypto.prototype.process = function(data){ this.encrypt(data); };
+  ZipCrypto.prototype.header = function(){ return this.head; };
+  ZipCrypto.prototype.footer = function(){ return new Uint8Array(0); };  // 認証コードなし
+
+  /* ---------------- deflate（非対応環境では無圧縮） ---------------- */
+  function deflateRaw(data){
+    if(typeof CompressionStream === "undefined") return Promise.resolve(null);
+    try {
+      var stream = new Blob([data]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+      return new Response(stream).arrayBuffer().then(function(b){ return new Uint8Array(b); })
+        .catch(function(){ return null; });
+    } catch(e){ return Promise.resolve(null); }
+  }
+
+  /* ---------------- ZIP 書き出し ---------------- */
+  function dosDateTime(date){
+    var d = date || new Date();
+    var y = d.getFullYear();
+    if(y < 1980) return { time: 0, date: 33 };  // 1980-01-01
+    return {
+      time: (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1),
+      date: ((y - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()
+    };
+  }
+
+  function w16(a, v){ a.push(v & 0xff, (v >>> 8) & 0xff); }
+  function w32(a, v){ a.push(v & 0xff, (v >>> 8) & 0xff, (v >>> 16) & 0xff, (v >>> 24) & 0xff); }
+
+  /**
+   * entries: [{ nameBytes, utf8, data } | { nameBytes, utf8, raw:{method,crc,usize,cdata} }]
+   * opts:    { password, method: "zipcrypto"|"aes", onProgress(done,total) }
+   */
+  async function buildZip(entries, opts){
+    opts = opts || {};
+    var password = opts.password || "";
+    var useAes = opts.method === "aes";
+    var parts = [], central = [], offset = 0;
+    var totalBytes = 0, doneBytes = 0;
+    entries.forEach(function(e){ totalBytes += e.raw ? e.raw.cdata.length : e.data.length; });
+    totalBytes = totalBytes || 1;
+
+    function report(){ if(opts.onProgress) opts.onProgress(doneBytes, totalBytes); }
+
+    for(var idx = 0; idx < entries.length; idx++){
+      var e = entries[idx];
+      var isDir = e.nameBytes[e.nameBytes.length - 1] === 0x2f; // "/" で終わる = ディレクトリ
+      var method, crc, usize, cdata;
+
+      if(e.raw){
+        method = e.raw.method; crc = e.raw.crc; usize = e.raw.usize;
+        cdata = e.raw.cdata.slice();
+      } else {
+        usize = e.data.length;
+        crc = crc32(e.data);
+        var def = usize > 0 ? await deflateRaw(e.data) : null;
+        if(def && def.length < usize){ method = 8; cdata = def; }
+        else { method = 0; cdata = e.data.slice(); }
+      }
+
+      var dt = e.time !== undefined ? { time: e.time, date: e.date } : dosDateTime(e.date instanceof Date ? e.date : null);
+      var encrypted = !!password && !isDir;
+      var cipher = null, extra = [];
+
+      if(encrypted){
+        cipher = useAes ? new AesEncryptor(password) : new ZipCrypto(password, crc >>> 24);
+        var CH = 1 << 20;
+        for(var off = 0; off < cdata.length; off += CH){
+          cipher.process(cdata.subarray(off, Math.min(cdata.length, off + CH)));
+          doneBytes += Math.min(CH, cdata.length - off);
+          report();
+          await tick();
+        }
+        var head = cipher.header(), foot = cipher.footer(cdata);
+        var merged = new Uint8Array(head.length + cdata.length + foot.length);
+        merged.set(head); merged.set(cdata, head.length); merged.set(foot, head.length + cdata.length);
+        cdata = merged;
+      } else {
+        doneBytes += cdata.length;
+        report();
+      }
+
+      var storedMethod = method, versionNeeded = 20, flags = e.utf8 === false ? 0 : 0x800;
+      if(encrypted){
+        flags |= 1;
+        if(useAes){
+          storedMethod = 99; versionNeeded = 51;
+          // WinZip AES 拡張フィールド（0x9901）: バージョン1(AE-1) / "AE" / AES-256 / 本来の圧縮方式
+          w16(extra, 0x9901); w16(extra, 7); w16(extra, 1);
+          extra.push(0x41, 0x45, 0x03);
+          w16(extra, method);
+        }
+      }
+
+      var local = [];
+      w32(local, 0x04034b50); w16(local, versionNeeded); w16(local, flags); w16(local, storedMethod);
+      w16(local, dt.time); w16(local, dt.date);
+      w32(local, crc); w32(local, cdata.length); w32(local, usize);
+      w16(local, e.nameBytes.length); w16(local, extra.length);
+      parts.push(new Uint8Array(local), e.nameBytes, new Uint8Array(extra), cdata);
+
+      var cen = [];
+      w32(cen, 0x02014b50); w16(cen, 0x0314); w16(cen, versionNeeded); w16(cen, flags); w16(cen, storedMethod);
+      w16(cen, dt.time); w16(cen, dt.date);
+      w32(cen, crc); w32(cen, cdata.length); w32(cen, usize);
+      w16(cen, e.nameBytes.length); w16(cen, extra.length); w16(cen, 0);
+      w16(cen, 0); w16(cen, 0); w32(cen, isDir ? 0x10 : 0); w32(cen, offset);
+      central.push(new Uint8Array(cen), e.nameBytes, new Uint8Array(extra));
+
+      offset += 30 + e.nameBytes.length + extra.length + cdata.length;
+    }
+
+    var cdSize = 0;
+    central.forEach(function(p){ cdSize += p.length; });
+    var end = [];
+    w32(end, 0x06054b50); w16(end, 0); w16(end, 0);
+    w16(end, entries.length); w16(end, entries.length);
+    w32(end, cdSize); w32(end, offset); w16(end, 0);
+
+    return new Blob(parts.concat(central, [new Uint8Array(end)]), { type: "application/zip" });
+  }
+
+  /* ---------------- ZIP 読み込み（中身をそのまま詰め直すため） ---------------- */
+  function parseZip(buf){
+    var dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    var eocd = -1, min = Math.max(0, buf.length - 66000);
+    for(var i = buf.length - 22; i >= min; i--){
+      if(dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+    }
+    if(eocd < 0) throw new Error("ZIPファイルとして読み取れませんでした。");
+    var count = dv.getUint16(eocd + 10, true);
+    var cdOff = dv.getUint32(eocd + 16, true);
+    if(count === 0xffff || cdOff === 0xffffffff) throw new Error("ZIP64形式には対応していません。");
+
+    var p = cdOff, out = [];
+    for(var n = 0; n < count; n++){
+      if(dv.getUint32(p, true) !== 0x02014b50) throw new Error("ZIPの構造を読み取れませんでした。");
+      var flags = dv.getUint16(p + 8, true), method = dv.getUint16(p + 10, true);
+      var time = dv.getUint16(p + 12, true), date = dv.getUint16(p + 14, true);
+      var crc = dv.getUint32(p + 16, true), csize = dv.getUint32(p + 20, true), usize = dv.getUint32(p + 24, true);
+      var nameLen = dv.getUint16(p + 28, true), extraLen = dv.getUint16(p + 30, true), cmtLen = dv.getUint16(p + 32, true);
+      var lo = dv.getUint32(p + 42, true);
+      if(flags & 1) throw new Error("すでにパスワードが設定されたZIPです。");
+      if(csize === 0xffffffff || usize === 0xffffffff || lo === 0xffffffff) throw new Error("ZIP64形式には対応していません。");
+      if(dv.getUint32(lo, true) !== 0x04034b50) throw new Error("ZIPの構造を読み取れませんでした。");
+      var dataStart = lo + 30 + dv.getUint16(lo + 26, true) + dv.getUint16(lo + 28, true);
+      out.push({
+        nameBytes: buf.slice(p + 46, p + 46 + nameLen),
+        utf8: !!(flags & 0x800),
+        time: time, date: date,
+        raw: { method: method, crc: crc, usize: usize, cdata: buf.subarray(dataStart, dataStart + csize) }
+      });
+      p += 46 + nameLen + extraLen + cmtLen;
+    }
+    return out;
+  }
+
+  return {
+    crc32: crc32, sha1: sha1, hmacSha1: hmacSha1, pbkdf2Sha1: pbkdf2Sha1,
+    aes: AES, buildZip: buildZip, parseZip: parseZip, utf8: utf8, randomBytes: randomBytes
+  };
+})();
+</script>
+
+<script>
+/* =========================================================================
+   画面まわり
+   ========================================================================= */
+(function(){
+  "use strict";
+
+  function $(id){ return document.getElementById(id); }
+
+  function formatSize(n){
+    if(n < 1024) return n + " B";
+    if(n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
+    return (n / 1024 / 1024).toFixed(1) + " MB";
+  }
+
   function splitName(name){
     var i = name.lastIndexOf(".");
-    if(i <= 0) return { base:name, ext:"" };
-    return { base:name.slice(0, i), ext:name.slice(i + 1) };
+    if(i <= 0) return { base: name, ext: "" };
+    return { base: name.slice(0, i), ext: name.slice(i + 1) };
   }
+
+  function saveBlob(blob, filename){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+  }
+
+  // ドロップ領域の共通設定
+  function setupDrop(dropEl, onFiles, onEntries){
+    dropEl.addEventListener("click", function(){ dropEl.nextElementSibling.click(); });
+    ["dragenter","dragover"].forEach(function(ev){
+      dropEl.addEventListener(ev, function(e){ e.preventDefault(); dropEl.classList.add("over"); });
+    });
+    ["dragleave","drop"].forEach(function(ev){
+      dropEl.addEventListener(ev, function(e){ e.preventDefault(); dropEl.classList.remove("over"); });
+    });
+    dropEl.addEventListener("drop", function(e){
+      var dt = e.dataTransfer;
+      if(!dt) return;
+      if(onEntries && dt.items && dt.items.length && dt.items[0].webkitGetAsEntry){
+        var entries = [];
+        for(var i = 0; i < dt.items.length; i++){
+          var en = dt.items[i].webkitGetAsEntry();
+          if(en) entries.push(en);
+        }
+        if(entries.length){ onEntries(entries); return; }
+      }
+      if(dt.files.length) onFiles(dt.files);
+    });
+  }
+  ["dragover","drop"].forEach(function(ev){
+    window.addEventListener(ev, function(e){
+      if(!e.target.closest || !e.target.closest(".drop")) e.preventDefault();
+    });
+  });
+
+  /* ===================== タブ ===================== */
+  document.querySelectorAll(".tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(b){ b.classList.remove("active"); });
+      document.querySelectorAll(".section").forEach(function(s){ s.classList.remove("active"); });
+      btn.classList.add("active");
+      $("tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ===================== パスワード付きZIP作成 ===================== */
+  var packFiles = [];      // { file, path }
+  var nameEdited = false;
+
+  function isZipName(name){
+    var ext = splitName(name).ext.toLowerCase();
+    return ext === "zip" || ext === "zi_";
+  }
+
+  // ドロップされたフォルダを再帰的にたどる
+  function readEntry(entry, path){
+    return new Promise(function(resolve){
+      if(entry.isFile){
+        entry.file(function(f){ resolve([{ file: f, path: path + entry.name }]); }, function(){ resolve([]); });
+      } else if(entry.isDirectory){
+        var reader = entry.createReader(), all = [];
+        var readBatch = function(){
+          reader.readEntries(function(list){
+            if(!list.length){
+              Promise.all(all.map(function(e){ return readEntry(e, path + entry.name + "/"); }))
+                .then(function(res){ resolve([].concat.apply([], res)); });
+              return;
+            }
+            all = all.concat(Array.prototype.slice.call(list));
+            readBatch();
+          }, function(){ resolve([]); });
+        };
+        readBatch();
+      } else resolve([]);
+    });
+  }
+
+  function addPackFiles(fileList){
+    for(var i = 0; i < fileList.length; i++){
+      var f = fileList[i];
+      packFiles.push({ file: f, path: f.webkitRelativePath || f.name });
+    }
+    renderPack();
+  }
+
+  function addPackEntries(entries){
+    Promise.all(entries.map(function(e){ return readEntry(e, ""); })).then(function(res){
+      [].concat.apply([], res).forEach(function(item){ packFiles.push(item); });
+      renderPack();
+    });
+  }
+
+  function defaultOutName(){
+    if(packFiles.length === 1) return splitName(packFiles[0].path.split("/").pop()).base;
+    if(packFiles.length > 1){
+      var top = packFiles[0].path.split("/");
+      if(top.length > 1) return top[0];
+      var d = new Date();
+      return "files_" + d.getFullYear() +
+        ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
+    }
+    return "";
+  }
+
+  function rewrapTarget(){
+    // 単一のZIP（.zip / .zi_）なら、中身をそのまま暗号化して詰め直す
+    return packFiles.length === 1 && isZipName(packFiles[0].path) ? packFiles[0] : null;
+  }
+
+  function renderPack(){
+    var box = $("packList");
+    box.innerHTML = "";
+    if(!packFiles.length){
+      $("rewrapNote").style.display = "none";
+      if(!nameEdited) $("outName").value = "";
+      return;
+    }
+    var table = document.createElement("table");
+    var tb = document.createElement("tbody");
+    var total = 0;
+    packFiles.forEach(function(item, i){
+      total += item.file.size;
+      var tr = document.createElement("tr");
+      var td1 = document.createElement("td"); td1.textContent = item.path;
+      var td2 = document.createElement("td"); td2.className = "size"; td2.textContent = formatSize(item.file.size);
+      var td3 = document.createElement("td");
+      var rm = document.createElement("button");
+      rm.className = "rm"; rm.textContent = "×"; rm.title = "リストから削除";
+      rm.onclick = function(){ packFiles.splice(i, 1); renderPack(); };
+      td3.appendChild(rm);
+      [td1, td2, td3].forEach(function(td){ tr.appendChild(td); });
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    box.appendChild(table);
+    var t = document.createElement("div");
+    t.className = "total";
+    t.textContent = packFiles.length + " 個 / 合計 " + formatSize(total);
+    box.appendChild(t);
+
+    var note = $("rewrapNote");
+    if(rewrapTarget()){
+      note.style.display = "block";
+      note.textContent = "既存のZIPを選択中です。中のファイルをそのまま（入れ子にせず）暗号化して詰め直します。";
+    } else {
+      note.style.display = "none";
+    }
+    if(!nameEdited) $("outName").value = defaultOutName();
+  }
+
+  setupDrop($("packDrop"), addPackFiles, addPackEntries);
+  $("packPicker").addEventListener("change", function(){ addPackFiles(this.files); this.value = ""; });
+  $("dirPicker").addEventListener("change", function(){ addPackFiles(this.files); this.value = ""; });
+  $("dirBtn").addEventListener("click", function(){ $("dirPicker").click(); });
+  $("packClear").addEventListener("click", function(){ packFiles = []; nameEdited = false; renderPack(); });
+  $("outName").addEventListener("input", function(){ nameEdited = true; });
+
+  // パスワード関連
+  $("showPw").addEventListener("change", function(){
+    var t = this.checked ? "text" : "password";
+    $("pw").type = t; $("pw2").type = t;
+  });
+  $("genBtn").addEventListener("click", function(){
+    var chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    var rnd = ZipTool.randomBytes(16), out = "";
+    for(var i = 0; i < 16; i++) out += chars[rnd[i] % chars.length];
+    $("pw").value = out; $("pw2").value = out;
+    $("showPw").checked = true;
+    $("pw").type = $("pw2").type = "text";
+    checkPw();
+  });
+  function checkPw(){
+    var a = $("pw").value, b = $("pw2").value;
+    if(b && a !== b){ $("pwErr").textContent = "確認用パスワードが一致していません。"; return false; }
+    $("pwErr").textContent = "";
+    return true;
+  }
+  $("pw").addEventListener("input", checkPw);
+  $("pw2").addEventListener("input", checkPw);
+
+  // 暗号化方式の説明
+  var ENC_HINT = {
+    zipcrypto: "Windows・macOS の標準機能や Lhaplus などでもそのまま開けます。相手の環境を選ばない代わりに、暗号強度は高くありません。",
+    aes: "強固な暗号（AES-256）ですが、展開に 7-Zip・WinRAR などが必要です。Windows・macOS の標準機能では開けません。"
+  };
+  function encMode(){ return document.querySelector('input[name="enc"]:checked').value; }
+  function updateEncHint(){ $("encHint").textContent = ENC_HINT[encMode()]; }
+  document.querySelectorAll('input[name="enc"]').forEach(function(r){
+    r.addEventListener("change", updateEncHint);
+  });
+  updateEncHint();
+
+  // 作成
+  var lastBlob = null, lastName = "";
+
+  function setProgress(done, total){
+    $("bar").style.width = Math.min(100, Math.round(done / total * 100)) + "%";
+  }
+
+  function readFile(file){
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){ resolve(new Uint8Array(r.result)); };
+      r.onerror = function(){ reject(new Error("ファイルを読み込めませんでした：" + file.name)); };
+      r.readAsArrayBuffer(file);
+    });
+  }
+
+  $("makeBtn").addEventListener("click", async function(){
+    var err = $("makeErr");
+    err.textContent = "";
+    $("done").style.display = "none";
+
+    if(!packFiles.length){ err.textContent = "ファイルを選んでください。"; return; }
+    var pw = $("pw").value;
+    if(!pw){ err.textContent = "パスワードを入力してください。"; return; }
+    if($("pw2").value !== pw){ err.textContent = "確認用パスワードが一致していません。"; return; }
+    var base = $("outName").value.trim() || defaultOutName() || "archive";
+    var ext = document.querySelector('input[name="outext"]:checked').value;
+    var outName = base + "." + ext;
+
+    $("makeBtn").disabled = true;
+    $("progress").style.display = "block";
+    $("plabel").textContent = "ファイルを読み込んでいます…";
+    setProgress(0, 1);
+
+    try {
+      var entries = [];
+      var rewrap = rewrapTarget();
+      if(rewrap){
+        var buf = await readFile(rewrap.file);
+        try {
+          entries = ZipTool.parseZip(buf);
+        } catch(e){
+          // 読めなければ入れ子ZIPとして扱う
+          entries = [{ nameBytes: ZipTool.utf8(rewrap.path.split("/").pop()), utf8: true,
+                       date: new Date(rewrap.file.lastModified), data: buf }];
+        }
+      } else {
+        for(var i = 0; i < packFiles.length; i++){
+          var item = packFiles[i];
+          entries.push({
+            nameBytes: ZipTool.utf8(item.path),
+            utf8: true,
+            date: new Date(item.file.lastModified),
+            data: await readFile(item.file)
+          });
+        }
+      }
+
+      $("plabel").textContent = "暗号化しています…";
+      var blob = await ZipTool.buildZip(entries, {
+        password: pw,
+        method: encMode(),
+        onProgress: function(done, total){
+          setProgress(done, total);
+          $("plabel").textContent = "暗号化しています… " + Math.round(done / total * 100) + "%";
+        }
+      });
+
+      setProgress(1, 1);
+      $("plabel").textContent = "完了（" + formatSize(blob.size) + "）";
+      lastBlob = blob; lastName = outName;
+      saveBlob(blob, outName);
+      $("doneName").textContent = outName;
+      $("donePw").textContent = pw;
+      $("done").style.display = "block";
+    } catch(e){
+      err.textContent = "作成できませんでした：" + (e && e.message ? e.message : e);
+      $("progress").style.display = "none";
+    } finally {
+      $("makeBtn").disabled = false;
+    }
+  });
+
+  $("doneDl").addEventListener("click", function(){
+    if(lastBlob) saveBlob(lastBlob, lastName);
+  });
+
+  /* ===================== 拡張子変換 ===================== */
+  var ZIP_EXT = "zip", ALT_EXT = "zi_";
+  var items = [], seq = 0;
+
+  function currentMode(){ return document.querySelector('input[name="mode"]:checked').value; }
 
   function targetName(name, mode){
     var p = splitName(name), ext = p.ext.toLowerCase();
@@ -148,19 +973,13 @@
     return name + "." + to;                              // その他は末尾に付け足す
   }
 
-  function formatSize(n){
-    if(n < 1024) return n + " B";
-    if(n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
-    return (n / 1024 / 1024).toFixed(1) + " MB";
-  }
-
   // 先頭4バイトが ZIP のシグネチャ(PK\x03\x04)かどうか調べる
   function checkZip(item){
     var r = new FileReader();
     r.onload = function(){
       var b = new Uint8Array(r.result);
       item.isZip = (b[0] === 0x50 && b[1] === 0x4B && b[2] === 0x03 && b[3] === 0x04);
-      render();
+      renderList();
     };
     r.onerror = function(){ item.isZip = null; };
     r.readAsArrayBuffer(item.file.slice(0, 4));
@@ -171,24 +990,18 @@
       items.push({ id: ++seq, file: fileList[i], isZip: null, done: false });
       checkZip(items[items.length - 1]);
     }
-    render();
+    renderList();
   }
 
   function download(item){
-    var url = URL.createObjectURL(item.file);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = targetName(item.file.name, currentMode());
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+    saveBlob(item.file, targetName(item.file.name, currentMode()));
     item.done = true;
-    render();
+    renderList();
   }
 
-  function render(){
-    listCard.style.display = items.length ? "block" : "none";
+  function renderList(){
+    var tbody = $("tbody");
+    $("listCard").style.display = items.length ? "block" : "none";
     tbody.innerHTML = "";
     items.forEach(function(item){
       var newName = targetName(item.file.name, currentMode());
@@ -204,16 +1017,13 @@
       }
 
       var tdArrow = document.createElement("td");
-      tdArrow.className = "arrow";
-      tdArrow.textContent = "→";
+      tdArrow.className = "arrow"; tdArrow.textContent = "→";
 
       var tdNew = document.createElement("td");
-      tdNew.className = "newname";
-      tdNew.textContent = newName;
+      tdNew.className = "newname"; tdNew.textContent = newName;
 
       var tdSize = document.createElement("td");
-      tdSize.className = "size";
-      tdSize.textContent = formatSize(item.file.size);
+      tdSize.className = "size"; tdSize.textContent = formatSize(item.file.size);
 
       var tdBtn = document.createElement("td");
       var btn = document.createElement("button");
@@ -224,12 +1034,10 @@
 
       var tdRm = document.createElement("td");
       var rm = document.createElement("button");
-      rm.className = "rm";
-      rm.title = "リストから削除";
-      rm.textContent = "×";
+      rm.className = "rm"; rm.title = "リストから削除"; rm.textContent = "×";
       rm.onclick = function(){
         items = items.filter(function(x){ return x.id !== item.id; });
-        render();
+        renderList();
       };
       tdRm.appendChild(rm);
 
@@ -238,39 +1046,15 @@
     });
   }
 
-  drop.addEventListener("click", function(){ picker.click(); });
-  picker.addEventListener("change", function(){
-    addFiles(picker.files);
-    picker.value = "";
-  });
-
-  ["dragenter","dragover"].forEach(function(ev){
-    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
-  });
-  ["dragleave","drop"].forEach(function(ev){
-    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
-  });
-  drop.addEventListener("drop", function(e){
-    if(e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
-  });
-  // ページ外へのドロップでファイルが開かれてしまうのを防ぐ
-  ["dragover","drop"].forEach(function(ev){
-    window.addEventListener(ev, function(e){ if(e.target !== drop) e.preventDefault(); });
-  });
-
+  setupDrop($("drop"), addFiles, null);
+  $("picker").addEventListener("change", function(){ addFiles(this.files); this.value = ""; });
   document.querySelectorAll('input[name="mode"]').forEach(function(r){
-    r.addEventListener("change", render);
+    r.addEventListener("change", renderList);
   });
-
-  document.getElementById("allBtn").addEventListener("click", function(){
-    items.forEach(function(item, i){
-      setTimeout(function(){ download(item); }, i * 400);
-    });
+  $("allBtn").addEventListener("click", function(){
+    items.forEach(function(item, i){ setTimeout(function(){ download(item); }, i * 400); });
   });
-  document.getElementById("clearBtn").addEventListener("click", function(){
-    items = [];
-    render();
-  });
+  $("clearBtn").addEventListener("click", function(){ items = []; renderList(); });
 })();
 </script>
 </body>
