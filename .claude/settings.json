@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "deny": [],
+    "allow": [
+      "npm",
+      "node"
+    ]
+  }
+}

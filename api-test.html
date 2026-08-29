@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ollama Kimi K3 テスト</title>
+  <style>
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #2f6f4f;
+      padding-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #2f6f4f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1e4d37;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .response {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #2f6f4f;
+      border-radius: 4px;
+      display: none;
+    }
+    .response.show {
+      display: block;
+    }
+    .error {
+      background: #fdecea;
+      border-left-color: #c0392b;
+      color: #c0392b;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+    }
+    .status {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .status.info {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    .status.success {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    .status.error {
+      background: #fdecea;
+      color: #c0392b;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦙 Ollama Kimi K3 テスト</h1>
+
+    <div id="status" class="status info" style="display: none;"></div>
+
+    <div class="form-group">
+      <label for="question">質問を入力してください：</label>
+      <textarea id="question" rows="4" placeholder="例：日本の首都は？">あなたは何ですか？</textarea>
+    </div>
+
+    <button id="askBtn" onclick="askKimi()">Kimi K3に質問する</button>
+    <button onclick="checkHealth()" style="margin-left: 10px;">サーバー状態確認</button>
+
+    <div id="response" class="response">
+      <h3>回答：</h3>
+      <div id="responseText"></div>
+    </div>
+  </div>
+
+  <script>
+    const SERVER_URL = 'http://localhost:3000';
+
+    function showStatus(message, type = 'info') {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+      status.style.display = 'block';
+    }
+
+    function showResponse(text, isError = false) {
+      const response = document.getElementById('response');
+      const responseText = document.getElementById('responseText');
+      responseText.textContent = text;
+      response.className = 'response show' + (isError ? ' error' : '');
+    }
+
+    async function checkHealth() {
+      try {
+        showStatus('サーバー状態を確認中...', 'info');
+        const res = await fetch(`${SERVER_URL}/health`);
+        const data = await res.json();
+        showStatus(
+          `✓ サーバー正常: Ollama=${data.ollama_url}, Model=${data.model}`,
+          'success'
+        );
+      } catch (error) {
+        showStatus(
+          `✗ エラー: ${error.message}\n\nサーバーが起動していることを確認してください。\nターミナルで: npm start`,
+          'error'
+        );
+      }
+    }
+
+    async function askKimi() {
+      const question = document.getElementById('question').value.trim();
+      if (!question) {
+        showStatus('質問を入力してください', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('askBtn');
+      btn.disabled = true;
+      showStatus('Kimi K3に質問中...', 'info');
+      showResponse('', false);
+
+      try {
+        const res = await fetch(`${SERVER_URL}/api/ask`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        showResponse(data.answer);
+        showStatus('✓ 回答が得られました', 'success');
+      } catch (error) {
+        showResponse(`エラーが発生しました:\n${error.message}`, true);
+        showStatus('✗ ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ページ読み込み時に自動で状態確認
+    window.addEventListener('load', checkHealth);
+  </script>
+</body>
+</html>
