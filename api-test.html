@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ollama Kimi K3 テスト</title>
+  <title>Ollama モデルテスト</title>
   <style>
     body {
       font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -102,21 +102,44 @@
       overflow-x: auto;
       font-size: 12px;
     }
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background: white;
+      box-sizing: border-box;
+    }
+    .model-empty {
+      font-size: 13px;
+      color: #c0392b;
+      margin-top: 6px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🦙 Ollama Kimi K3 テスト</h1>
+    <h1>🦙 Ollama モデルテスト</h1>
 
     <div id="status" class="status info" style="display: none;"></div>
+
+    <div class="form-group">
+      <label for="modelSelect">モデルを選択：</label>
+      <select id="modelSelect"></select>
+      <div id="modelEmpty" class="model-empty" style="display:none;">
+        インストール済みのモデルがありません。ターミナルで <code>ollama pull &lt;モデル名&gt;</code> を実行してください（例：<code>ollama pull mistral</code>）
+      </div>
+    </div>
 
     <div class="form-group">
       <label for="question">質問を入力してください：</label>
       <textarea id="question" rows="4" placeholder="例：日本の首都は？">あなたは何ですか？</textarea>
     </div>
 
-    <button id="askBtn" onclick="askKimi()">Kimi K3に質問する</button>
+    <button id="askBtn" onclick="askModel()">質問する</button>
     <button onclick="checkHealth()" style="margin-left: 10px;">サーバー状態確認</button>
+    <button onclick="loadModels()" style="margin-left: 10px;">モデル一覧を再取得</button>
 
     <div id="response" class="response">
       <h3>回答：</h3>
@@ -147,7 +170,7 @@
         const res = await fetch(`${SERVER_URL}/health`);
         const data = await res.json();
         showStatus(
-          `✓ サーバー正常: Ollama=${data.ollama_url}, Model=${data.model}`,
+          `✓ サーバー正常: Ollama=${data.ollama_url}, デフォルトモデル=${data.default_model}`,
           'success'
         );
       } catch (error) {
@@ -158,8 +181,41 @@
       }
     }
 
-    async function askKimi() {
+    async function loadModels() {
+      const select = document.getElementById('modelSelect');
+      const empty = document.getElementById('modelEmpty');
+      select.innerHTML = '';
+      empty.style.display = 'none';
+
+      try {
+        const res = await fetch(`${SERVER_URL}/api/models`);
+        const data = await res.json();
+        const models = (data.models || []);
+
+        if (models.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+
+        models.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          opt.textContent = m.name;
+          select.appendChild(opt);
+        });
+      } catch (error) {
+        showStatus(`✗ モデル一覧の取得に失敗: ${error.message}`, 'error');
+      }
+    }
+
+    async function askModel() {
       const question = document.getElementById('question').value.trim();
+      const model = document.getElementById('modelSelect').value;
+
+      if (!model) {
+        showStatus('モデルを選択してください（インストール済みモデルがない場合は ollama pull してください）', 'error');
+        return;
+      }
       if (!question) {
         showStatus('質問を入力してください', 'error');
         return;
@@ -167,14 +223,14 @@
 
       const btn = document.getElementById('askBtn');
       btn.disabled = true;
-      showStatus('Kimi K3に質問中...', 'info');
+      showStatus(`${model} に質問中...`, 'info');
       showResponse('', false);
 
       try {
         const res = await fetch(`${SERVER_URL}/api/ask`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question })
+          body: JSON.stringify({ question, model })
         });
 
         if (!res.ok) {
@@ -187,7 +243,7 @@
         }
 
         showResponse(data.answer);
-        showStatus('✓ 回答が得られました', 'success');
+        showStatus(`✓ ${model} から回答が得られました`, 'success');
       } catch (error) {
         showResponse(`エラーが発生しました:\n${error.message}`, true);
         showStatus('✗ ' + error.message, 'error');
@@ -196,8 +252,11 @@
       }
     }
 
-    // ページ読み込み時に自動で状態確認
-    window.addEventListener('load', checkHealth);
+    // ページ読み込み時に自動で状態確認・モデル一覧取得
+    window.addEventListener('load', () => {
+      checkHealth();
+      loadModels();
+    });
   </script>
 </body>
 </html>

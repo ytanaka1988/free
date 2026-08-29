@@ -4,24 +4,24 @@ import axios from 'axios';
 const app = express();
 const PORT = process.env.PORT || 3000;
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const MODEL = process.env.OLLAMA_MODEL || 'kimi:k3';
+const DEFAULT_MODEL = process.env.OLLAMA_MODEL || 'mistral';
 
 app.use(express.json());
 
 // ヘルスチェック
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', ollama_url: OLLAMA_URL, model: MODEL });
+  res.json({ status: 'ok', ollama_url: OLLAMA_URL, default_model: DEFAULT_MODEL });
 });
 
 // Ollamaへのチャットリクエストをプロキシ
 app.post('/api/chat', async (req, res) => {
   try {
-    const { messages, stream = false } = req.body;
+    const { messages, stream = false, model = DEFAULT_MODEL } = req.body;
 
     const response = await axios.post(
       `${OLLAMA_URL}/api/chat`,
       {
-        model: MODEL,
+        model: model,
         messages: messages,
         stream: stream
       },
@@ -60,7 +60,7 @@ app.get('/api/models', async (req, res) => {
 // シンプルなテストエンドポイント
 app.post('/api/ask', async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question, model = DEFAULT_MODEL } = req.body;
 
     if (!question) {
       return res.status(400).json({ error: 'question is required' });
@@ -69,7 +69,7 @@ app.post('/api/ask', async (req, res) => {
     const response = await axios.post(
       `${OLLAMA_URL}/api/generate`,
       {
-        model: MODEL,
+        model: model,
         prompt: question,
         stream: false
       }
@@ -78,7 +78,7 @@ app.post('/api/ask', async (req, res) => {
     res.json({
       question: question,
       answer: response.data.response,
-      model: MODEL
+      model: model
     });
   } catch (error) {
     console.error('Error:', error.message);
@@ -89,5 +89,5 @@ app.post('/api/ask', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Ollama integration server running on http://localhost:${PORT}`);
   console.log(`Ollama endpoint: ${OLLAMA_URL}`);
-  console.log(`Model: ${MODEL}`);
+  console.log(`Default model: ${DEFAULT_MODEL}`);
 });

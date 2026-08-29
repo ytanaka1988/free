@@ -1,23 +1,26 @@
 # Ollama × Claude Code 統合
 
-Ollamaのローカルモデル（Kimi K3など）をClaude Codeから使用するための統合実装。
+Ollamaのローカルモデルを使用するための統合実装。Web UIでインストール済みモデルから選んで質問できる。
 
 ## セットアップ手順
 
-### 1. Ollamaをインストール・セットアップ（ローカル環境）
+### 1. Ollamaをインストール・モデルをプル（ローカル環境）
 
 ```bash
 # Ollamaをインストール
 # https://ollama.ai から最新版をダウンロード
 
-# Kimi K3をプル
-ollama pull kimi:k3
+# 使いたいモデルをプル（複数プルしてOK、UIで切り替えられる）
+ollama pull mistral
+ollama pull llama3
+ollama pull gemma2
 
 # Ollamaを起動
 ollama serve
 ```
 
-**注意：** Ollamaはデフォルトで `http://localhost:11434` で起動します
+**注意：** Ollamaはデフォルトで `http://localhost:11434` で起動します。
+**Kimi K3はOllamaの公式レジストリには存在しないため `ollama pull` できません**（クラウド専用モデルのため）。Ollamaで使う場合は上記のような公開モデルを選んでください。
 
 ### 2. 統合サーバーを起動（このプロジェクト）
 
@@ -36,7 +39,7 @@ npm run dev
 
 ### 3. APIテスト
 
-ブラウザで `http://localhost:3000/api-test.html` にアクセス
+ブラウザで `http://localhost:3000/api-test.html` にアクセスすると、インストール済みのOllamaモデルがドロップダウンに一覧表示されるので、選んで質問できます。
 
 またはコマンドラインから：
 
@@ -44,10 +47,13 @@ npm run dev
 # サーバー状態確認
 curl http://localhost:3000/health
 
-# Kimi K3に質問
+# インストール済みモデル一覧
+curl http://localhost:3000/api/models
+
+# モデルを指定して質問（model省略時はデフォルトモデルを使用）
 curl -X POST http://localhost:3000/api/ask \
   -H "Content-Type: application/json" \
-  -d '{"question":"こんにちは"}'
+  -d '{"question":"こんにちは","model":"mistral"}'
 ```
 
 ### 4. 環境変数でカスタマイズ
@@ -56,7 +62,7 @@ curl -X POST http://localhost:3000/api/ask \
 # Ollamaのエンドポイントを変更
 OLLAMA_URL=http://remote-server:11434 npm start
 
-# 別のモデルを使用
+# デフォルトモデルを変更（リクエストでmodelを指定しなかった場合に使用）
 OLLAMA_MODEL=mistral npm start
 ```
 
@@ -70,33 +76,34 @@ OLLAMA_MODEL=mistral npm start
 {
   "status": "ok",
   "ollama_url": "http://localhost:11434",
-  "model": "kimi:k3"
+  "default_model": "mistral"
 }
 ```
 
 ### `POST /api/ask`
-シンプルなテキスト質問
+シンプルなテキスト質問。`model` を省略するとデフォルトモデルを使用。
 
 **リクエスト：**
 ```json
-{"question": "あなたは誰ですか？"}
+{"question": "あなたは誰ですか？", "model": "mistral"}
 ```
 
 **レスポンス：**
 ```json
 {
   "question": "あなたは誰ですか？",
-  "answer": "私はKimi K3というAIです...",
-  "model": "kimi:k3"
+  "answer": "私はAIアシスタントです...",
+  "model": "mistral"
 }
 ```
 
 ### `POST /api/chat`
-チャット形式（複数ターンの会話）
+チャット形式（複数ターンの会話）。`model` を省略するとデフォルトモデルを使用。
 
 **リクエスト：**
 ```json
 {
+  "model": "mistral",
   "messages": [
     {"role": "user", "content": "こんにちは"},
     {"role": "assistant", "content": "こんにちは！..."}
@@ -106,7 +113,7 @@ OLLAMA_MODEL=mistral npm start
 ```
 
 ### `GET /api/models`
-利用可能なOllamaモデル一覧を取得
+インストール済みのOllamaモデル一覧を取得。Web UIのドロップダウンはここから動的に生成される。
 
 ## 構成
 
