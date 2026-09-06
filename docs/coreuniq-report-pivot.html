@@ -1,0 +1,443 @@
+<title>中間報告の組み直し案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground:#EFF2F1; --surface:#FFFFFF; --surface-2:#F6F8F7;
+    --ink:#131E1C; --ink-2:#35443F; --muted:#5E6E6A;
+    --line:#D6DEDB; --line-strong:#B9C6C2;
+    --accent:#0D555C; --accent-ink:#0D555C; --accent-soft:#DDEBEA;
+    --signal:#9C5417; --signal-soft:#F3E5D6;
+    --shadow:0 1px 2px rgba(19,30,28,.05),0 8px 24px -16px rgba(19,30,28,.28);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C1211; --surface:#141C1B; --surface-2:#182120;
+      --ink:#E7EDEB; --ink-2:#C3D0CD; --muted:#93A29E;
+      --line:#253130; --line-strong:#354442;
+      --accent:#59B6BB; --accent-ink:#7CCBCF; --accent-soft:#10322F;
+      --signal:#D89452; --signal-soft:#332415;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C1211; --surface:#141C1B; --surface-2:#182120;
+    --ink:#E7EDEB; --ink-2:#C3D0CD; --muted:#93A29E;
+    --line:#253130; --line-strong:#354442;
+    --accent:#59B6BB; --accent-ink:#7CCBCF; --accent-soft:#10322F;
+    --signal:#D89452; --signal-soft:#332415;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+    font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:58rem;margin:0 auto;padding:0 1.5rem 6rem}
+
+  header.masthead{padding:4.2rem 0 2.2rem;border-bottom:2px solid var(--ink)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent-ink);margin:0 0 1rem}
+  h1{font-family:"Zen Old Mincho","Hiragino Mincho ProN",serif;font-weight:700;
+    font-size:clamp(2rem,5vw,3rem);line-height:1.28;margin:0 0 .9rem;text-wrap:balance}
+  .standfirst{font-size:1.04rem;color:var(--ink-2);max-width:43em;margin:0 0 1.8rem}
+  .meta{display:flex;flex-wrap:wrap;gap:.4rem 2rem;font-size:.8rem;color:var(--muted);
+    font-family:"IBM Plex Mono",monospace}
+  .meta b{color:var(--ink-2);font-weight:500}
+
+  section{padding-top:3.5rem}
+  .sec-head{display:grid;grid-template-columns:3.25rem 1fr;align-items:baseline;gap:0 .25rem;
+    border-top:1px solid var(--line-strong);padding-top:1.1rem;margin-bottom:1.5rem}
+  .sec-num{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--accent-ink);letter-spacing:.04em}
+  .sec-head h2{font-family:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    font-size:clamp(1.4rem,3vw,1.85rem);font-weight:700;line-height:1.4;margin:0;text-wrap:balance}
+  .sec-head p{grid-column:2;margin:.55rem 0 0;color:var(--muted);font-size:.93rem;max-width:44em}
+
+  .body{display:grid;gap:1.1rem}
+  .body>*{margin:0}
+  .body p{max-width:44em}
+  h3{font-family:"Zen Old Mincho","Hiragino Mincho ProN",serif;font-size:1.12rem;
+    font-weight:700;margin:1.5rem 0 0;line-height:1.5}
+  h4{font-size:.96rem;font-weight:700;margin:0}
+  strong{font-weight:700}
+
+  .quote{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:2px;padding:1rem 1.25rem;font-size:.94rem;color:var(--ink-2);line-height:1.9}
+  .quote .src{display:block;margin-top:.5rem;font-size:.8rem;color:var(--muted);
+    font-family:"IBM Plex Mono",monospace}
+  .quote b{color:var(--ink)}
+
+  .note{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--signal);
+    border-radius:2px;padding:1.05rem 1.3rem;font-size:.92rem;color:var(--ink-2);display:grid;gap:.5rem}
+  .note h4{color:var(--signal);font-size:.76rem;letter-spacing:.1em;
+    font-family:"IBM Plex Mono",monospace;text-transform:uppercase}
+  .note ul{padding-left:1.1rem;margin:0;display:grid;gap:.35rem}
+
+  .keypoint{background:var(--accent-soft);border-radius:2px;padding:1.15rem 1.35rem;
+    font-size:.95rem;color:var(--ink);border:1px solid transparent}
+  .keypoint b{color:var(--accent-ink)}
+
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:30rem;font-size:.89rem}
+  th,td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--surface-2);font-size:.75rem;letter-spacing:.06em;color:var(--muted);
+    font-weight:700;white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .chip{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.66rem;
+    letter-spacing:.08em;padding:.14rem .48rem;border-radius:2px;vertical-align:.12em;white-space:nowrap}
+  .chip-add{background:var(--signal-soft);color:var(--signal)}
+  .chip-cut{background:var(--ink);color:var(--ground)}
+  .chip-keep{background:var(--accent-soft);color:var(--accent-ink)}
+
+  .qbox{background:var(--surface);border:1px solid var(--line);border-radius:3px;
+    overflow:hidden;box-shadow:var(--shadow)}
+  .qbox>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .8rem;
+    padding:.8rem 1.1rem;background:var(--surface-2);border-bottom:1px solid var(--line)}
+  .qbox>header h4{font-size:.98rem}
+  .qbox>header .hint{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--muted)}
+  ul.qlist{list-style:none;margin:0;padding:0}
+  ul.qlist>li{display:grid;grid-template-columns:3.4rem 1fr;gap:0 .5rem;
+    padding:.85rem 1.1rem;border-bottom:1px solid var(--line)}
+  ul.qlist>li:last-child{border-bottom:none}
+  .qid{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--muted);padding-top:.2rem}
+  .qt{font-size:.95rem;line-height:1.75}
+  .qm{grid-column:2;font-size:.84rem;color:var(--muted);line-height:1.8;margin-top:.35rem}
+  .qm .opt{color:var(--ink-2)}
+  .qm strong{color:var(--ink-2)}
+
+  ol.plan{list-style:none;counter-reset:ch;margin:0;padding:0;display:grid;gap:.8rem}
+  ol.plan>li{counter-increment:ch;background:var(--surface);border:1px solid var(--line);
+    border-radius:3px;padding:1rem 1.2rem;box-shadow:var(--shadow);
+    display:grid;grid-template-columns:2.2rem 1fr;gap:0 .6rem}
+  ol.plan>li::before{content:counter(ch);font-family:"IBM Plex Mono",monospace;
+    font-size:1.05rem;color:var(--accent-ink);font-weight:500;line-height:1.5}
+  ol.plan h4{font-size:1rem;margin-bottom:.3rem}
+  ol.plan .d{grid-column:2;font-size:.9rem;color:var(--ink-2);line-height:1.85}
+  ol.plan ul{margin:.4rem 0 0;padding-left:1.1rem;display:grid;gap:.25rem}
+  ol.plan .pg{grid-column:2;margin-top:.45rem;font-family:"IBM Plex Mono",monospace;
+    font-size:.74rem;color:var(--muted);letter-spacing:.05em}
+
+  ul.plain{padding-left:1.15rem;margin:0;display:grid;gap:.4rem}
+  ul.plain li{max-width:44em}
+
+  footer.end{margin-top:4.5rem;padding-top:1.4rem;border-top:2px solid var(--ink);
+    font-size:.84rem;color:var(--muted);display:grid;gap:.35rem}
+
+  @media (max-width:560px){
+    .sec-head{grid-template-columns:1fr}
+    .sec-head p{grid-column:1}
+    ul.qlist>li{grid-template-columns:1fr}
+    .qm{grid-column:1}
+    ol.plan>li{grid-template-columns:1fr}
+    ol.plan .d,ol.plan .pg{grid-column:1}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Core Uniq × 株式会社ニデック様｜2026.08.31 打合せを受けて</p>
+  <h1>中間報告の組み直し案</h1>
+  <p class="standfirst">8月31日に西内様から伺った内容で、前提が大きく動きました。<strong>「効果があったことを示す報告」から「何が分かったかを示し、次の設計を提案する報告」へ</strong>組み直します。アンケートもそれに合わせて直します。</p>
+  <div class="meta">
+    <span><b>満了</b> 2026.09.30（自動更新なし）</span>
+    <span><b>残り</b> 約1ヶ月</span>
+    <span><b>次回</b> 来週火曜（AI研修の打合せ内）</span>
+  </div>
+</header>
+
+<!-- ============ 0 ============ -->
+<section id="changed">
+  <div class="sec-head">
+    <span class="sec-num">00</span>
+    <h2>8月31日で動いた前提</h2>
+    <p>7つあります。どれも、これまでの設計の土台に関わるものでした。</p>
+  </div>
+  <div class="body">
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>分かったこと</th><th>設計への影響</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td><strong>山崎様が長期休養に入られ、トライアル期間とほぼ重なっていた</strong>（9月中旬に復帰見込み）</td><td>導入を設計し推進する予定だった方が、運用期間にいなかった。<strong>「施策を打った上での5ヶ月」ではない</strong></td></tr>
+          <tr><td class="num">2</td><td><strong>4月に管理職体制が交代。</strong>事前アンケート時（2025.12〜2026.03）の課長と、運用期間の課長が別の方。石田様・水野様は当時課長ではなく、水野様は現在も課長代理</td><td>事前→中間の差分が、ツールの効果なのか<strong>体制変更の効果なのか切り分けられない</strong>。切り分ける設問が要る</td></tr>
+          <tr><td class="num">3</td><td><strong>水野様は参加メンバーの直接の1on1相手ではない。</strong>3部署が集まった大きな課で、次世代リーダーが下と1on1し、水野様はそのリーダーと1on1する構造</td><td>「日報を見て上長が声をかける」という設計が、<strong>そもそも組織構造と噛み合っていなかった</strong></td></tr>
+          <tr><td class="num">4</td><td><strong>石田チームは少人数で現場の対話が成立しており、システムによる補完の必要性が低かった</strong>（西内様の見立て）</td><td>石田チームのスコアが動かなくても、それは失敗ではない。<strong>「効く条件・効かない条件」として報告できる</strong></td></tr>
+          <tr><td class="num">5</td><td><strong>事務局（中屋敷様・西内様）は管理画面を一度も見られていない</strong></td><td>推進役が中身を知らないまま5ヶ月経過した。運用不全の主因のひとつ</td></tr>
+          <tr><td class="num">6</td><td>利用者は<strong>使っている人と使っていない人が半々</strong></td><td>回答負荷を下げないと自由記述が空になる。設問の絞り込みが要る</td></tr>
+          <tr><td class="num">7</td><td>西内様が語られた本当の課題は、<strong>「メンバーの出自がバラバラすぎて、どちらに合わせて育成すればよいか判断がつかない」</strong></td><td>現行12問はこれを測っていない。<strong>ここに答える設問を足すのが、次の提案への最短路</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>7番について、西内様のお言葉</h3>
+    <div class="quote">
+      「みんな尖ってると、正直、<b>管理側からはどんな手を打ったらいいかわからない</b>っていうのに逆になってる。全員違うので、全然揃ってない、デコボコしてる。元が全然違うので、新規事業という意味で見るとベースがかなりずれてる。（中略）松原さんみたいに新規事業としてのベースはすごく薄いかもしれないけど、やる気がすごく尖ってる子とかもいるので、<b>どっちに合わせて教育したらいいんだ</b>みたいなのが結構ありますね。個別でやった方がいいのか、でもまとめてベースを少し揃えた方がいいのか。<b>私もそういう素人なので、判断がつかない。ずっと手探りです</b>」
+      <span class="src">2026.08.31 西内様</span>
+    </div>
+    <p>参加メンバーの出自は、実際にこれだけ違います。西内様＝エンジニア、山崎様＝エンジニア、水野様＝製品のソフトウェア設計、石田様＝研究所で研究、林様＝別事業部でコーティング・メガネレンズの研究、三宅様＝購買部門、松原様・野澤様＝新卒採用。<strong>挙手制（社内公募）と面接で集められた、意図的に多様な集団です。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section id="pivot">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>方針転換：証明ではなく、診断へ</h2>
+    <p>これは私からの新提案ではありません。8月31日に、田中様と西内様の間ですでに合意されています。</p>
+  </div>
+  <div class="body">
+    <div class="quote">
+      田中様「本来の動きとは違う形になってしまったところもあるので、たぶん出てくるアウトプットが『こんな感じになっちゃうよね』みたいな形だと、お互いにとってもったいないのかなという気がしていて。<b>育成の部分だったり、本人の課題みたいなところだったり、組織・チームの課題みたいなところを、しっかり浮き彫りに出すのも一つの成果</b>だと思うんですよね。研修も教育も、効果が出ないものはやっぱりあるので、長い目で見て、<b>そういうところを浮き彫りにさせてあげる方がよっぽど</b>、協力していただいた人たちにも『これを浮き彫りにできたから、次回はこういう取り組みをします』という方向性にあげるのもいいのかな」
+      <span class="src">2026.08.31</span>
+    </div>
+    <div class="quote">
+      西内様「やっぱそこはそこで<b>1on1やらなきゃいけないよねっていうのも一つ</b>だとは思うので。課の中で『いや、水野さんと喋ったことあんまりないんで』みたいなのとかも、多分あんまり正しい形じゃない。（中略）<b>対象にするメンバー全員にいきなりやることは難しいので、必要なところに割り振っていくっていうスタートになる</b>と思うんですけど、そういう時には<b>こういう部署の方がいいよね、そういうのの提案に最終的に持っていける</b>ようそれを中間に出て、最後の報告にはなると思うんですけど、<b>そういう気配が見えるようなものを出せると、すごく後々やりやすい</b>」
+      <span class="src">2026.08.31</span>
+    </div>
+
+    <div class="keypoint">
+      <b>つまり、報告の主語が変わります。</b>「Core Uniq に効果があった／なかった」ではなく、<strong>「この5ヶ月で、ニデック様の組織について何が分かったか。だから次に何をすべきか」</strong>。<br><br>
+      これは逃げではありません。稟議に盛り込んだ MUST②「トライアルが終わったら結果はどうなったんだという報告」に対して、<strong>最も誠実で、次につながる回答の形</strong>です。スコアが動かなかったことを、条件を伏せて糊塗する方がよほど危うい。山崎様が2月に懸念された「結局なんだったの、と言われかねない」への答えも、この形なら出せます。
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="survey">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>アンケートの修正</h2>
+    <p>確定稿からの差分だけ書きます。足すのは診断に必要な設問、削るのは重複と、いま評価しようのない設問です。</p>
+  </div>
+  <div class="body">
+
+    <h3>2-1. 全体の性格を変える</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th></th><th>確定稿</th><th>修正案</th></tr></thead>
+        <tbody>
+          <tr><td><strong>冒頭文の柱</strong></td><td>「導入前後の変化を可視化し、成果を一緒に確認する」</td><td>「<strong>いまの現在地を正確に把握し、この先どこに何を届けるべきかを一緒に決める</strong>」</td></tr>
+          <tr><td><strong>付記</strong></td><td>—</td><td>「この5ヶ月は、<strong>体制の変更や担当者の交代が重なった期間</strong>でもありました。<strong>使えなかった・続かなかったという回答こそ、次の設計に必要な情報</strong>としてお聞きします」</td></tr>
+          <tr><td><strong>設問数</strong></td><td>メンバー36／管理職38</td><td>メンバー<strong>37</strong>（＋4 −3）／管理職<strong>41</strong>（＋4、うち1問は事務局のみ）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2-2. メンバー用｜足す4問</h3>
+    <div class="qbox">
+      <header><h4>追加設問</h4><span class="hint">N1–N4</span></header>
+      <ul class="qlist">
+        <li><span class="qid">N1</span><div><div class="qt">3月の導入時と比べて、あなたの上司や職場の体制に変化はありましたか <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>セクション1（Q12）の直後。<strong>形式：</strong>ラジオ＋自由記述<br>
+          <span class="opt">上司が変わった ／ チーム・部署の構成が変わった ／ 両方変わった ／ 特に変わっていない ／ わからない</span>＋「差し支えなければ、どのように変わったか教えてください」<br>
+          <strong>この1問がないと、全スコアの解釈ができません。</strong>4月に管理職が交代しているため、事前→中間の差分がツールによるものか体制変更によるものか、切り分ける手段がなくなります</div></li>
+
+        <li><span class="qid">N2</span><div><div class="qt">日々の業務で、いちばん多く相談・報告している相手はどなたですか <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>セクション5（上司・チームとの関わり）の冒頭。<strong>形式：</strong>ラジオ<br>
+          <span class="opt">課長・課長代理 ／ チームリーダー ／ 同じチームの同僚 ／ 他部署の方 ／ 特にいない</span><br>
+          水野チームは、参加メンバーと水野様の間にチームリーダーが1階層入る構造です。<strong>「日報を見て上長が声をかける」という設計が組織構造と噛み合っていたのかを、事実として出します。</strong>報告の核心のひとつになります</div></li>
+
+        <li><span class="qid">N3</span><div><div class="qt">新規事業に取り組むうえで、いま自分に足りないと感じることをすべて選んでください <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>セクション7（これから）の冒頭。<strong>形式：</strong>チェックボックス<br>
+          <span class="opt">顧客インタビューの進め方 ／ 仮説を立てて検証する型 ／ 市場・競合の調べ方 ／ 事業計画や数字の組み立て ／ 社内の関係部署を巻き込む方法 ／ 技術と事業をつなぐ考え方 ／ 時間の確保 ／ 何が足りないのかがまだ分からない ／ 特にない</span><br>
+          <strong>西内様が「どっちに合わせて教育したらいいか判断がつかない」とおっしゃった問題に、直接答える設問です。</strong>8名分の回答が重なるところが共通研修の対象、割れるところが個別支援の対象。次期提案の設計図がここから引けます</div></li>
+
+        <li><span class="qid">N4</span><div><div class="qt">この部署に来る前の経験のうち、いまの仕事に活きていると感じることを教えてください。また、逆に「これを先に知っておきたかった」と思うことがあれば教えてください <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>N3の直後。<strong>形式：</strong>記述式（長文）<br>
+          購買・製品ソフト設計・コーティング研究・新卒と、出自が全員違います。<strong>その多様性が強みとして効いているのか、それとも共通基盤の欠如として効いているのか</strong>を、本人の言葉で確かめます</div></li>
+      </ul>
+    </div>
+
+    <h3>2-3. メンバー用｜削る3つ</h3>
+    <div class="qbox">
+      <header><h4>削除・統合</h4><span class="hint">3件</span></header>
+      <ul class="qlist">
+        <li><span class="qid">Q15</span><div><div class="qt">現在の利用状況に、いちばん近いものを教えてください <span class="chip chip-cut">削除</span></div></div>
+          <div class="qm">Q13（入力頻度）とほぼ同じことを聞いています。Q13で足ります</div></li>
+        <li><span class="qid">Q25</span><div><div class="qt">それは、どう変わると使いたくなりますか <span class="chip chip-cut">Q24に統合</span></div></div>
+          <div class="qm">Q24を「いちばん改善してほしいものと、どう変わると使いたくなるかを教えてください」の1問にまとめます</div></li>
+        <li><span class="qid">Q23</span><div><div class="qt">機能ごとの役立ち度（グリッド） <span class="chip chip-keep">5項目→3項目</span></div></div>
+          <div class="qm">「経験の棚卸し」と「未来設計」は3月に一度きりで、Q16（見直したか）で状況が取れます。<strong>残すのは ①日報 ②AIバディのフィードバック ③週次レポート の3つ</strong>。設問数は変わりませんが、回答負荷が目に見えて下がります</div></li>
+      </ul>
+    </div>
+
+    <h3>2-4. 管理職用｜足す4問</h3>
+    <div class="qbox">
+      <header><h4>追加設問</h4><span class="hint">M1–M4</span></header>
+      <ul class="qlist">
+        <li><span class="qid">M1</span><div><div class="qt">現在の課長・課長代理のお立場になられたのはいつですか <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>Q37（お立場）の直後。<strong>形式：</strong>ラジオ<br>
+          <span class="opt">2026年4月以降 ／ それ以前</span><br>
+          メンバー版N1と対。<strong>事前アンケート時点と運用時点で上長が違うという事実を、報告に事実として書くための根拠になります</strong></div></li>
+
+        <li><span class="qid">M2</span><div><div class="qt">Core Uniq に参加しているメンバーと、あなたは直接1on1をされていますか <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>セクション2（ご自身の関わり方）の冒頭。<strong>形式：</strong>ラジオ＋自由記述<br>
+          <span class="opt">全員と直接している ／ 一部のメンバーと直接している ／ チームリーダーを介している ／ していない</span>＋「その理由・背景があれば教えてください」<br>
+          <strong>この設問が今回いちばん効きます。</strong>水野様の構造をご本人の言葉で記録に残せます。Q13〜Q15（管理画面を開いた頻度・声をかけた回数）の低さが、意欲の問題ではなく<strong>構造の問題</strong>だったことを示せます</div></li>
+
+        <li><span class="qid">M3</span><div><div class="qt">推進担当として、今回のトライアルで足りなかったと感じることをすべて選んでください <span class="chip chip-add">追加・事務局のみ</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>セクション5（社内へのご報告のために）の冒頭。<strong>形式：</strong>チェックボックス＋自由記述<br>
+          <span class="opt">管理画面の中身を確認できる環境がなかった ／ 導入目的をメンバーに伝えきる機会がなかった ／ 定期的に利用状況を確認する場がなかった ／ 推進の担当者が不在の期間があった ／ 対象メンバーの選び方 ／ 対象部署の選び方 ／ 特にない</span><br>
+          西内様はすでに「管理者側も一人入力できるようにしておかないと何のこっちゃ。<strong>そこはちょっと失敗だったなと自分も思ってます</strong>」とおっしゃっています。<strong>聞けば率直に答えていただけますし、これが次期の運用設計にそのまま変わります</strong></div></li>
+
+        <li><span class="qid">M4</span><div><div class="qt">新規事業に取り組むメンバーを育てるうえで、いま最も難しいと感じることは何ですか <span class="chip chip-add">追加</span></div></div>
+          <div class="qm"><strong>置き場所：</strong>M3の直後・全員必須。<strong>形式：</strong>記述式（長文）<br>
+          「メンバーの出自がバラバラで、どちらに合わせて育成すればよいか判断がつかない」という課題を、<strong>報告書に引用できる形でご本人の言葉として残します。</strong>次期提案は、この一文に対して組み立てます</div></li>
+      </ul>
+    </div>
+
+    <h3>2-5. 位置づけを変える設問</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>設問</th><th>これまでの位置づけ</th><th>修正後</th></tr></thead>
+        <tbody>
+          <tr><td class="num">メンバーQ30<br>管理職Q27</td><td>稟議3項目の<strong>改善を示す</strong></td><td>稟議3項目の<strong>現在地を出す。</strong>動いていないならそのまま出す。体制変更（N1・M1）と重ねて読み、「何が効いて何が効かなかったか」の材料にする</td></tr>
+          <tr><td class="num">管理職Q32</td><td>横展開先を聞く（一般的な選択肢）</td><td>選択肢に <strong>「先端技術研究所で対象人数を増やして」</strong> を明記。西内様が「もっと先端研みたいな部署で、もっと人数増やしてやった方が良かったなというのも学び」とおっしゃっています。<strong>ご自身の見立てを選択肢として置き、報告での提案に接続します</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="report">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>報告書の構成案</h2>
+    <p>情報システム部への提出物。全10枚程度を想定しています。4章が今回の要です。</p>
+  </div>
+  <div class="body">
+    <p style="font-size:.95rem"><strong>表題案：</strong>「Core Uniq 先行導入トライアル 実施報告と、次期に向けたご提案」</p>
+
+    <ol class="plan">
+      <li>
+        <div><h4>やったこと</h4></div>
+        <div class="d">期間 2026.03.31〜09.30／対象10名（メンバー8＋管理職2）／研究開発本部 先端技術研究所・事業創成課。稟議の根拠となった組織サーベイ3項目と、キックオフで掲げた3つのゴールを再掲する。<strong>約束したことを最初に置く。</strong></div>
+        <div class="pg">1枚</div>
+      </li>
+      <li>
+        <div><h4>数字で見た結果</h4></div>
+        <div class="d">
+          事前→中間の12項目スコア（個人別・チーム別）／利用状況（入力頻度・継続率・ログイン率）／稟議3項目の変化。
+          <ul>
+            <li><strong>石田チームと水野チームは必ず分けて出す</strong>（新規事業専任の課と、技術ベースの大きな課）</li>
+            <li><strong>「使った量 × 変化幅」の散布</strong>を1枚入れる。「前向きな人を集めただけでは」への先回りになる</li>
+          </ul>
+        </div>
+        <div class="pg">2枚</div>
+      </li>
+      <li>
+        <div><h4>現場で起きたこと</h4></div>
+        <div class="d">メンバー・管理職の声を抜粋（匿名化）。<strong>良かった話と難しかった話を必ず同じ分量で載せる。</strong>片方だけだと信用されません。</div>
+        <div class="pg">1枚</div>
+      </li>
+      <li>
+        <div><h4>この結果をどう読むべきか — 前提の開示</h4></div>
+        <div class="d">
+          <strong>今回の報告書の背骨です。</strong>次の5点を正面から書く。
+          <ul>
+            <li>推進を担当する予定だった者が、期間の大半で不在となった</li>
+            <li>2026年4月に管理職体制が交代し、事前調査時点と運用時点で上長が異なる</li>
+            <li>参加メンバーと管理者の間に1階層あり、「日報を見て上長が声をかける」という設計が組織構造と噛み合わなかった（水野チーム）</li>
+            <li>石田チームは少人数で日常的な対話が成立しており、システムによる補完の必要性が低かった</li>
+            <li>推進担当が管理画面を確認できる環境になく、運用に関与できなかった</li>
+          </ul>
+          → <strong>「スコアが動かなかった＝ツールが効かなかった」とは言えない。</strong>上記の条件下での5ヶ月だった、と明示する。
+        </div>
+        <div class="pg">1枚</div>
+      </li>
+      <li>
+        <div><h4>それでも見えたこと（本トライアルの成果）</h4></div>
+        <div class="d">
+          <strong>A. 組織の課題が具体的に見えた</strong><br>
+          ・水野チームでは、課長代理と参加メンバーの間に直接の対話機会がほとんどない<br>
+          ・メンバーの出自が多様すぎ、育成の共通ベースが定まっていない<br>
+          ・「どちらに合わせて育成すべきか判断がつかない」という管理側の手探り状態<br><br>
+          <strong>B. 個人の変化は確かに起きている</strong>（エピソード集）<br><br>
+          <strong>C. ツールが効く条件・効かない条件が分かった</strong><br>
+          ・効く：人数が多く日常的な対話が取りにくい部署／上長と直接の接点がある関係<br>
+          ・効きにくい：少人数で現場の対話が成立している部署／上長との間に階層がある関係<br><br>
+          <span style="color:var(--muted)">Cは、社内の他部署へ展開を検討する際の判断基準としてそのまま使えます。<strong>これが今回いちばん価値のある産物です。</strong></span>
+        </div>
+        <div class="pg">2枚</div>
+      </li>
+      <li>
+        <div><h4>次にやるべきこと（ご提案）</h4></div>
+        <div class="d">
+          <strong>① 対象の見直し</strong>：全員に一律ではなく、必要なところへ。人数が多く対話機会が取りにくい部署から<br>
+          <strong>② 対話の機会そのものをつくる</strong>：課長代理と参加メンバーが直接話す場を、月1回でも設ける<br>
+          <strong>③ 育成の共通ベースをつくる</strong>：バラバラな出自を揃えるための、新規事業の基礎（顧客インタビュー・仮説検証・事業計画）の共通研修<br>
+          <strong>④ 推進体制を整える</strong>：管理画面を確認できる環境と、月1回の運用ミーティング<br><br>
+          <span style="color:var(--muted)">①②④はニデック様側の運用設計、③はGivin' Backがご支援できる領域。<strong>③はメンバー版N3の集計結果がそのままカリキュラムの根拠になります。</strong></span>
+        </div>
+        <div class="pg">2枚</div>
+      </li>
+      <li>
+        <div><h4>継続について</h4></div>
+        <div class="d">
+          自動更新は特約で適用外、9月末で満了。次の3案を並べて提示し、選んでいただく。
+          <ul>
+            <li><strong>案A</strong>：対象部署・対象人数を変えて継続（①②④を条件に）</li>
+            <li><strong>案B</strong>：一旦終了し、③の共通研修に振り替える</li>
+            <li><strong>案C</strong>：規模を縮小して継続しつつ、③を並走させる</li>
+          </ul>
+          <span style="color:var(--muted)">8月31日に田中様が「金額は自分たちも少し見直してもいいかなと思うところも正直ある」とおっしゃっていました。<strong>案Cを本命に置くなら、価格の再提示とセットにするのが自然です。</strong></span>
+        </div>
+        <div class="pg">1枚</div>
+      </li>
+    </ol>
+
+    <div class="note">
+      <h4>書き方に必ず注意が要る箇所</h4>
+      <ul>
+        <li><strong>第4章の1点目（推進担当の不在）は、書き方を必ず西内様に確認してください。</strong>個人の健康に関する事柄です。報告書には<strong>「推進担当者が長期不在となる期間があった」程度に留め、理由や期間の詳細は書かない</strong>のが原則です。本人が復帰される前に、本人の不在を材料として報告書に載せることになるため、<strong>中屋敷様・西内様の了解を取ってから書く</strong>べき箇所です。</li>
+        <li>第4章の3点目・4点目（水野チームの階層／石田チームは不要だった）は、<strong>個人の力量の話に読まれないよう、必ず「組織構造」「部署特性」として書く。</strong>アンケートM2の回答をそのまま根拠に引くと、事実として読ませやすくなります。</li>
+        <li>第5章Aの「判断がつかない手探り」は、<strong>西内様ご自身の言葉（M4）を引用する形にする。</strong>外部が指摘する形にすると角が立ちます。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="next">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>来週火曜に決めたいこと</h2>
+    <p>AI研修の打合せに差し込む想定なので、5つに絞りました。</p>
+  </div>
+  <div class="body">
+    <div class="scroll">
+      <table>
+        <thead><tr><th class="num">#</th><th>決めたいこと</th><th>こちらの推奨</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>報告の方向性を「効果の証明」から「診断と次期提案」に切り替えてよいか</td><td>切り替える。8月31日にすでに方向は合っているので、正式に握る</td></tr>
+          <tr><td class="num">2</td><td><strong>第4章（前提の開示）をどこまで書いてよいか。</strong>特に推進担当の不在の記載</td><td>「長期不在となる期間があった」に留める。<strong>この確認は必須</strong></td></tr>
+          <tr><td class="num">3</td><td>アンケート実施日</td><td>9月8日（月）配信・12日（金）締切。管理職版は15日配信。<strong>山崎様の復帰見込みが9月中旬なので、それより前に回収を終える</strong></td></tr>
+          <tr><td class="num">4</td><td>組織サーベイ3項目の原文をお借りできるか</td><td>借りる。メンバーQ30・管理職Q27を差し替えると、稟議の課題と結果が直接つながる</td></tr>
+          <tr><td class="num">5</td><td>継続3案のうち、どれをベースに検討するか</td><td>案C（縮小継続＋共通研修の並走）。<strong>AI研修の予算枠と一体で相談できる今のタイミングが好機</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="keypoint">
+      <b>あわせて、いま動かせるものが1つあります。</b>西内様が「管理画面の中身を知らないまま毎回話しているのが申し訳ない」「デモ的に入れればよかった」とおっしゃっていました。<strong>個人情報を含まないデモ環境をご用意して、次回の打合せで一緒に画面を見る</strong>だけでも、報告書を作る際の解像度がまったく変わります。開発は要らず、こちらのアカウントの画面共有で足ります。
+    </div>
+
+    <h3>この修正を反映するもの</h3>
+    <ul class="plain">
+      <li><strong>中間アンケート確定稿</strong>：上記2-2〜2-5を反映して差し替え（ご了承後すぐ着手できます）</li>
+      <li><strong>中間アンケート設計書</strong>：00〜03章に8月31日の前提を追記</li>
+      <li><strong>報告書</strong>：本書03章の構成で新規作成。回収後の集計が入り次第</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="end">
+  <span>Core Uniq 中間報告の組み直し案｜Givin' Back 株式会社</span>
+  <span>2026.08.31 の西内様との打合せ内容と、これまでの音声13本・現行フォーム2本をもとに作成。</span>
+</footer>
+
+</div>
