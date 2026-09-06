@@ -1,0 +1,330 @@
+<title>ニデック中間報告インデックス</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --ground: #EFF2F1;
+    --surface: #FFFFFF;
+    --surface-2: #F6F8F7;
+    --ink: #131E1C;
+    --ink-2: #35443F;
+    --muted: #5E6E6A;
+    --line: #D6DEDB;
+    --line-strong: #B9C6C2;
+    --accent: #0D555C;
+    --accent-ink: #0D555C;
+    --accent-soft: #DDEBEA;
+    --signal: #9C5417;
+    --signal-soft: #F3E5D6;
+    --shadow: 0 1px 2px rgba(19,30,28,.05), 0 8px 24px -16px rgba(19,30,28,.28);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0C1211; --surface: #141C1B; --surface-2: #182120;
+      --ink: #E7EDEB; --ink-2: #C3D0CD; --muted: #93A29E;
+      --line: #253130; --line-strong: #354442;
+      --accent: #59B6BB; --accent-ink: #7CCBCF; --accent-soft: #10322F;
+      --signal: #D89452; --signal-soft: #332415;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0C1211; --surface: #141C1B; --surface-2: #182120;
+    --ink: #E7EDEB; --ink-2: #C3D0CD; --muted: #93A29E;
+    --line: #253130; --line-strong: #354442;
+    --accent: #59B6BB; --accent-ink: #7CCBCF; --accent-soft: #10322F;
+    --signal: #D89452; --signal-soft: #332415;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+    font-size: 16px; line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 56rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  header.masthead { padding: 3.6rem 0 1.8rem; border-bottom: 2px solid var(--ink); }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace; font-size: .72rem;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 1rem;
+  }
+  h1 {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif; font-weight: 700;
+    font-size: clamp(1.9rem,5vw,2.8rem); line-height: 1.28; margin: 0 0 .9rem; text-wrap: balance;
+  }
+  .standfirst { font-size: 1.02rem; color: var(--ink-2); max-width: 40em; margin: 0; }
+
+  /* status strip */
+  .status {
+    display: grid; grid-template-columns: repeat(auto-fit,minmax(11rem,1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+    margin: 2rem 0 3rem;
+  }
+  .status > div { background: var(--surface); padding: .9rem 1.1rem; }
+  .status dt {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 .3rem;
+  }
+  .status dd {
+    margin: 0; font-size: 1.05rem; font-weight: 500; line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
+  .status dd small { display: block; font-size: .78rem; font-weight: 400; color: var(--muted); line-height: 1.6; }
+  .status .warn dd { color: var(--signal); }
+
+  h2 {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif; font-weight: 700;
+    font-size: 1.42rem; margin: 3.4rem 0 .5rem; padding-bottom: .5rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .lede { font-size: .94rem; color: var(--ink-2); margin: 0 0 1.6rem; max-width: 42em; }
+
+  /* documents */
+  ol.docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  ol.docs > li {
+    background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+    padding: 1.3rem 1.4rem; display: grid; grid-template-columns: 2.6rem 1fr; gap: 0 1rem;
+  }
+  .step {
+    font-family: "IBM Plex Mono", monospace; font-size: .95rem; color: var(--accent-ink);
+    padding-top: .18rem;
+  }
+  .doc-title {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif;
+    font-size: 1.16rem; font-weight: 700; margin: 0 0 .1rem; line-height: 1.5;
+  }
+  .doc-role {
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 .5rem;
+  }
+  .doc-body { font-size: .92rem; color: var(--ink-2); margin: 0 0 .8rem; }
+  .doc-body strong { color: var(--ink); }
+  .links { display: flex; flex-wrap: wrap; gap: .5rem; grid-column: 2; }
+  .links a {
+    font-size: .82rem; text-decoration: none; padding: .3rem .75rem;
+    border: 1px solid var(--line-strong); border-radius: 999px; white-space: nowrap;
+  }
+  .links a:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .links a.primary { border-color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+  @media (max-width: 560px) {
+    ol.docs > li { grid-template-columns: 1fr; }
+    .step { padding-top: 0; }
+    .links { grid-column: 1; }
+  }
+
+  /* survey index */
+  .forms { display: grid; grid-template-columns: repeat(auto-fit,minmax(19rem,1fr)); gap: 1.4rem; }
+  .form {
+    background: var(--surface); border: 1px solid var(--line); padding: 1.3rem 1.4rem;
+  }
+  .form h3 {
+    font-family: "Zen Old Mincho","Hiragino Mincho ProN",serif; font-size: 1.1rem;
+    margin: 0 0 .2rem; font-weight: 700;
+  }
+  .form .who { font-size: .82rem; color: var(--muted); margin: 0 0 1rem; }
+  .form .count {
+    font-family: "IBM Plex Mono", monospace; font-size: 1.7rem; color: var(--accent-ink);
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .form .count span { font-size: .8rem; color: var(--muted); letter-spacing: .08em; }
+  table.idx { width: 100%; border-collapse: collapse; font-size: .87rem; }
+  table.idx td { padding: .42rem 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+  table.idx tr:last-child td { border-bottom: none; }
+  table.idx td.r {
+    font-family: "IBM Plex Mono", monospace; font-size: .78rem; color: var(--muted);
+    white-space: nowrap; text-align: right; padding-left: .8rem; font-variant-numeric: tabular-nums;
+  }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; letter-spacing: .06em;
+    color: var(--signal); background: var(--signal-soft); padding: .1rem .4rem;
+    border-radius: 3px; margin-left: .4rem; white-space: nowrap;
+  }
+
+  /* open items */
+  ul.open { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+  ul.open > li {
+    display: grid; grid-template-columns: 6.4rem 1fr; gap: 0 1rem;
+    padding-bottom: .8rem; border-bottom: 1px solid var(--line); font-size: .93rem;
+  }
+  ul.open > li:last-child { border-bottom: none; }
+  ul.open .when {
+    font-family: "IBM Plex Mono", monospace; font-size: .74rem; letter-spacing: .06em;
+    color: var(--muted); padding-top: .3rem;
+  }
+  ul.open b { display: block; }
+  ul.open p { margin: .15rem 0 0; color: var(--ink-2); font-size: .88rem; }
+  @media (max-width: 560px) { ul.open > li { grid-template-columns: 1fr; } }
+
+  .caution {
+    background: var(--signal-soft); border-left: 3px solid var(--signal);
+    padding: 1.1rem 1.3rem; font-size: .92rem; color: var(--ink-2);
+  }
+  .caution b { color: var(--ink); }
+  .caution p { margin: 0 0 .7rem; }
+  .caution p:last-child { margin-bottom: 0; }
+
+  footer.end {
+    margin-top: 4rem; padding-top: 1.4rem; border-top: 2px solid var(--ink);
+    font-size: .84rem; color: var(--muted); display: grid; gap: .35rem;
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Core Uniq × 株式会社ニデック様</p>
+  <h1>ニデック中間報告インデックス</h1>
+  <p class="standfirst">先行導入トライアルの中間アンケートと結果報告に関する資料の置き場所です。8月31日の打合せを受けて、報告の方針を「効果の証明」から「現在地の診断と、次の設計」へ変更しています。</p>
+</header>
+
+<dl class="status">
+  <div><dt>対象</dt><dd>10名<small>メンバー8・管理職2／先端技術研究所 事業創成課</small></dd></div>
+  <div><dt>期間</dt><dd>03.31 — 09.30<small>半年プラン（2026年）</small></dd></div>
+  <div class="warn"><dt>満了まで</dt><dd id="left">—<small>自動更新は特約で適用外</small></dd></div>
+  <div><dt>次回</dt><dd>来週火曜<small>AI研修の打合せに同席</small></dd></div>
+</dl>
+
+<h2>資料</h2>
+<p class="lede">上から順に読むと経緯がつながります。<strong>フォームを作る作業には ② だけで足ります。</strong></p>
+
+<ol class="docs">
+  <li>
+    <span class="step">01</span>
+    <div>
+      <p class="doc-title">中間報告の組み直し案</p>
+      <p class="doc-role">方針・2026.08.31 打合せを受けて</p>
+      <p class="doc-body">8月31日に動いた前提7点、報告の方針転換、アンケートの修正内容、報告書の構成案7章、火曜に決めたいこと5点。<strong>なぜこの形になったかは、すべてここに書いてあります。</strong></p>
+    </div>
+    <div class="links">
+      <a class="primary" href="https://docs.google.com/document/d/16kEMN86WMDrpxnDApQSYSF1UaJ_yDKI3uQH8AV_HLKw/edit">Google ドキュメント</a>
+      <a href="https://claude.ai/code/artifact/a94148d0-a23d-4ed1-9678-b18cc1781ea4">Web版</a>
+    </div>
+  </li>
+  <li>
+    <span class="step">02</span>
+    <div>
+      <p class="doc-title">中間アンケート 全設問</p>
+      <p class="doc-role">確定稿・第2版／フォーム作成用</p>
+      <p class="doc-body">メンバー用38問・管理職用42問の全文、回答形式、選択肢、必須の指定、設問ごとのねらい。<strong>そのまま Google フォームに入力できます。</strong>配信の順序と集計で出すものも末尾に。</p>
+    </div>
+    <div class="links">
+      <a class="primary" href="https://docs.google.com/document/d/1CnXl8tNVt6qjZy_4YqNyEhvvt34oMeikJAN8GnIy4h4/edit">Google ドキュメント</a>
+      <a href="https://claude.ai/code/artifact/56c0f366-e89a-4315-a32f-a5dbaf404c2d">Web版</a>
+    </div>
+  </li>
+  <li>
+    <span class="step">03</span>
+    <div>
+      <p class="doc-title">中間アンケート設計書</p>
+      <p class="doc-role">根拠・打合せ13本と現行フォームの読み込み</p>
+      <p class="doc-body">稟議の経緯、事前アンケートのスコア、参加者それぞれの出自、社内で突かれる論点3点。<strong>「なぜこの設問なのか」を社内で説明するときの元資料です。</strong>8月31日以前の整理のため、方針は 01 が優先します。</p>
+    </div>
+    <div class="links">
+      <a href="https://claude.ai/code/artifact/bc716e67-e75d-4caa-9617-8837dda56115">Web版</a>
+    </div>
+  </li>
+</ol>
+
+<h2>アンケートの全体像</h2>
+<p class="lede">現行フォームの12問は文言・順序とも変えていません。<span class="tag">8/31追加</span> は8月31日の打合せを受けて足した設問です。</p>
+
+<div class="forms">
+  <div class="form">
+    <h3>メンバー用</h3>
+    <p class="who">松原様・野澤様・三宅様・戸田様／林様・秋山様・伊藤様・CHEN様</p>
+    <p class="count">38<span> 問 ／ 10〜12分</span></p>
+    <table class="idx">
+      <tbody>
+        <tr><td>1　いまのご自身について<span class="tag">8/31追加</span></td><td class="r">Q1–13</td></tr>
+        <tr><td>2　この5ヶ月の使い方</td><td class="r">Q14–17</td></tr>
+        <tr><td>3　この5ヶ月の変化</td><td class="r">Q18–22</td></tr>
+        <tr><td>4　機能ごとの効き方</td><td class="r">Q23–24</td></tr>
+        <tr><td>5　上司・チームとの関わり<span class="tag">8/31追加</span></td><td class="r">Q25–29</td></tr>
+        <tr><td>6　いまの職場の実感</td><td class="r">Q30</td></tr>
+        <tr><td>7　これから<span class="tag">8/31追加</span></td><td class="r">Q31–34</td></tr>
+        <tr><td>8　ご記入者について</td><td class="r">Q35–38</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form">
+    <h3>管理職用</h3>
+    <p class="who">水野様・石田様（チームリーダー）／中屋敷様・西内様（事務局）</p>
+    <p class="count">42<span> 問 ／ 12〜15分・事務局は約28問</span></p>
+    <table class="idx">
+      <tbody>
+        <tr><td>0　はじめに（分岐）<span class="tag">8/31追加</span></td><td class="r">Q1–2</td></tr>
+        <tr><td>1　あなたとメンバー・チームについて</td><td class="r">Q3–14</td></tr>
+        <tr><td>2　ご自身の関わり方<span class="tag">8/31追加</span></td><td class="r">Q15–19</td></tr>
+        <tr><td>3　メンバーに起きた変化</td><td class="r">Q20–24</td></tr>
+        <tr><td>4　育成と評価のあいだ</td><td class="r">Q25–28</td></tr>
+        <tr><td>5　振り返りと社内報告<span class="tag">8/31追加</span></td><td class="r">Q29–34</td></tr>
+        <tr><td>6　この先について</td><td class="r">Q35–39</td></tr>
+        <tr><td>7　ご記入者について</td><td class="r">Q40–42</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h2>まだ決まっていないこと</h2>
+<p class="lede">満了まで1ヶ月を切っています。上から順に、期限の近いものです。</p>
+
+<ul class="open">
+  <li>
+    <span class="when">来週火曜</span>
+    <div><b>報告の方針を、この形で確定していただく</b>
+      <p>「効果があった／なかった」ではなく「何が分かったか、だから次に何をするか」。8月31日に田中様と西内様の間で合意済みですが、中屋敷様にも通しておく必要があります。</p></div>
+  </li>
+  <li>
+    <span class="when">来週火曜</span>
+    <div><b>山崎様の件の書き方を、西内様に確認する</b>
+      <p>報告書に載せるかどうか、載せるとしてどこまで書くか。<strong>先に確認を取ってからでないと書けません。</strong></p></div>
+  </li>
+  <li>
+    <span class="when">9月上旬</span>
+    <div><b>組織サーベイの原文をお借りする</b>
+      <p>稟議の根拠になった3項目（役割の曖昧さ／燃え尽き／駆け引きの多さ）の設問文。これがあれば、メンバーQ30・管理職Q32をそのまま差し替えられ、稟議とアンケート結果が直接つながります。</p></div>
+  </li>
+  <li>
+    <span class="when">9月上旬</span>
+    <div><b>フォームを作成して配信する</b>
+      <p>メンバー用を先に締め切ってから管理職用を出します（管理職用Q20〜Q24で、メンバーの変化を答えていただくため）。</p></div>
+  </li>
+  <li>
+    <span class="when">9月下旬</span>
+    <div><b>継続の可否を明示的に決めていただく</b>
+      <p>自動更新が適用外のため、放っておくと9月30日で満了します。継続・終了・振り替えの3案を並べて出す想定です。</p></div>
+  </li>
+</ul>
+
+<h2>書き方に注意が要る箇所</h2>
+<div class="caution">
+  <p><b>推進担当者の不在について。</b>報告書には「推進担当者が長期不在となる期間があった」以上のことは書きません。理由も期間も書きません。ご本人が復帰される前に、その不在を報告の材料にすることになるため、<b>中屋敷様・西内様の了解を取ってから書きます。</b></p>
+  <p><b>水野チームの階層と、石田チームの結果について。</b>どちらも「組織構造」「部署特性」として書きます。個人の力量の話には絶対に読ませません。管理職用Q15の回答を根拠に引くと、事実として読ませやすくなります。</p>
+  <p><b>「判断がつかない、ずっと手探り」という一節について。</b>西内様ご自身のお言葉です。外部が指摘する形にせず、管理職用Q30でご本人に書いていただいたものを引用する形にします。</p>
+</div>
+
+<footer class="end">
+  <span>Core Uniq × 株式会社ニデック様｜Givin' Back 株式会社</span>
+  <span>最終更新 2026.09.06（8月31日の打合せを反映した第2版）</span>
+</footer>
+
+</div>
+
+<script>
+  (function () {
+    var end = new Date(2026, 8, 30, 23, 59, 59);
+    var days = Math.ceil((end - new Date()) / 86400000);
+    var el = document.getElementById('left');
+    if (!el) return;
+    var small = el.querySelector('small');
+    el.firstChild.nodeValue = days > 0 ? days + '日' : '満了';
+    if (days <= 0 && small) small.textContent = '2026.09.30 で終了';
+  })();
+</script>
