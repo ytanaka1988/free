@@ -32,7 +32,7 @@
     background:var(--deck);border:1px solid var(--line);border-radius:10px;padding:14px;}
   #setup label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);}
   #setup select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;}
-  #setup .start{grid-column:1/-1;display:flex;justify-content:center;}
+  #setup .start{order:-1;grid-column:1/-1;display:flex;justify-content:center;}
   #help{margin:0;color:var(--muted);font-size:13px;line-height:1.7;text-align:center;}
   kbd{font-family:inherit;background:var(--deck);border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink);}
   #rotate{display:none;margin:0;text-align:center;color:var(--yellow);font-size:13px;}
@@ -42,6 +42,7 @@
 <body>
 <div id="app">
   <div id="stage"><canvas id="cv" aria-label="試合画面"></canvas></div>
+  <p id="jsWarn" style="color:#ffd23f;text-align:center;margin:0">ゲームを動かすには JavaScript が必要です。ファイルのプレビューではなく Chrome / Edge / Safari で開いてください。</p>
   <p id="rotate">スマホは横向きにすると遊びやすいです</p>
   <div id="deck">
     <div id="setup">
@@ -68,8 +69,9 @@
     <div id="overCtl" hidden><button id="againBtn" class="big">もう一度あそぶ</button></div>
   </div>
   <p id="help">
-    打撃：<kbd>←↑↓→</kbd>/<kbd>WASD</kbd>・マウス・指ドラッグでカーソル移動、<kbd>Space</kbd>/クリックでスイング（ボールに重ねてタイミングよく）<br>
-    投球：<kbd>1</kbd>〜<kbd>4</kbd>で球種、カーソルでコース、<kbd>Space</kbd>/クリックで投球　／　演出は<kbd>Space</kbd>でスキップ
+    打撃：マウスか<kbd>←↑↓→</kbd>/<kbd>WASD</kbd>でカーソルを白い輪（ボールの到達点）に合わせ、ボールが来たら<kbd>Space</kbd>/<kbd>Enter</kbd>/クリックでスイング<br>
+    投球：<kbd>1</kbd>〜<kbd>4</kbd>で球種、マウスか矢印キーでコース、<kbd>Space</kbd>/クリックで投球　／　演出は<kbd>Space</kbd>でスキップ<br>
+    スマホ：画面を指でなぞってカーソル移動、画面タップか［スイング］［投げる］ボタン
   </p>
 </div>
 <script>
@@ -94,7 +96,7 @@ const CUR_LIM = { l: -0.44, r: 0.44, b: 0.2, t: 1.34 };
 const FENCE_H = 3.6;
 const MOUND = { x: 0, y: 0.25, z: 18.4 };
 const RELEASE_Z = 16.9;
-const SWING_LAG = 0.12; // ボタンを押してからバットがホームベース上に来るまで
+const SWING_LAG = 0.03; // ボタンを押してからバットがホームベース上に来るまで(ボールが来た瞬間に押せば当たる)
 const POS = ['投', '捕', '一', '二', '三', '遊', '左', '中', '右'];
 const POS_FULL = ['ピッチャー', 'キャッチャー', 'ファースト', 'セカンド', 'サード', 'ショート', 'レフト', 'センター', 'ライト'];
 const FIELD_HOME = [
@@ -107,9 +109,9 @@ const inZone = (x, y) => Math.abs(x) <= ZONE.r + BALL_R && y >= ZONE.b - BALL_R 
 const rank = (v) => (v >= 90 ? 'S' : v >= 80 ? 'A' : v >= 70 ? 'B' : v >= 60 ? 'C' : v >= 50 ? 'D' : v >= 40 ? 'E' : v >= 20 ? 'F' : 'G');
 const runSpeed = (sp) => 6.0 + sp / 100 * 2.6;   // m/s
 const DIFF = [
-  { name: 'やさしい', dur: 1.24, win: 1.35, cur: 1.22, cpuEye: 1.45, cpuCtl: 1.35, hint: true },
-  { name: 'ふつう', dur: 1.0, win: 1.0, cur: 1.0, cpuEye: 1.0, cpuCtl: 1.0, hint: false },
-  { name: 'つよい', dur: 0.84, win: 0.86, cur: 0.9, cpuEye: 0.78, cpuCtl: 0.8, hint: false },
+  { name: 'やさしい', dur: 1.24, win: 1.35, cur: 1.22, cpuEye: 1.45, cpuCtl: 1.35, hintU: 0.45 },
+  { name: 'ふつう', dur: 1.0, win: 1.0, cur: 1.0, cpuEye: 1.0, cpuCtl: 1.0, hintU: 0.6 },
+  { name: 'つよい', dur: 0.84, win: 0.86, cur: 0.9, cpuEye: 0.78, cpuCtl: 0.8, hintU: 0.75 },
 ];
 
 // ===================== 球種 =====================
@@ -575,7 +577,7 @@ function cpuBatPlan(pc, batter, count, diffIdx, fbDur, situ = {}) {
   const cur = { x: clamp(pc.end.x + gauss() * sig, CUR_LIM.l, CUR_LIM.r), y: clamp(pc.end.y + gauss() * sig * 0.85, CUR_LIM.b, CUR_LIM.t) };
   const read = 0.5 + eye * 0.3;
   const tExp = lerp(fbDur, pc.dur, read) + gauss() * 0.05 * D.cpuEye;
-  return { swing, mode, cur, contactT: tExp, swingAt: tExp - SWING_LAG };
+  return { swing, mode, cur, contactT: tExp, swingAt: tExp - 0.12 };
 }
 
 // ===================== チームデータ =====================
@@ -692,10 +694,11 @@ function onCatch() {
   const strike = swung || inZone(pc.end.x, pc.end.y);
   G.pitchMark = { x: pc.end.x, y: pc.end.y, strike };
   G.after = null;
+  const why = (swung && !G.sw.cpu) ? (!G.sw.res ? '（振り遅れ）' : G.sw.res.why === 'timing' ? (G.sw.res.e > 0 ? '（早すぎ）' : '（遅すぎ）') : '（コースがずれた）') : '';
   if (strike) {
     G.s++;
-    if (G.s >= 3) { G.after = { type: 'K' }; say(swung ? '空振り三振！' : '見逃し三振！'); banner('三振！', '#ff5563'); }
-    else { say(swung ? (G.sw.mode === 'bunt' ? 'バント空振り。' : '空振り！') : 'ストライク！'); banner(swung ? '空振り' : 'ストライク', '#ffd23f', 0.8); }
+    if (G.s >= 3) { G.after = { type: 'K' }; say((swung ? '空振り三振！' : '見逃し三振！') + why); banner('三振！', '#ff5563'); }
+    else { say(swung ? (G.sw.mode === 'bunt' ? 'バント空振り。' : '空振り！' + why) : 'ストライク！'); banner(swung ? '空振り' + why : 'ストライク', '#ffd23f', 0.9); }
   } else {
     G.b++;
     if (G.b >= 4) { G.after = { type: 'BB' }; say('フォアボール。'); banner('フォアボール', '#3bd67f'); }
@@ -830,13 +833,17 @@ function skip() {
 function action() {
   if (G.phase === 'title' || G.phase === 'over') return;
   if (humanBatting() && (G.phase === 'pitch' || G.phase === 'windup')) return humanSwing();
-  if (humanPitching() && G.phase === 'ready') return humanThrow();
+  if (humanPitching() && G.phase === 'ready') { if (G.pt < 0.35) return; return humanThrow(); }
   skip();
 }
 
 // ===================== 入力 =====================
 const $ = (id) => document.getElementById(id);
 const keys = new Set();
+// 物理キー(e.code)で判定するので、日本語入力オンのままでも効く
+const CODE_KEY = { KeyZ: 'z', KeyX: 'x', KeyC: 'c', KeyJ: 'j', KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd', Space: ' ', Enter: 'Enter', NumpadEnter: 'Enter',
+  Digit1: '1', Digit2: '2', Digit3: '3', Digit4: '4', Numpad1: '1', Numpad2: '2', Numpad3: '3', Numpad4: '4' };
+const keyOf = (e) => CODE_KEY[e.code] || (e.key.length === 1 ? e.key.toLowerCase() : e.key);
 function moveByKeys(dt) {
   let dx = 0, dy = 0;
   if (keys.has('ArrowLeft') || keys.has('a')) dx -= 1;
@@ -855,34 +862,40 @@ function setMode(m) {
 }
 window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'SELECT') return;
-  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) e.preventDefault();
+  if (e.target.tagName === 'BUTTON' && (G.phase === 'title' || G.phase === 'over')) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = keyOf(e);
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(k)) e.preventDefault();
   if (keys.has(k)) return;
   keys.add(k);
   if (k === ' ' || k === 'Enter' || k === 'j') { if (e.target.tagName !== 'BUTTON' || k === ' ') action(); }
   if (k === 'z') setMode('normal'); if (k === 'x') setMode('power'); if (k === 'c') setMode('bunt');
   if (/^[1-4]$/.test(k) && humanPitching()) { const n = +k - 1; if (n < repertoire(curPitcher()).length) { G.pk = n; buildPitchButtons(); } }
 });
-window.addEventListener('keyup', (e) => keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key));
+window.addEventListener('keyup', (e) => { keys.delete(keyOf(e)); if (e.key === 'Meta') keys.clear(); });
 window.addEventListener('blur', () => keys.clear());
+document.addEventListener('visibilitychange', () => keys.clear());
 
 const cv = $('cv'), ctx = cv.getContext('2d');
 function toLogical(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height }; }
 let touch = null;
+function aimAbs(e) { // マウス・ペン: 指した位置へカーソルを置く
+  if (G.phase === 'title' || G.phase === 'over') return;
+  const p = toLogical(e), tgt = humanPitching() ? G.aim : G.cur;
+  tgt.x = clamp((p.x - CAM.cx) / S0, CUR_LIM.l, CUR_LIM.r);
+  tgt.y = clamp(CAM.y - (p.y - CAM.hy) / S0, CUR_LIM.b, CUR_LIM.t);
+}
 cv.addEventListener('pointerdown', (e) => {
-  if (e.pointerType === 'mouse') { if (e.button === 0) action(); return; }
-  touch = { id: e.pointerId, ...toLogical(e), t: performance.now(), moved: 0 };
+  window.focus();
+  if (e.pointerType !== 'touch') { if (e.button === 0) { aimAbs(e); action(); } return; }
+  if (touch && touch.id !== e.pointerId && cv.hasPointerCapture(touch.id)) { action(); return; } // 2本目の指 = スイング/投球
+  touch = { id: e.pointerId, ...toLogical(e), sx: e.clientX, sy: e.clientY, t: performance.now(), moved: 0 };
   cv.setPointerCapture(e.pointerId);
 });
 cv.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'touch') { aimAbs(e); return; }
   const p = toLogical(e);
   const tgt = humanPitching() ? G.aim : G.cur;
-  if (e.pointerType === 'mouse') {
-    if (G.phase === 'title' || G.phase === 'over') return;
-    tgt.x = clamp((p.x - CAM.cx) / S0, CUR_LIM.l, CUR_LIM.r);
-    tgt.y = clamp(CAM.y - (p.y - CAM.hy) / S0, CUR_LIM.b, CUR_LIM.t);
-    return;
-  }
   if (!touch || touch.id !== e.pointerId) return;
   const dx = p.x - touch.x, dy = p.y - touch.y;
   touch.moved += Math.abs(dx) + Math.abs(dy); touch.x = p.x; touch.y = p.y;
@@ -890,14 +903,27 @@ cv.addEventListener('pointermove', (e) => {
   tgt.y = clamp(tgt.y - dy / S0 * 1.4, CUR_LIM.b, CUR_LIM.t);
 });
 cv.addEventListener('pointerup', (e) => {
-  if (touch && touch.id === e.pointerId) { if (touch.moved < 10 && performance.now() - touch.t < 300) skip(); touch = null; }
+  if (touch && touch.id === e.pointerId) { if (Math.hypot(e.clientX - touch.sx, e.clientY - touch.sy) < 10 && performance.now() - touch.t < 300) action(); touch = null; }
 });
-const fastBtn = (el, fn) => el.addEventListener('pointerdown', (e) => { e.preventDefault(); fn(); });
+cv.addEventListener('pointercancel', (e) => { if (touch && touch.id === e.pointerId) touch = null; });
+// 画面下のボタンへマウスを動かしたとき、通り道でカーソルがずれないよう、止めていた位置に戻す
+let mRest = null, mTimer = 0;
+cv.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  clearTimeout(mTimer);
+  mTimer = setTimeout(() => { const tgt = humanPitching() ? G.aim : G.cur; mRest = { tgt, x: tgt.x, y: tgt.y }; }, 80);
+});
+cv.addEventListener('pointerleave', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  clearTimeout(mTimer);
+  if (mRest && mRest.tgt === (humanPitching() ? G.aim : G.cur)) { mRest.tgt.x = mRest.x; mRest.tgt.y = mRest.y; }
+});
+const fastBtn = (el, fn) => { el.tabIndex = -1; el.addEventListener('pointerdown', (e) => { if (e.button !== 0) return; e.preventDefault(); window.focus(); fn(); }); };
 fastBtn($('swingBtn'), () => humanSwing());
 fastBtn($('throwBtn'), () => { if (G.phase === 'ready' && humanPitching()) humanThrow(); });
 fastBtn($('skipBtn'), () => skip());
 document.querySelectorAll('#batCtl [data-mode]').forEach((b) => fastBtn(b, () => setMode(b.dataset.mode)));
-$('startBtn').addEventListener('click', (e) => { e.currentTarget.blur(); newGame(); });
+$('startBtn').addEventListener('click', (e) => { e.currentTarget.blur(); newGame(); window.scrollTo(0, 0); window.focus(); });
 $('againBtn').addEventListener('click', () => { G.phase = 'title'; G.banner = null; G.msg = ''; updateDeck(); });
 
 function buildPitchButtons() {
@@ -940,7 +966,13 @@ function fitCanvas() {
 }
 function poly(pts, fill) { ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
 function text(t, x, y, size, color = '#fff', align = 'left', weight = 700) { ctx.font = `${weight} ${size}px ${FONT}`; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(t, x, y); }
-function rrect(x, y, w, h, r, fill) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fillStyle = fill; ctx.fill(); }
+function rrect(x, y, w, h, r, fill) {
+  r = Math.max(0, Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2));
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
+  else { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  ctx.fillStyle = fill; ctx.fill();
+}
 
 // --- バッティング視点 ---
 function drawBatView() {
@@ -1015,8 +1047,8 @@ function drawBatView() {
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, TAU); ctx.fill();
         ctx.strokeStyle = '#d33'; ctx.lineWidth = Math.max(1, r * 0.15); ctx.beginPath(); ctx.arc(p.x - r * 0.9, p.y, r * 0.7, -0.9, 0.9); ctx.stroke(); ctx.beginPath(); ctx.arc(p.x + r * 0.9, p.y, r * 0.7, Math.PI - 0.9, Math.PI + 0.9); ctx.stroke();
       }
-      // やさしい: 到達予測
-      if (DIFF[G.set.diff].hint && humanBatting() && u > 0.45) { const q = bp(pc.end.x, pc.end.y, 0); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q.x, q.y, 9, 0, TAU); ctx.stroke(); }
+      // 到達予測の白い輪(難しいほど遅く出る)
+      if (humanBatting() && u > DIFF[G.set.diff].hintU) { const q = bp(pc.end.x, pc.end.y, 0); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q.x, q.y, 9, 0, TAU); ctx.stroke(); }
     }
   }
   // 打球(打った直後)
@@ -1254,6 +1286,7 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 updateDeck();
+$('jsWarn').remove();
 window.__G = G;
 requestAnimationFrame(loop);
 </script>
