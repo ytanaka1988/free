@@ -96,7 +96,7 @@ const CUR_LIM = { l: -0.44, r: 0.44, b: 0.2, t: 1.34 };
 const FENCE_H = 3.6;
 const MOUND = { x: 0, y: 0.25, z: 18.4 };
 const RELEASE_Z = 16.9;
-const SWING_LAG = 0.03; // ボタンを押してからバットがホームベース上に来るまで(ボールが来た瞬間に押せば当たる)
+const SWING_LAG = 0.0; // ボタンを押してからバットがホームベース上に来るまで(ボールが来た瞬間に押せば当たる)
 const POS = ['投', '捕', '一', '二', '三', '遊', '左', '中', '右'];
 const POS_FULL = ['ピッチャー', 'キャッチャー', 'ファースト', 'セカンド', 'サード', 'ショート', 'レフト', 'センター', 'ライト'];
 const FIELD_HOME = [
@@ -110,7 +110,7 @@ const rank = (v) => (v >= 90 ? 'S' : v >= 80 ? 'A' : v >= 70 ? 'B' : v >= 60 ? '
 const runSpeed = (sp) => 6.0 + sp / 100 * 2.6;   // m/s
 const DIFF = [
   { name: 'やさしい', dur: 1.24, win: 1.35, cur: 1.22, cpuEye: 1.45, cpuCtl: 1.35, hintU: 0.45 },
-  { name: 'ふつう', dur: 1.0, win: 1.0, cur: 1.0, cpuEye: 1.0, cpuCtl: 1.0, hintU: 0.6 },
+  { name: 'ふつう', dur: 1.0, win: 1.0, cur: 1.0, cpuEye: 1.0, cpuCtl: 1.0, hintU: 0.5 },
   { name: 'つよい', dur: 0.84, win: 0.86, cur: 0.9, cpuEye: 0.78, cpuCtl: 0.8, hintU: 0.75 },
 ];
 
@@ -671,6 +671,7 @@ function humanSwing() {
   if (G.sw) return;
   const t = G.phase === 'windup' ? -1 : G.pt;
   if (t < 0) return;
+  if (G.mode === 'bunt' && t > G.pc.dur + 0.04) return;
   const contactT = G.mode === 'bunt' ? G.pc.dur : t + SWING_LAG;
   G.sw = { t0: t, contactT, mode: G.mode, cpu: false };
 }
@@ -800,6 +801,7 @@ function gameOver(sayonara) {
   else say(G.result === 'draw' ? '試合終了。引き分けです。' : `試合終了！ ${side(my > op ? me : 1 - me).t.name}の勝利！`);
   banner(G.result === 'win' ? 'かち！' : G.result === 'lose' ? 'まけ…' : 'ひきわけ', G.result === 'win' ? '#ffd23f' : '#a8badc', 999);
   setPhase('over');
+  $('againBtn').focus();
 }
 
 function update(dt) {
@@ -833,7 +835,7 @@ function skip() {
 function action() {
   if (G.phase === 'title' || G.phase === 'over') return;
   if (humanBatting() && (G.phase === 'pitch' || G.phase === 'windup')) return humanSwing();
-  if (humanPitching() && G.phase === 'ready') { if (G.pt < 0.35) return; return humanThrow(); }
+  if (humanPitching() && G.phase === 'ready') { if (G.pt < 0.6) return; return humanThrow(); }
   skip();
 }
 
@@ -842,7 +844,8 @@ const $ = (id) => document.getElementById(id);
 const keys = new Set();
 // 物理キー(e.code)で判定するので、日本語入力オンのままでも効く
 const CODE_KEY = { KeyZ: 'z', KeyX: 'x', KeyC: 'c', KeyJ: 'j', KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd', Space: ' ', Enter: 'Enter', NumpadEnter: 'Enter',
-  Digit1: '1', Digit2: '2', Digit3: '3', Digit4: '4', Numpad1: '1', Numpad2: '2', Numpad3: '3', Numpad4: '4' };
+  Digit1: '1', Digit2: '2', Digit3: '3', Digit4: '4', Numpad1: '1', Numpad2: '2', Numpad3: '3', Numpad4: '4',
+  ArrowLeft: 'ArrowLeft', ArrowRight: 'ArrowRight', ArrowUp: 'ArrowUp', ArrowDown: 'ArrowDown' };
 const keyOf = (e) => CODE_KEY[e.code] || (e.key.length === 1 ? e.key.toLowerCase() : e.key);
 function moveByKeys(dt) {
   let dx = 0, dy = 0;
@@ -851,7 +854,7 @@ function moveByKeys(dt) {
   if (keys.has('ArrowUp') || keys.has('w')) dy += 1;
   if (keys.has('ArrowDown') || keys.has('s')) dy -= 1;
   if (!dx && !dy) return;
-  const v = 1.25 * dt;
+  const v = 1.9 * dt;
   const tgt = humanPitching() ? G.aim : G.cur;
   tgt.x = clamp(tgt.x + dx * v, CUR_LIM.l, CUR_LIM.r);
   tgt.y = clamp(tgt.y + dy * v, CUR_LIM.b, CUR_LIM.t);
@@ -865,6 +868,7 @@ window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'BUTTON' && (G.phase === 'title' || G.phase === 'over')) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = keyOf(e);
+  if (k === 'Process' || k === 'Unidentified') return;
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(k)) e.preventDefault();
   if (keys.has(k)) return;
   keys.add(k);
@@ -907,16 +911,25 @@ cv.addEventListener('pointerup', (e) => {
 });
 cv.addEventListener('pointercancel', (e) => { if (touch && touch.id === e.pointerId) touch = null; });
 // 画面下のボタンへマウスを動かしたとき、通り道でカーソルがずれないよう、止めていた位置に戻す
-let mRest = null, mTimer = 0;
+// (下向きに動き始める直前の位置を履歴から探して戻す)
+let mHist = [];
 cv.addEventListener('pointermove', (e) => {
   if (e.pointerType !== 'mouse') return;
-  clearTimeout(mTimer);
-  mTimer = setTimeout(() => { const tgt = humanPitching() ? G.aim : G.cur; mRest = { tgt, x: tgt.x, y: tgt.y }; }, 80);
+  const tgt = humanPitching() ? G.aim : G.cur, now = performance.now();
+  mHist.push({ t: now, sy: e.clientY, tgt, x: tgt.x, y: tgt.y });
+  while (mHist.length && now - mHist[0].t > 1500) mHist.shift();
 });
 cv.addEventListener('pointerleave', (e) => {
-  if (e.pointerType !== 'mouse') return;
-  clearTimeout(mTimer);
-  if (mRest && mRest.tgt === (humanPitching() ? G.aim : G.cur)) { mRest.tgt.x = mRest.x; mRest.tgt.y = mRest.y; }
+  if (e.pointerType !== 'mouse' || !mHist.length) return;
+  const r = cv.getBoundingClientRect();
+  const tgt = humanPitching() ? G.aim : G.cur;
+  if (e.clientY >= r.bottom - 4) {
+    let i = mHist.length - 1;
+    while (i > 0 && mHist[i - 1].sy <= mHist[i].sy + 1 && mHist[i].t - mHist[i - 1].t < 250) i--; // 下へ向かう動きをさかのぼる
+    const h = mHist[i];
+    if (h.tgt === tgt) { tgt.x = h.x; tgt.y = h.y; }
+  }
+  mHist = [];
 });
 const fastBtn = (el, fn) => { el.tabIndex = -1; el.addEventListener('pointerdown', (e) => { if (e.button !== 0) return; e.preventDefault(); window.focus(); fn(); }); };
 fastBtn($('swingBtn'), () => humanSwing());
@@ -1032,7 +1045,7 @@ function drawBatView() {
   const L = bat.bats === 'L';
   const bx = L ? 735 : 225;
   let swingU = -1;
-  if (G.sw) swingU = clamp(((G.phase === 'pitch' ? G.pt : G.sw.t0 + 0.3 + G.pt) - G.sw.t0) / 0.3, 0, 1);
+  if (G.sw) { const sd = G.sw.cpu ? 0.3 : 0.16; swingU = clamp(((G.phase === 'pitch' ? G.pt : G.sw.t0 + sd + G.pt) - G.sw.t0) / sd, 0, 1); }
   if (G.phase === 'contact' || G.phase === 'after') swingU = G.sw ? 1 : -1;
   drawBatter(bx, 600, 330, bs.t.color, L, swingU, G.sw && G.sw.mode === 'bunt');
 
