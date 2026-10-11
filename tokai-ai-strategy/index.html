@@ -1,0 +1,287 @@
+<title>東海AI産業マップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@700;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 計器盤のような上部（類型×県のマトリクス）→ 県・地域ごとの市町村台帳。 */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1d2421; --muted:#5d6862; --line:#d9ddd8; --accent:#1f5f4a; --accent-soft:#e1ece6;
+  --aichi:#b5452c; --gifu:#2f6a8c; --mie:#7a5b9c; --shizuoka:#3d7d3a;
+  --t-brain:#3b4fa0; --t-haas:#a2561a; --t-mat:#6b5b45; --t-ene:#b08a00; --t-log:#2e7b86; --t-agri:#4c8a2e; --t-well:#b0457a; --t-life:#6d6f78; --t-mtn:#2f6b4c;
+  --f-display:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --surface:#1a201d; --ink:#e6ebe7; --muted:#9aa59f; --line:#2c3531; --accent:#7cc4a6; --accent-soft:#1f3029;
+  --aichi:#e57c62; --gifu:#6aaed4; --mie:#b495d6; --shizuoka:#7fc07a;
+  --t-brain:#8a9cf0; --t-haas:#e59a5a; --t-mat:#c4b293; --t-ene:#e5c24a; --t-log:#5ec2cf; --t-agri:#8fcc6c; --t-well:#e88ab6; --t-life:#a9abb5; --t-mtn:#6fbf92;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121614; --surface:#1a201d; --ink:#e6ebe7; --muted:#9aa59f; --line:#2c3531; --accent:#7cc4a6; --accent-soft:#1f3029;
+  --aichi:#e57c62; --gifu:#6aaed4; --mie:#b495d6; --shizuoka:#7fc07a;
+  --t-brain:#8a9cf0; --t-haas:#e59a5a; --t-mat:#c4b293; --t-ene:#e5c24a; --t-log:#5ec2cf; --t-agri:#8fcc6c; --t-well:#e88ab6; --t-life:#a9abb5; --t-mtn:#6fbf92;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:32px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.3}
+a{color:var(--accent)}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--muted);font-weight:500}
+header.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:end;padding-bottom:28px;border-bottom:1px solid var(--line)}
+header.hero h1{font-size:clamp(30px,5vw,48px);font-weight:900;margin-top:6px}
+.thesis{margin:14px 0 0;max-width:62ch;color:var(--muted)}
+.thesis b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.stats div{background:var(--surface);padding:12px 10px}
+.stats .v{font-family:var(--f-mono);font-size:24px;font-variant-numeric:tabular-nums}
+.stats .k{font-size:12px;color:var(--muted)}
+section{margin-top:40px}
+section>h2{font-size:22px;margin-bottom:6px}
+.sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+
+/* matrix */
+.mx-scroll{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table.mx{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
+.mx th,.mx td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.mx thead th{font-weight:500;color:var(--muted);font-size:12px}
+.mx th.rowh{text-align:left;padding-left:14px;white-space:nowrap}
+.mx td button{all:unset;cursor:pointer;display:block;width:100%;padding:6px 0;border-radius:4px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.mx td button:focus-visible{outline:2px solid var(--accent)}
+.mx td button.on{outline:2px solid var(--ink)}
+.mx tbody tr:last-child td,.mx tbody tr:last-child th{border-bottom:0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:1px}
+
+/* types grid */
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.types{grid-template-columns:1fr}}
+.type{background:var(--surface);border:1px solid var(--line);padding:14px 16px;cursor:pointer;text-align:left;font:inherit;color:inherit;border-radius:6px;display:flex;flex-direction:column;gap:4px}
+.type:hover{border-color:var(--muted)}
+.type.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.type:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.type .hd{display:flex;align-items:center;gap:8px;font-weight:700}
+.type .n{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.type .d{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* controls */
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:14px;border:0;background:none;color:var(--ink);padding:7px 13px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+#q{font:inherit;font-size:14px;padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);flex:1 1 220px;min-width:0}
+#q:focus-visible{outline:2px solid var(--accent)}
+.status{font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.status button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:2px 10px;cursor:pointer}
+
+/* list */
+.pref{margin-top:28px}
+.pref-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;padding-bottom:8px;border-bottom:3px solid var(--pc)}
+.pref-h h3{font-size:24px}
+.pref-h .cnt{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.pref-h .bank{font-size:13px;color:var(--muted);flex-basis:100%}
+.reg-h{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--pc);margin:18px 0 6px}
+.row{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row .nm{font-weight:700;font-size:16px}
+.pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.pill{font-size:11px;line-height:1;padding:4px 7px;border-radius:3px;color:var(--bg);background:var(--tc);font-weight:500;letter-spacing:.02em}
+.lbl{display:block;font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:2px}
+.row p{margin:0;font-size:14px}
+.fut p{font-weight:500}
+.row-head{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:16px;font-size:12px;color:var(--muted);letter-spacing:.1em;padding:10px 0 4px}
+.empty{padding:40px 0;color:var(--muted);text-align:center}
+
+/* insights */
+.ins{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;counter-reset:i}
+.ins div{border-top:2px solid var(--ink);padding-top:10px}
+.ins h3{font-size:17px;margin-bottom:6px}
+.ins p{margin:0;font-size:14px;color:var(--muted)}
+.src{overflow-x:auto}
+.src table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+.src th,.src td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.src th{font-size:12px;color:var(--muted);font-weight:500}
+.note{margin-top:28px;font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+
+@media (max-width:860px){
+  header.hero{grid-template-columns:1fr}
+  .row,.row-head{grid-template-columns:1fr;gap:8px}
+  .row-head{display:none}
+  .row .lbl{display:block}
+}
+@media (min-width:861px){.row .lbl{display:none}}
+@media (prefers-reduced-motion:no-preference){.row{animation:fade .25s ease both}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">愛知・岐阜・三重・静岡　全160市町村</div>
+      <h1>東海AI産業マップ</h1>
+      <p class="thesis">仮説：<b>フィジカルAIとHaaS（Hardware as a Service）によって、東海の農林水産業とモノづくりが、そのまま稼ぐ力の大きい第三次産業に変わる。</b>東京が強い「画面の中の第三次産業」に対し、東海は「現実世界を動かす第三次産業」で勝負する。その未来で、各市町村が何で稼ぐ地域になるか、地銀はどこに資金を入れるべきかを整理しました。</p>
+    </div>
+    <div class="stats" aria-label="概要">
+      <div><div class="v">160</div><div class="k">市町村</div></div>
+      <div><div class="v">4</div><div class="k">県</div></div>
+      <div><div class="v">19</div><div class="k">地域</div></div>
+      <div><div class="v">9</div><div class="k">役割類型</div></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>県×役割類型のマトリクス</h2>
+    <p class="sub">各類型に当てはまる市町村の数（1つの市町村が複数の類型に入ります）。数字を押すと、下の一覧がその組み合わせに絞り込まれます。</p>
+    <div class="mx-scroll"><table class="mx" id="mx"></table></div>
+  </section>
+
+  <section>
+    <h2>9つの役割類型</h2>
+    <p class="sub">AI時代に各地域が担う役割と、そこから生まれる第三次産業。押すと一覧を絞り込めます（複数選択可）。</p>
+    <div class="types" id="types"></div>
+  </section>
+
+  <section id="list">
+    <h2>市町村一覧</h2>
+    <p class="sub">いまの強み、AI時代の将来像、地銀の打ち手を1行ずつ。</p>
+    <div class="controls">
+      <div class="seg" id="prefSeg" role="group" aria-label="県で絞り込む"></div>
+      <input id="q" type="search" placeholder="市町村名・キーワードで検索（例：半導体、茶、港）" aria-label="検索">
+      <div class="status" id="status"></div>
+    </div>
+    <div id="out"></div>
+  </section>
+
+  <section>
+    <h2>全体から見える示唆</h2>
+    <div class="ins">
+      <div><h3>勝負は名古屋〜西三河〜浜松ライン</h3><p>製造業のサービス化と頭脳機能が重なる地域。ここでサービス収益の比率が上がるかどうかが、東京を逆転できるかを左右します。</p></div>
+      <div><h3>素材とエネルギーはAIのボトルネック</h3><p>大垣・四日市・東濃・碧南・知多は、AIの需要が増えるほど価格決定力を持ちます。</p></div>
+      <div><h3>課題先進地こそ実証市場</h3><p>過疎や高齢化への解決策（遠隔医療、ドローン配送、高齢者向けの移動サービス）は、そのまま国内外に輸出できるサービスになります。</p></div>
+      <div><h3>約3分の1は生活・山間型</h3><p>放っておくと東海の中で格差が広がります。地銀は収益事業と地域を維持する事業を組み合わせた融資配分で臨む必要があります。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>データで確かめる方法</h2>
+    <p class="sub">この地図は公知の産業集積・企業立地にもとづく定性的な仮説です。次のデータで市町村ごとに確かめてください。</p>
+    <div class="src"><table>
+      <thead><tr><th>確かめたいこと</th><th>データ</th></tr></thead>
+      <tbody>
+        <tr><td>市町村別の産業構造（1次・2次・3次の比率）</td><td>各県の市町村民経済計算、RESAS</td></tr>
+        <tr><td>業種別の事業所数・従業者数・付加価値</td><td>経済センサス‐活動調査</td></tr>
+        <tr><td>製造品出荷額</td><td>経済構造実態調査</td></tr>
+        <tr><td>農業産出額</td><td>市町村別農業産出額（推計）</td></tr>
+        <tr><td>観光入込・宿泊</td><td>各県観光統計、宿泊旅行統計調査</td></tr>
+        <tr><td>域外から稼ぐ産業・資金の流出</td><td>RESAS「地域経済循環分析」</td></tr>
+        <tr><td>ソフトウェア人材の流入</td><td>国勢調査（職業別）、求人倍率</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">おすすめの次の一手：RESASの地域経済循環図で160市町村の「域外から稼ぐ産業」を取り出し、この類型と照らし合わせる。類型と実データが合わない自治体が、地銀にとって新しい投資機会か、仮説を直すべき点になります。</p>
+  </section>
+</div>
+
+<script>
+const DATA = {"rows": [{"p": "愛知県", "r": "名古屋市", "n": "名古屋市", "t": ["brain", "log"], "now": "本社・商業・卸、名古屋港、三菱重工の航空宇宙、Station Ai、リニア始発駅", "fut": "東海全域のフィジカルAIデータを集約するアルゴリズム・新金融の中枢。走行データ連動保険、空間・移動課金、データ取引所", "bank": "Station Ai起点のVCファンド、AIスタートアップへのベンチャーデット、データ担保型融資の実証", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "一宮市", "t": ["haas", "life"], "now": "尾州毛織物（繊維）、ベッドタウン", "fut": "AI×テキスタイル：需要予測による受注生産、デジタル採寸のマスカスタマイズ、尾州ブランドのD2C", "bank": "繊維事業者のD2C化・生産管理DX融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "瀬戸市", "t": ["mat"], "now": "瀬戸焼、ファインセラミックス・窯業原料", "fut": "半導体・電池向けセラミックス部材のR&D拠点。焼成データのAI最適化", "bank": "素材ベンチャーへの長期R&D資金", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "春日井市", "t": ["haas", "life"], "now": "製紙、高蔵寺ニュータウン", "fut": "ニュータウン再生×自動運転・高齢者MaaSのモデル都市", "bank": "住宅団地再生ファンド、移動サービス事業者向け融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "犬山市", "t": ["well"], "now": "国宝犬山城、明治村、城下町観光", "fut": "AI観光：需要予測型価格、多言語AI案内、混雑分散", "bank": "観光事業者のDX・ダイナミックプライシング導入融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "江南市", "t": ["life"], "now": "住宅都市、繊維", "fut": "生活圏サービス（見守り・オンデマンド交通）", "bank": "地域生活サービス事業者支援", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "小牧市", "t": ["haas", "log"], "now": "名神・東名・中央道の結節点、物流倉庫、県営名古屋空港隣接、航空・防衛関連", "fut": "ロボット倉庫・自動運転トラック中継拠点。航空機部品のMRO（整備）サービス", "bank": "物流施設の自動化設備リース、シンジケートローン", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "稲沢市", "t": ["haas", "agri"], "now": "昇降機工場、植木・苗木産地", "fut": "エレベーター等の遠隔保守（予知保全）サービス、スマート園芸", "bank": "保守サービス化を進める協力企業の運転資金", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "尾張旭市", "t": ["well", "life"], "now": "住宅都市、健康まちづくり", "fut": "住民ヘルスデータを活かした予防医療サービス", "bank": "ヘルスケア事業者支援", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "岩倉市", "t": ["life"], "now": "コンパクトな住宅都市", "fut": "名古屋通勤圏の生活サービス・在宅ワーク拠点", "bank": "個人・小規模事業者のDX", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "豊明市", "t": ["agri", "well"], "now": "藤田医科大学、花き市場", "fut": "医療AI・手術支援ロボットの臨床実証拠点、花きの需給予測流通", "bank": "医療系スタートアップ投資、医療機関のAI設備融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "日進市", "t": ["brain", "life"], "now": "大学集積、住宅都市", "fut": "学生・研究者を活かしたAI人材の供給・リスキリング拠点", "bank": "産学連携ファンド", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "清須市", "t": ["log", "life"], "now": "名古屋隣接、工業・物流", "fut": "ラストワンマイル配送ロボット拠点", "bank": "物流事業者の自動化投資", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "北名古屋市", "t": ["well", "life"], "now": "住宅都市、回想法など介護予防", "fut": "介護予防AI・認知症ケアデータサービス", "bank": "介護事業者のテック導入融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "長久手市", "t": ["brain", "well"], "now": "大学・医大集積、ジブリパーク、リニモ", "fut": "エンタメ×ロボティクス、大学発研究の事業化", "bank": "大学発ベンチャー投資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "津島市", "t": ["well", "life"], "now": "津島神社の門前町、繊維", "fut": "歴史観光と生活サービスの融合", "bank": "中心市街地再生", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "愛西市", "t": ["agri"], "now": "レンコン等の農業", "fut": "スマート農業（水田・レンコンの自動管理）", "bank": "農業法人の機械化・データ化融資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "弥富市", "t": ["log", "agri"], "now": "名古屋港隣接の物流、金魚生産", "fut": "港湾後背地の自動化物流、金魚の養殖データ化・輸出", "bank": "物流倉庫ファイナンス", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "あま市", "t": ["haas", "life"], "now": "七宝焼、住宅", "fut": "伝統工芸のデジタル販売・ライセンス", "bank": "伝統工芸事業者のEC化", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "豊山町", "t": ["haas", "log"], "now": "県営名古屋空港、航空機関連、航空ミュージアム", "fut": "航空機MRO・ドローン/eVTOL運航拠点", "bank": "航空関連中小への設備資金", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "大口町", "t": ["haas"], "now": "工作機械大手の本社工場", "fut": "工作機械の稼働データ・遠隔保守サービス（HaaSの典型）", "bank": "サプライヤーのIoT化投資", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "扶桑町", "t": ["agri", "life"], "now": "守口大根、住宅", "fut": "特産品のデータ化・高付加価値化", "bank": "農業法人支援", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "東郷町", "t": ["haas", "life"], "now": "住宅都市、愛知池、名古屋・豊田の中間", "fut": "名古屋（頭脳）と豊田（HaaS）をつなぐ技術者の居住・リモート開発拠点", "bank": "住宅・生活サービス、技術者の起業支援", "key": true}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "蟹江町", "t": ["well", "life"], "now": "住宅、温泉", "fut": "生活サービス・小規模観光", "bank": "地域事業者DX", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "大治町", "t": ["life"], "now": "名古屋隣接の住宅地", "fut": "名古屋都心の生活圏サービス", "bank": "個人向け", "key": false}, {"p": "愛知県", "r": "尾張北部・西部（尾張・海部）", "n": "飛島村", "t": ["ene", "log"], "now": "名古屋港飛島ふ頭（自動化コンテナターミナル）、臨海工業", "fut": "完全自動化港湾の世界的モデル。港湾オペレーションのノウハウ輸出", "bank": "港湾インフラファンド", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "半田市", "t": ["haas", "agri"], "now": "醸造（酢）、山車文化", "fut": "発酵×バイオ・食品AI（発酵プロセス最適化、食品データ）", "bank": "食品メーカーのR&D資金", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "常滑市", "t": ["log", "well"], "now": "中部国際空港、愛知県国際展示場、常滑焼", "fut": "国際航空物流ハブ＋MICE。空港の自動化オペレーション", "bank": "空港周辺物流・ホテル投資", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "東海市", "t": ["mat", "ene"], "now": "製鉄所、特殊鋼", "fut": "鉄鋼の脱炭素（水素還元）＋素材データサービス", "bank": "トランジション・ファイナンス", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "大府市", "t": ["haas", "well"], "now": "国立長寿医療研究センター、自動車部品", "fut": "長寿・認知症予防AIの研究実装都市", "bank": "ヘルスケア×製造の新規事業融資", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "知多市", "t": ["ene"], "now": "製油所、LNG・火力発電", "fut": "エネルギー転換（水素・アンモニア）＋データセンター電源", "bank": "GX関連プロジェクトファイナンス", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "阿久比町", "t": ["agri", "life"], "now": "米作、住宅", "fut": "生活サービス・スマート稲作", "bank": "農業法人", "key": false}, {"p": "愛知県", "r": "知多半島", "n": "東浦町", "t": ["haas", "life"], "now": "自動車部品、ぶどう、住宅", "fut": "部品サプライヤーのサービス化", "bank": "中小製造業の事業転換", "key": false}, {"p": "愛知県", "r": "知多半島", "n": "南知多町", "t": ["agri", "well"], "now": "漁業（篠島・日間賀島）、観光", "fut": "スマート漁業・離島観光、ドローン離島物流", "bank": "漁協・観光事業者支援", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "美浜町", "t": ["well", "life"], "now": "観光、福祉系大学", "fut": "福祉×AI人材育成", "bank": "福祉事業者支援", "key": true}, {"p": "愛知県", "r": "知多半島", "n": "武豊町", "t": ["haas", "ene"], "now": "火力発電所、化学", "fut": "エネルギー・化学素材の脱炭素", "bank": "GX融資", "key": false}, {"p": "愛知県", "r": "西三河", "n": "豊田市", "t": ["brain", "haas", "mtn"], "now": "トヨタ本社、完成車工場群、足助など中山間", "fut": "MaaS・HaaSの本丸。世界の車両から得るデータと更新収益が還流。中山間での自動運転サービス実装", "bank": "Tier2/3の電動化・ソフト化転換融資、事業承継M&A", "key": true}, {"p": "愛知県", "r": "西三河", "n": "岡崎市", "t": ["brain", "haas"], "now": "自然科学研究機構、自動車工場、八丁味噌", "fut": "基礎科学×AI（脳科学・分子科学のデータ活用）、研究人材の集積地", "bank": "研究発ベンチャー投資", "key": true}, {"p": "愛知県", "r": "西三河", "n": "刈谷市", "t": ["brain", "haas"], "now": "デンソー・アイシン・豊田自動織機など大手部品本社", "fut": "車載ソフトウェア・半導体設計・物流ロボットのサービス化", "bank": "ソフト人材採用・無形資産投資への融資", "key": true}, {"p": "愛知県", "r": "西三河", "n": "安城市", "t": ["haas", "agri"], "now": "「日本デンマーク」の先進農業、自動車部品", "fut": "アグリ×製造：農業ロボット・データ農業の量産化", "bank": "農工連携の新事業融資", "key": true}, {"p": "愛知県", "r": "西三河", "n": "碧南市", "t": ["ene"], "now": "大規模火力発電（アンモニア混焼実証）、人参", "fut": "脱炭素エネルギーとAI計算資源の供給地", "bank": "GX・トランジション・ファイナンス", "key": true}, {"p": "愛知県", "r": "西三河", "n": "西尾市", "t": ["haas", "agri"], "now": "抹茶、うなぎ（一色）、自動車部品", "fut": "抹茶ブランドのデータ化・輸出、養鰻の環境制御", "bank": "食品輸出・ブランドDX融資", "key": true}, {"p": "愛知県", "r": "西三河", "n": "知立市", "t": ["log", "life"], "now": "交通結節点（鉄道）", "fut": "西三河の生活・通勤ハブ、オンデマンド交通", "bank": "駅周辺再開発", "key": false}, {"p": "愛知県", "r": "西三河", "n": "高浜市", "t": ["mat"], "now": "三州瓦", "fut": "建材のデジタル設計・耐災害建材", "bank": "窯業事業者の転換支援", "key": true}, {"p": "愛知県", "r": "西三河", "n": "みよし市", "t": ["haas", "life"], "now": "自動車工場、住宅", "fut": "製造現場のデジタルツイン化", "bank": "中小製造業DX", "key": false}, {"p": "愛知県", "r": "西三河", "n": "幸田町", "t": ["haas"], "now": "自動車部品、電子デバイス工場", "fut": "センサー・光デバイスのサービス化", "bank": "設備・研究開発資金", "key": false}, {"p": "愛知県", "r": "東三河", "n": "豊橋市", "t": ["brain", "log", "agri"], "now": "三河港（輸入車）、豊橋技術科学大学、施設園芸", "fut": "港湾×アグリAI：自動車物流の自動化と、施設園芸の完全環境制御", "bank": "農業法人・港湾物流への融資", "key": true}, {"p": "愛知県", "r": "東三河", "n": "豊川市", "t": ["haas", "well"], "now": "鉄道車両工場、豊川稲荷", "fut": "鉄道車両の予知保全サービス、門前観光", "bank": "車両関連サプライヤー支援", "key": true}, {"p": "愛知県", "r": "東三河", "n": "蒲郡市", "t": ["haas", "well"], "now": "ラグーナ・温泉観光、繊維ロープ、みかん", "fut": "リゾート×AIホスピタリティ、高機能繊維", "bank": "観光・繊維事業者", "key": true}, {"p": "愛知県", "r": "東三河", "n": "新城市", "t": ["mtn"], "now": "中山間、森林", "fut": "中山間MaaS・林業AIのモデル", "bank": "林業・交通事業者支援", "key": true}, {"p": "愛知県", "r": "東三河", "n": "田原市", "t": ["haas", "ene", "agri"], "now": "農業産出額トップクラス（電照菊・キャベツ）、自動車工場、再エネ", "fut": "農業×エネルギー×製造の複合。植物工場とエネルギーの地産地消", "bank": "大規模農業法人・再エネ事業融資", "key": true}, {"p": "愛知県", "r": "東三河", "n": "設楽町", "t": ["mtn"], "now": "中山間、ダム整備", "fut": "水源林・カーボンクレジット、遠隔医療", "bank": "森林クレジット組成支援", "key": true}, {"p": "愛知県", "r": "東三河", "n": "東栄町", "t": ["well", "mtn"], "now": "花祭など伝統文化、過疎", "fut": "遠隔医療・ドローン配送の先行地", "bank": "自治体連携", "key": true}, {"p": "愛知県", "r": "東三河", "n": "豊根村", "t": ["mtn"], "now": "茶臼山、過疎", "fut": "山間ドローン物流・自然体験観光", "bank": "自治体連携", "key": false}, {"p": "岐阜県", "r": "岐阜圏域", "n": "岐阜市", "t": ["brain", "well"], "now": "県都、アパレル問屋街、岐阜大学、長良川鵜飼", "fut": "県の頭脳拠点：医療AI（大学病院）、アパレルのデータ駆動型供給、観光AI", "bank": "医療・アパレル・観光のDX融資", "key": true}, {"p": "岐阜県", "r": "岐阜圏域", "n": "羽島市", "t": ["haas", "log"], "now": "新幹線岐阜羽島駅、毛織物", "fut": "新幹線駅を核にしたビジネス往来ハブ、繊維の高機能化", "bank": "駅周辺開発", "key": true}, {"p": "岐阜県", "r": "岐阜圏域", "n": "各務原市", "t": ["haas", "log"], "now": "航空宇宙産業、航空自衛隊基地、航空宇宙博物館", "fut": "eVTOL・大型ドローンの機体開発と運航管理（空のMaaS）", "bank": "航空宇宙サプライヤーの超長期R&D融資", "key": true}, {"p": "岐阜県", "r": "岐阜圏域", "n": "山県市", "t": ["haas"], "now": "水栓バルブの産地", "fut": "スマート水栓・水インフラIoT（漏水検知などのサービス化）", "bank": "中小メーカーのIoT化資金", "key": true}, {"p": "岐阜県", "r": "岐阜圏域", "n": "瑞穂市", "t": ["agri", "life"], "now": "富有柿発祥、住宅", "fut": "柿ブランドのデータ化、生活サービス", "bank": "農業法人", "key": false}, {"p": "岐阜県", "r": "岐阜圏域", "n": "本巣市", "t": ["agri", "mtn"], "now": "富有柿、淡墨桜、根尾の山間", "fut": "果樹のスマート化、山間観光", "bank": "農業・観光", "key": false}, {"p": "岐阜県", "r": "岐阜圏域", "n": "岐南町", "t": ["life"], "now": "住宅・商業", "fut": "岐阜市近郊の生活サービス", "bank": "個人・小規模事業者", "key": false}, {"p": "岐阜県", "r": "岐阜圏域", "n": "笠松町", "t": ["well", "life"], "now": "地方競馬、住宅", "fut": "競馬のデータ・エンタメ化", "bank": "地域事業者", "key": false}, {"p": "岐阜県", "r": "岐阜圏域", "n": "北方町", "t": ["life"], "now": "コンパクトな住宅地", "fut": "生活サービス", "bank": "個人", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "大垣市", "t": ["brain", "mat"], "now": "ICパッケージ基板大手の本社、ソフトピアジャパン（IT拠点）", "fut": "AI半導体パッケージ基板の世界拠点＋IT人材拠点", "bank": "半導体サプライチェーン向け大型融資", "key": true}, {"p": "岐阜県", "r": "西濃", "n": "海津市", "t": ["agri"], "now": "輪中、木曽三川の水田", "fut": "防災AI（洪水予測）とスマート水田", "bank": "防災・農業", "key": true}, {"p": "岐阜県", "r": "西濃", "n": "養老町", "t": ["agri", "well"], "now": "養老の滝、農業", "fut": "観光・農業", "bank": "地域事業者", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "垂井町", "t": ["haas", "log"], "now": "交通の要衝、工業", "fut": "中継物流拠点", "bank": "物流施設", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "関ケ原町", "t": ["log", "well"], "now": "古戦場観光、交通の要衝", "fut": "歴史観光×XR、東西物流の中継", "bank": "観光DX", "key": true}, {"p": "岐阜県", "r": "西濃", "n": "神戸町", "t": ["haas", "agri"], "now": "農業、中小工業", "fut": "スマート農業・部品加工", "bank": "中小企業", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "輪之内町", "t": ["agri"], "now": "輪中農業", "fut": "スマート水田", "bank": "農業法人", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "安八町", "t": ["haas", "agri"], "now": "工業団地、農業", "fut": "製造現場のIoT化", "bank": "中小製造業", "key": false}, {"p": "岐阜県", "r": "西濃", "n": "揖斐川町", "t": ["ene", "mtn"], "now": "大規模ダム、林業、中山間", "fut": "水力・森林カーボン、山間ドローン物流", "bank": "再エネ・森林クレジット", "key": true}, {"p": "岐阜県", "r": "西濃", "n": "大野町", "t": ["agri"], "now": "バラ生産、柿", "fut": "花きの環境制御・需給予測", "bank": "施設園芸", "key": true}, {"p": "岐阜県", "r": "西濃", "n": "池田町", "t": ["agri", "well"], "now": "茶、桜の名所", "fut": "茶のブランド化", "bank": "農業", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "関市", "t": ["haas", "mat"], "now": "刃物（世界三大刃物産地）", "fut": "精密刃物技術→医療器具・ロボットハンド部品への展開", "bank": "刃物メーカーの新分野進出融資", "key": true}, {"p": "岐阜県", "r": "中濃", "n": "美濃市", "t": ["mat", "well"], "now": "美濃和紙、うだつの町並み", "fut": "伝統素材→機能性素材（フィルター・電子材料）、文化観光", "bank": "素材開発・観光", "key": true}, {"p": "岐阜県", "r": "中濃", "n": "美濃加茂市", "t": ["haas", "agri"], "now": "工業団地、堂上蜂屋柿", "fut": "部品加工のサービス化", "bank": "中小製造業", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "可児市", "t": ["haas", "well"], "now": "工業団地、ゴルフ場集積", "fut": "製造DX、スポーツツーリズム", "bank": "中小製造業", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "郡上市", "t": ["well", "mtn"], "now": "郡上おどり、食品サンプル、清流", "fut": "食品サンプル技術→3Dデジタル造形、アウトドア観光", "bank": "観光・ものづくり", "key": true}, {"p": "岐阜県", "r": "中濃", "n": "坂祝町", "t": ["haas"], "now": "工業団地", "fut": "工場跡地の再活用（物流・データ拠点）", "bank": "跡地再開発", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "富加町", "t": ["haas", "life"], "now": "小規模工業、住宅", "fut": "生活サービス", "bank": "地域事業者", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "川辺町", "t": ["life", "mtn"], "now": "ダム湖、住宅", "fut": "水辺観光・生活", "bank": "地域事業者", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "七宗町", "t": ["mtn"], "now": "林業、日本最古の石", "fut": "林業AI", "bank": "林業", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "八百津町", "t": ["well", "mtn"], "now": "林業、杉原千畝記念館", "fut": "平和学習観光、林業", "bank": "観光・林業", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "白川町", "t": ["agri", "mtn"], "now": "白川茶、東濃ひのき", "fut": "ひのきのトレーサビリティ・高付加価値木材", "bank": "林業・製材", "key": true}, {"p": "岐阜県", "r": "中濃", "n": "東白川村", "t": ["mtn"], "now": "東濃ひのき", "fut": "森林カーボン・木材ブランド", "bank": "森林クレジット", "key": false}, {"p": "岐阜県", "r": "中濃", "n": "御嵩町", "t": ["well", "mtn"], "now": "中山道の宿場", "fut": "街道観光", "bank": "観光", "key": false}, {"p": "岐阜県", "r": "東濃", "n": "多治見市", "t": ["mat"], "now": "美濃焼、タイル産業", "fut": "ファインセラミックス・耐熱絶縁材のR&D", "bank": "窯業の素材転換融資", "key": true}, {"p": "岐阜県", "r": "東濃", "n": "土岐市", "t": ["mat", "ene", "well"], "now": "美濃焼（洋食器）、核融合科学研究所、アウトレット", "fut": "核融合・先端エネルギー研究の周辺産業、セラミックス部材", "bank": "研究発ベンチャー投資", "key": true}, {"p": "岐阜県", "r": "東濃", "n": "瑞浪市", "t": ["mat"], "now": "美濃焼、地科学研究の蓄積", "fut": "素材・地下利用研究", "bank": "素材ベンチャー", "key": false}, {"p": "岐阜県", "r": "東濃", "n": "中津川市", "t": ["brain", "haas", "log"], "now": "リニア岐阜県駅予定地、電機工場、栗きんとん、馬籠", "fut": "リニアで東京と直結する東海の東玄関。サテライトオフィス・研究拠点", "bank": "駅周辺開発・企業誘致ファイナンス", "key": true}, {"p": "岐阜県", "r": "東濃", "n": "恵那市", "t": ["agri", "mtn"], "now": "中山間、栗、ローカル鉄道", "fut": "中山間MaaS、栗のブランド化", "bank": "農業・交通", "key": false}, {"p": "岐阜県", "r": "飛騨", "n": "高山市", "t": ["haas", "well", "mtn"], "now": "インバウンド観光、飛騨の家具", "fut": "AIによる観光需要制御・高単価化、家具のデジタル設計・受注生産", "bank": "観光・家具のDX", "key": true}, {"p": "岐阜県", "r": "飛騨", "n": "飛騨市", "t": ["brain", "mtn"], "now": "神岡の先端物理研究施設、林業", "fut": "先端科学×データ解析の研究拠点、林業AI", "bank": "研究関連・林業", "key": true}, {"p": "岐阜県", "r": "飛騨", "n": "下呂市", "t": ["well"], "now": "下呂温泉", "fut": "温泉×ウェルネスデータ", "bank": "旅館の再生・DX", "key": true}, {"p": "岐阜県", "r": "飛騨", "n": "白川村", "t": ["well"], "now": "世界遺産・合掌造り", "fut": "オーバーツーリズム制御のモデル（予約制・ダイナミックプライシング）", "bank": "観光インフラ", "key": true}, {"p": "三重県", "r": "北勢", "n": "四日市市", "t": ["mat", "ene"], "now": "フラッシュメモリ工場、石油化学コンビナート", "fut": "AIの「記憶中枢」：メモリ生産＋データセンター＋化学の脱炭素", "bank": "半導体周辺の中小向け設備融資、GX融資", "key": true}, {"p": "三重県", "r": "北勢", "n": "桑名市", "t": ["haas", "well"], "now": "鋳物、長島の大型リゾート、はまぐり", "fut": "鋳物の精密化、リゾート×AIホスピタリティ", "bank": "観光・製造", "key": true}, {"p": "三重県", "r": "北勢", "n": "鈴鹿市", "t": ["haas", "well"], "now": "二輪・四輪工場、サーキット", "fut": "モータースポーツのデータ・試験サービス、自動運転テストコース", "bank": "モビリティ試験事業融資", "key": true}, {"p": "三重県", "r": "北勢", "n": "亀山市", "t": ["haas", "log"], "now": "新名神・東名阪の結節、液晶関連工場、ろうそく", "fut": "自動運転トラックの中継ハブ", "bank": "物流施設ファイナンス", "key": true}, {"p": "三重県", "r": "北勢", "n": "いなべ市", "t": ["haas"], "now": "自動車・部品工場、セメント", "fut": "製造現場のデジタルツイン", "bank": "中小製造業DX", "key": false}, {"p": "三重県", "r": "北勢", "n": "木曽岬町", "t": ["ene", "agri"], "now": "トマト等の農業、干拓地メガソーラー", "fut": "再エネ×施設園芸", "bank": "農業・再エネ", "key": false}, {"p": "三重県", "r": "北勢", "n": "東員町", "t": ["haas", "life"], "now": "住宅、工業", "fut": "生活サービス", "bank": "地域事業者", "key": false}, {"p": "三重県", "r": "北勢", "n": "菰野町", "t": ["well"], "now": "湯の山温泉、御在所岳", "fut": "温泉ウェルネス×山岳観光", "bank": "観光", "key": true}, {"p": "三重県", "r": "北勢", "n": "朝日町", "t": ["haas", "life"], "now": "電機関連工場、住宅", "fut": "電力インフラ機器の遠隔保守", "bank": "製造業", "key": false}, {"p": "三重県", "r": "北勢", "n": "川越町", "t": ["ene"], "now": "大型火力発電所", "fut": "データセンター向け電源供給地", "bank": "エネルギー", "key": true}, {"p": "三重県", "r": "中勢・松阪", "n": "津市", "t": ["brain", "haas", "well"], "now": "県都、三重大学、造船", "fut": "行政DX・医療AIの県内中枢、造船のデジタル化", "bank": "医療・行政関連、造船", "key": true}, {"p": "三重県", "r": "中勢・松阪", "n": "松阪市", "t": ["brain", "agri"], "now": "松阪牛、商人の町", "fut": "松阪牛のゲノム・飼育データのブランド管理・ライセンス", "bank": "畜産のデータ化融資", "key": true}, {"p": "三重県", "r": "中勢・松阪", "n": "多気町", "t": ["agri", "well"], "now": "大型商業リゾート（VISON）、食の人材育成", "fut": "食×観光のショーケース", "bank": "観光・食品", "key": true}, {"p": "三重県", "r": "中勢・松阪", "n": "明和町", "t": ["agri", "well"], "now": "斎宮跡、農業", "fut": "歴史観光×XR", "bank": "観光", "key": false}, {"p": "三重県", "r": "中勢・松阪", "n": "大台町", "t": ["well", "mtn"], "now": "大杉谷、林業", "fut": "林業AI・自然観光", "bank": "林業", "key": false}, {"p": "三重県", "r": "伊勢志摩", "n": "伊勢市", "t": ["well"], "now": "伊勢神宮、門前町", "fut": "「常若」の思想×持続可能観光の世界発信", "bank": "観光事業者の高付加価値化", "key": true}, {"p": "三重県", "r": "伊勢志摩", "n": "鳥羽市", "t": ["agri", "well"], "now": "真珠、海女、水族館", "fut": "真珠・海藻養殖の環境データ制御、海洋観光", "bank": "養殖・観光", "key": true}, {"p": "三重県", "r": "伊勢志摩", "n": "志摩市", "t": ["agri", "well"], "now": "英虞湾の真珠養殖、リゾート", "fut": "海洋環境モニタリング×養殖、国際会議・リゾート", "bank": "ブルーカーボン、観光", "key": true}, {"p": "三重県", "r": "伊勢志摩", "n": "玉城町", "t": ["agri", "life"], "now": "農業、住宅", "fut": "生活サービス・農業", "bank": "農業", "key": false}, {"p": "三重県", "r": "伊勢志摩", "n": "度会町", "t": ["agri", "mtn"], "now": "茶、林業", "fut": "茶・木材のブランド化", "bank": "農林業", "key": false}, {"p": "三重県", "r": "伊勢志摩", "n": "大紀町", "t": ["agri", "mtn"], "now": "林業、漁業", "fut": "林業・漁業のスマート化", "bank": "農林水産", "key": false}, {"p": "三重県", "r": "伊勢志摩", "n": "南伊勢町", "t": ["agri"], "now": "真鯛等の養殖、過疎", "fut": "AI給餌・遠隔監視の養殖", "bank": "養殖業者", "key": true}, {"p": "三重県", "r": "伊賀", "n": "伊賀市", "t": ["haas", "agri", "well"], "now": "工業団地、忍者観光、伊賀焼、伊賀牛", "fut": "関西と東海を結ぶ製造・物流拠点、忍者IPのコンテンツ化", "bank": "中小製造業、観光IP", "key": true}, {"p": "三重県", "r": "伊賀", "n": "名張市", "t": ["life"], "now": "大阪圏のベッドタウン、高齢化", "fut": "高齢者MaaS・見守りAIのモデル都市", "bank": "生活サービス事業", "key": true}, {"p": "三重県", "r": "東紀州", "n": "尾鷲市", "t": ["ene", "agri", "mtn"], "now": "尾鷲ヒノキ、漁業、火力発電所跡地", "fut": "跡地を活用した再エネ・データ拠点、ヒノキブランド", "bank": "跡地再開発", "key": true}, {"p": "三重県", "r": "東紀州", "n": "熊野市", "t": ["agri", "well"], "now": "熊野古道（世界遺産）、柑橘", "fut": "巡礼観光・柑橘のブランド化", "bank": "観光・農業", "key": false}, {"p": "三重県", "r": "東紀州", "n": "紀北町", "t": ["agri", "mtn"], "now": "林業、漁業", "fut": "林業・漁業のスマート化", "bank": "農林水産", "key": false}, {"p": "三重県", "r": "東紀州", "n": "御浜町", "t": ["agri"], "now": "一年中みかんが採れる柑橘産地", "fut": "柑橘のAI選果・需給予測", "bank": "農業法人", "key": true}, {"p": "三重県", "r": "東紀州", "n": "紀宝町", "t": ["agri", "mtn"], "now": "農業、熊野川", "fut": "防災AI・農業", "bank": "農業", "key": false}, {"p": "静岡県", "r": "西部（遠州）", "n": "浜松市", "t": ["brain", "haas", "mat"], "now": "二輪・四輪・楽器メーカー、光・電子技術、医大・工学部", "fut": "フィジカルAIの「目と耳」：光センサー・LiDAR・画像診断。ヤマハ系の音響AI", "bank": "ディープテックVC、海外流出防止のエクイティ投資", "key": true}, {"p": "静岡県", "r": "西部（遠州）", "n": "磐田市", "t": ["haas"], "now": "二輪・マリン製品大手の本社", "fut": "小型モビリティ・無人ボート/ドローンのサービス化", "bank": "サプライヤーのソフト化投資", "key": true}, {"p": "静岡県", "r": "西部（遠州）", "n": "湖西市", "t": ["haas"], "now": "自動車工場、豊田佐吉生誕地", "fut": "電動化部品とそのデータサービス", "bank": "中小製造業転換", "key": false}, {"p": "静岡県", "r": "西部（遠州）", "n": "掛川市", "t": ["haas", "agri"], "now": "工業団地、深蒸し茶", "fut": "製造DX、茶のブランド化", "bank": "製造・農業", "key": false}, {"p": "静岡県", "r": "西部（遠州）", "n": "袋井市", "t": ["haas", "agri", "well"], "now": "工業、クラウンメロン、スタジアム", "fut": "高級果実の環境制御栽培、スポーツ観光", "bank": "施設園芸", "key": true}, {"p": "静岡県", "r": "西部（遠州）", "n": "御前崎市", "t": ["ene", "agri"], "now": "原子力発電所、風力、カツオ漁", "fut": "電力供給とデータセンター立地", "bank": "エネルギー", "key": true}, {"p": "静岡県", "r": "西部（遠州）", "n": "菊川市", "t": ["haas", "agri"], "now": "深蒸し茶、工業", "fut": "茶の機能性成分データ×健康食品", "bank": "農業・食品", "key": false}, {"p": "静岡県", "r": "西部（遠州）", "n": "森町", "t": ["agri", "well"], "now": "次郎柿、茶、小京都", "fut": "農業ブランド化", "bank": "農業", "key": false}, {"p": "静岡県", "r": "中部", "n": "静岡市", "t": ["brain", "log", "agri"], "now": "県都、清水港、プラモデル、茶、桜えび", "fut": "清水港の自動化物流、ホビー×3Dデータ、海洋データ", "bank": "港湾・ホビー・茶の融資", "key": true}, {"p": "静岡県", "r": "中部", "n": "島田市", "t": ["log", "agri", "well"], "now": "富士山静岡空港の一部、茶、SL鉄道", "fut": "空港物流・茶ツーリズム", "bank": "物流・観光", "key": false}, {"p": "静岡県", "r": "中部", "n": "焼津市", "t": ["agri"], "now": "遠洋漁業（カツオ・マグロ）、水産加工", "fut": "漁獲・加工データのブランド化、自動加工", "bank": "水産加工業のDX", "key": true}, {"p": "静岡県", "r": "中部", "n": "藤枝市", "t": ["agri", "life"], "now": "住宅、茶、サッカー", "fut": "スポーツ×ヘルスケア、生活サービス", "bank": "地域事業者", "key": false}, {"p": "静岡県", "r": "中部", "n": "牧之原市", "t": ["haas", "log", "agri"], "now": "茶、自動車工場、空港所在地", "fut": "茶園の自動化、製造", "bank": "農業・製造", "key": false}, {"p": "静岡県", "r": "中部", "n": "吉田町", "t": ["haas", "log"], "now": "工業・物流", "fut": "物流自動化", "bank": "物流施設", "key": false}, {"p": "静岡県", "r": "中部", "n": "川根本町", "t": ["well", "mtn"], "now": "川根茶、SL、寸又峡", "fut": "中山間観光・遠隔医療", "bank": "観光", "key": false}, {"p": "静岡県", "r": "東部", "n": "沼津市", "t": ["haas", "agri"], "now": "沼津港（干物）、機械工業", "fut": "水産物の需給予測流通、機械のサービス化", "bank": "水産・製造", "key": true}, {"p": "静岡県", "r": "東部", "n": "三島市", "t": ["brain", "well"], "now": "遺伝学研究機関、化学繊維工場、湧水", "fut": "ゲノム×AIの研究実装、リニア期待のベッドタウン", "bank": "研究発ベンチャー", "key": true}, {"p": "静岡県", "r": "東部", "n": "富士宮市", "t": ["agri", "well"], "now": "富士山本宮浅間大社、朝霧の酪農", "fut": "酪農のデータ管理、富士山観光", "bank": "酪農・観光", "key": true}, {"p": "静岡県", "r": "東部", "n": "富士市", "t": ["haas", "mat"], "now": "製紙・パルプの集積", "fut": "紙→セルロースナノファイバー等の新素材", "bank": "素材転換融資", "key": true}, {"p": "静岡県", "r": "東部", "n": "御殿場市", "t": ["log", "well"], "now": "アウトレット、富士山麓", "fut": "商業×観光のデータマーケティング", "bank": "観光・商業", "key": false}, {"p": "静岡県", "r": "東部", "n": "裾野市", "t": ["brain", "life"], "now": "Woven City、自動車研究所", "fut": "AIネイティブ都市の実証・ノウハウ輸出", "bank": "実証参加スタートアップへの投資", "key": true}, {"p": "静岡県", "r": "東部", "n": "清水町", "t": ["life"], "now": "柿田川湧水、住宅", "fut": "生活サービス", "bank": "地域事業者", "key": false}, {"p": "静岡県", "r": "東部", "n": "長泉町", "t": ["brain", "well"], "now": "がん専門病院（ファルマバレー構想の中核）", "fut": "医療AI・創薬データの集積地", "bank": "医療系スタートアップ投資", "key": true}, {"p": "静岡県", "r": "東部", "n": "小山町", "t": ["haas", "well"], "now": "サーキット、富士山麓", "fut": "自動運転・モータースポーツの試験サービス", "bank": "モビリティ関連", "key": true}, {"p": "静岡県", "r": "伊豆", "n": "熱海市", "t": ["well", "life"], "now": "温泉、別荘、ワーケーション", "fut": "都市型ウェルネス・二拠点居住", "bank": "旅館再生・不動産", "key": true}, {"p": "静岡県", "r": "伊豆", "n": "伊東市", "t": ["well"], "now": "温泉観光", "fut": "温泉ウェルネス", "bank": "観光", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "伊豆の国市", "t": ["agri", "well"], "now": "世界遺産・韮山反射炉、大学病院、いちご", "fut": "医療×ウェルネス観光", "bank": "医療・観光", "key": true}, {"p": "静岡県", "r": "伊豆", "n": "伊豆市", "t": ["agri", "well"], "now": "修善寺温泉、わさび", "fut": "わさびの環境制御・ブランド", "bank": "農業・観光", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "函南町", "t": ["agri", "life"], "now": "酪農、住宅", "fut": "酪農データ・生活サービス", "bank": "酪農", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "下田市", "t": ["agri", "well"], "now": "歴史・海洋観光、漁業", "fut": "海洋観光・スマート漁業", "bank": "観光・漁業", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "東伊豆町", "t": ["well"], "now": "熱川温泉", "fut": "温泉ウェルネス", "bank": "旅館再生", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "河津町", "t": ["agri", "well"], "now": "河津桜", "fut": "季節需要のAI平準化", "bank": "観光", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "南伊豆町", "t": ["well", "mtn"], "now": "石廊崎、過疎", "fut": "遠隔医療・ドローン配送", "bank": "自治体連携", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "松崎町", "t": ["well"], "now": "なまこ壁の町並み", "fut": "文化観光", "bank": "観光", "key": false}, {"p": "静岡県", "r": "伊豆", "n": "西伊豆町", "t": ["agri", "well"], "now": "夕日観光、漁業", "fut": "観光・漁業", "bank": "観光・漁業", "key": false}], "banks": {"愛知県": "あいち銀行（旧愛知銀行・中京銀行）、名古屋銀行／三河は岡崎・碧海・豊田・西尾・蒲郡・豊橋などの信用金庫と協調", "岐阜県": "十六銀行（十六フィナンシャルグループ）、大垣共立銀行", "三重県": "百五銀行、三十三銀行（旧三重銀行・第三銀行）", "静岡県": "静岡銀行（しずおかフィナンシャルグループ）、清水銀行、スルガ銀行、静岡中央銀行／浜松いわた信金など"}};
+const PREFS = [
+  {id:'愛知県',c:'--aichi'},{id:'岐阜県',c:'--gifu'},{id:'三重県',c:'--mie'},{id:'静岡県',c:'--shizuoka'}
+];
+const TYPES = [
+  {id:'brain',l:'頭脳・新金融',d:'AI開発、データ取引、走行データ連動保険などの新しい金融'},
+  {id:'haas',l:'製造のサービス化',d:'稼働データ販売、遠隔保守、サブスク、ソフト更新収益'},
+  {id:'mat',l:'素材・部材',d:'半導体・電池向け素材の研究開発、受託開発、ライセンス'},
+  {id:'ene',l:'エネルギー・計算資源',d:'データセンター向け電力、水素・アンモニアへの転換'},
+  {id:'log',l:'物流',d:'自動化された港湾、自動運転トラックの中継、ドローン物流'},
+  {id:'agri',l:'一次産業×AI',d:'予測型の農業・養殖、産地ブランドのデータ化'},
+  {id:'well',l:'ウェルネス・観光',d:'予防医療、ヘルスツーリズム、AIによる接客と需要制御'},
+  {id:'life',l:'生活実証',d:'高齢者向けの移動サービス、見守り・介護AI、生活データ'},
+  {id:'mtn',l:'山間・森林',d:'林業AI、山間のドローン物流、遠隔医療、森林由来のクレジット'}
+];
+const TL = Object.fromEntries(TYPES.map(t=>[t.id,t.l]));
+const state = {pref:'all', types:new Set(), q:''};
+try{const s=JSON.parse(localStorage.getItem('tokai-ai-map')||'{}'); if(s.pref) state.pref=s.pref;}catch(e){}
+
+const esc = s => s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cnt = (p,t) => DATA.rows.filter(r=>(p==='all'||r.p===p)&&(!t||r.t.includes(t))).length;
+
+function renderMatrix(){
+  const max = Math.max(...PREFS.flatMap(p=>TYPES.map(t=>cnt(p.id,t.id))));
+  let h = '<thead><tr><th class="rowh">県</th>'+TYPES.map(t=>`<th><span class="dot" style="background:var(--t-${t.id})"></span><br>${t.l}</th>`).join('')+'</tr></thead><tbody>';
+  for(const p of PREFS){
+    h += `<tr><th class="rowh"><span class="dot" style="background:var(${p.c})"></span>${p.id}<span style="color:var(--muted);font-family:var(--f-mono);font-size:12px"> ${cnt(p.id)}</span></th>`;
+    for(const t of TYPES){
+      const n = cnt(p.id,t.id), a = n? (0.12 + 0.6*n/max):0;
+      const on = state.pref===p.id && state.types.size===1 && state.types.has(t.id);
+      h += `<td><button class="${on?'on':''}" data-p="${p.id}" data-t="${t.id}" aria-label="${p.id}の${t.l}：${n}市町村" style="background:color-mix(in srgb, var(--t-${t.id}) ${Math.round(a*100)}%, transparent)">${n||'·'}</button></td>`;
+    }
+    h += '</tr>';
+  }
+  document.getElementById('mx').innerHTML = h + '</tbody>';
+}
+document.getElementById('mx').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.pref=b.dataset.p; state.types=new Set([b.dataset.t]); state.q=''; document.getElementById('q').value='';
+  renderAll(); document.getElementById('list').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+});
+
+function renderTypes(){
+  document.getElementById('types').innerHTML = TYPES.map(t=>`<button class="type ${state.types.has(t.id)?'on':''}" data-t="${t.id}" aria-pressed="${state.types.has(t.id)}">
+    <span class="hd"><span class="dot" style="background:var(--t-${t.id});margin:0"></span>${t.l}<span class="n">${cnt('all',t.id)}</span></span>
+    <span class="d">${t.d}</span></button>`).join('');
+}
+document.getElementById('types').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const t=b.dataset.t; state.types.has(t)?state.types.delete(t):state.types.add(t); renderAll();
+});
+
+function renderSeg(){
+  const opts=[{id:'all',l:'すべて'},...PREFS.map(p=>({id:p.id,l:p.id.replace('県','')}))];
+  document.getElementById('prefSeg').innerHTML = opts.map(o=>`<button data-p="${o.id}" aria-pressed="${state.pref===o.id}">${o.l}</button>`).join('');
+}
+document.getElementById('prefSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return; state.pref=b.dataset.p;
+  try{localStorage.setItem('tokai-ai-map',JSON.stringify({pref:state.pref}))}catch(e){}
+  renderAll();
+});
+document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value.trim(); renderList();});
+
+function match(r){
+  if(state.pref!=='all' && r.p!==state.pref) return false;
+  for(const t of state.types) if(!r.t.includes(t)) return false;
+  if(state.q){const s=(r.n+r.r+r.now+r.fut+r.bank+r.t.map(x=>TL[x]).join('')); if(!s.includes(state.q)) return false;}
+  return true;
+}
+
+function renderList(){
+  const hits = DATA.rows.filter(match);
+  const st = document.getElementById('status');
+  const filt = state.types.size || state.q || state.pref!=='all';
+  st.innerHTML = `<span><b style="font-family:var(--f-mono)">${hits.length}</b> / 160 市町村</span>` +
+    [...state.types].map(t=>`<button data-rm="${t}" aria-label="${TL[t]}の絞り込みを外す">${TL[t]} ×</button>`).join('') +
+    (filt?'<button data-clear="1">条件をすべて外す</button>':'');
+  let h='';
+  for(const p of PREFS){
+    const pr = hits.filter(r=>r.p===p.id); if(!pr.length) continue;
+    h += `<div class="pref" style="--pc:var(${p.c})"><div class="pref-h"><h3>${p.id}</h3><span class="cnt">${pr.length}市町村</span><span class="bank">主導金融機関：${esc(DATA.banks[p.id]||'')}</span></div>
+      <div class="row-head"><span>市町村</span><span>いまの強み</span><span>AI時代の将来像</span><span>地銀の打ち手</span></div>`;
+    let reg=null;
+    for(const r of pr){
+      if(r.r!==reg){reg=r.r; h+=`<div class="reg-h">${esc(reg)}</div>`;}
+      h += `<div class="row"><div><div class="nm">${esc(r.n)}</div><div class="pills">${r.t.map(t=>`<span class="pill" style="--tc:var(--t-${t})">${TL[t]}</span>`).join('')}</div></div>
+        <div><span class="lbl">いまの強み</span><p>${esc(r.now)}</p></div>
+        <div class="fut"><span class="lbl">AI時代の将来像</span><p>${esc(r.fut)}</p></div>
+        <div><span class="lbl">地銀の打ち手</span><p>${esc(r.bank)}</p></div></div>`;
+    }
+    h += '</div>';
+  }
+  document.getElementById('out').innerHTML = h || '<div class="empty">条件に合う市町村はありません。絞り込みを外してください。</div>';
+}
+document.getElementById('status').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.clear){state.types.clear(); state.q=''; state.pref='all'; document.getElementById('q').value='';}
+  else state.types.delete(b.dataset.rm);
+  renderAll();
+});
+
+function renderAll(){renderMatrix(); renderTypes(); renderSeg(); renderList();}
+renderAll();
+</script>
