@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="ja">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>東京 vs 東海 — 経済の流れ</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F4F6F8; --surface:#FFFFFF; --surface-2:#FAFBFC;
+  --rule:#DCE3EA; --rule-soft:#EAEFF4;
+  --ink:#101820; --ink-2:#4A5666; --ink-3:#7C8998;
+  --tokyo:#2a78d6; --tokai:#eb6834;
+  --grid:rgba(42,120,214,.055);
+  --op-link:.38; --op-link-dim:.13; --op-node-dim:.38;
+  --shadow:0 1px 2px rgba(16,24,32,.05), 0 8px 24px -12px rgba(16,24,32,.16);
+  --font-jp:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Noto Sans JP",system-ui,sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,"Roboto Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --bg:#0E1218; --surface:#151A22; --surface-2:#11161D;
+    --rule:#252D38; --rule-soft:#1D242E;
+    --ink:#E7ECF3; --ink-2:#9AA7B8; --ink-3:#68758a;
+    --tokyo:#3987e5; --tokai:#d95926;
+    --grid:rgba(120,170,235,.06);
+    --op-link:.44; --op-link-dim:.24; --op-node-dim:.52;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0E1218; --surface:#151A22; --surface-2:#11161D;
+  --rule:#252D38; --rule-soft:#1D242E;
+  --ink:#E7ECF3; --ink-2:#9AA7B8; --ink-3:#68758a;
+  --tokyo:#3987e5; --tokai:#d95926;
+  --grid:rgba(120,170,235,.06);
+  --op-link:.44; --op-link-dim:.24; --op-node-dim:.52;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#F4F6F8; --surface:#FFFFFF; --surface-2:#FAFBFC;
+  --rule:#DCE3EA; --rule-soft:#EAEFF4;
+  --ink:#101820; --ink-2:#4A5666; --ink-3:#7C8998;
+  --tokyo:#2a78d6; --tokai:#eb6834;
+  --grid:rgba(42,120,214,.055);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-jp); font-size:14px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-family:var(--font-num); font-variant-numeric:tabular-nums; font-feature-settings:"tnum"}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1560px; margin:0 auto; padding:28px 24px 72px}
+header.masthead{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:24px; flex-wrap:wrap;
+  padding-bottom:16px; border-bottom:1px solid var(--ink); margin-bottom:2px;
+}
+.masthead h1{
+  margin:0; font-size:27px; font-weight:700; letter-spacing:-.02em;
+  text-wrap:balance;
+}
+.masthead .sub{margin:4px 0 0; color:var(--ink-2); font-size:13px}
+.eyebrow{
+  font-family:var(--font-num); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 6px;
+}
+.rule-thin{height:3px; border-bottom:1px solid var(--rule); margin-bottom:24px}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(178px,1fr)); gap:1px;
+  background:var(--rule); border:1px solid var(--rule); margin-bottom:26px}
+.stat{background:var(--surface); padding:14px 16px 15px; display:flex; flex-direction:column; gap:2px}
+.stat .k{font-size:11px; color:var(--ink-3); letter-spacing:.03em}
+.stat .v{font-family:var(--font-num); font-variant-numeric:tabular-nums;
+  font-size:25px; font-weight:600; letter-spacing:-.02em; line-height:1.15; white-space:nowrap}
+.stat.pair .v{font-size:19px}
+.stat .u{font-size:11.5px; color:var(--ink-2); font-family:var(--font-jp); font-weight:400; margin-left:3px}
+.stat .n{font-size:11px; color:var(--ink-3)}
+.stat.lead{background:var(--surface); position:relative}
+.stat.lead .v{color:var(--tokyo)}
+.stat.lead::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--tokyo)}
+
+/* ---------- layout ---------- */
+.cols{display:grid; grid-template-columns:212px minmax(0,1fr); gap:26px; align-items:start}
+@media (max-width:940px){
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .rail .seg{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+  .rail .seg button{border-bottom:0; border-right:1px solid var(--rule-soft)}
+}
+
+/* ---------- control rail ---------- */
+.rail{position:sticky; top:20px; display:flex; flex-direction:column; gap:20px}
+.grp{display:flex; flex-direction:column; gap:7px}
+.grp>.lab{font-family:var(--font-num); font-size:10px; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--ink-3)}
+.seg{display:flex; flex-direction:column; border:1px solid var(--rule); background:var(--surface)}
+.seg button{
+  appearance:none; border:0; background:transparent; color:var(--ink-2);
+  font:inherit; font-size:13px; text-align:left; padding:8px 11px; cursor:pointer;
+  border-bottom:1px solid var(--rule-soft); display:flex; align-items:center; gap:8px;
+}
+.seg button:last-child{border-bottom:0}
+.seg button:hover{background:var(--surface-2); color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--surface); font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--tokyo); outline-offset:-2px}
+.swatch{width:9px; height:9px; flex:0 0 9px; border-radius:1px}
+.seg button[aria-pressed="true"] .swatch{box-shadow:0 0 0 1px var(--surface)}
+
+.legend{display:flex; flex-direction:column; gap:8px; font-size:11.5px; color:var(--ink-2);
+  border-top:1px solid var(--rule); padding-top:14px}
+.legend .row{display:flex; gap:8px; align-items:flex-start; line-height:1.45}
+.legend .chipbox{flex:0 0 22px; height:11px; margin-top:3px; background:var(--tokyo)}
+.legend .chipbox.dim{opacity:.32}
+
+/* ---------- panel ---------- */
+.panel{background:var(--surface); border:1px solid var(--rule); box-shadow:var(--shadow)}
+.panel-head{
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  padding:13px 18px; border-bottom:1px solid var(--rule);
+}
+.panel-head h2{margin:0; font-size:14px; font-weight:600; letter-spacing:-.01em}
+.panel-head .note{font-size:11.5px; color:var(--ink-3)}
+
+.crumbs{display:flex; align-items:center; gap:2px; flex-wrap:wrap; font-size:12px}
+.crumbs button{
+  appearance:none; border:0; background:transparent; font:inherit; color:var(--tokyo);
+  cursor:pointer; padding:2px 5px; border-radius:2px;
+}
+.crumbs button:hover{background:var(--rule-soft)}
+.crumbs button:disabled{color:var(--ink); cursor:default; font-weight:600}
+.crumbs .sep{color:var(--ink-3)}
+
+.canvas{position:relative; overflow-x:auto; padding:10px 18px 22px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px;}
+svg.flow{display:block}
+/* 帯の濃さはテーマ側のトークンで決める（暗い地では薄い帯が沈むため強めにする） */
+svg.flow .lnk{fill-opacity:var(--op-link)}
+svg.flow .lnk.dim{fill-opacity:var(--op-link-dim)}
+svg.flow .nd{fill-opacity:1}
+svg.flow .nd.dim{fill-opacity:var(--op-node-dim)}
+.hitnode{cursor:pointer}
+.hitnode.leaf{cursor:default}
+.nodelab{
+  position:absolute; pointer-events:none; font-size:11.5px; line-height:1.28;
+  color:var(--ink); overflow:hidden;
+}
+.nodelab .nm{display:block; overflow:hidden; text-overflow:ellipsis}
+.nodelab .vl{font-family:var(--font-num); font-variant-numeric:tabular-nums;
+  color:var(--ink-2); font-size:10.5px; letter-spacing:-.01em}
+.nodelab.tiny .nm{white-space:nowrap}
+.chip{
+  display:inline-block; font-size:9px; letter-spacing:.04em; padding:0 4px;
+  border:1px solid currentColor; border-radius:2px; vertical-align:1px; margin-left:4px;
+}
+.bandlabel{
+  font-family:var(--font-num); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  fill:var(--ink-3);
+}
+
+/* ---------- tooltip ---------- */
+.tip{
+  position:fixed; z-index:60; pointer-events:none; opacity:0; transition:opacity .1s;
+  background:var(--surface); border:1px solid var(--rule); box-shadow:var(--shadow);
+  padding:9px 12px; max-width:290px; font-size:12px; line-height:1.5;
+}
+.tip.on{opacity:1}
+.tip .t{font-weight:600; margin-bottom:1px}
+.tip .d{color:var(--ink-3); font-size:11px; margin-bottom:6px}
+.tip dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:1px 12px}
+.tip dt{color:var(--ink-3); font-size:11px}
+.tip dd{margin:0; text-align:right; font-family:var(--font-num);
+  font-variant-numeric:tabular-nums; font-size:11.5px}
+
+/* ---------- gap view ---------- */
+.gapwrap{padding:18px}
+.gaprow{display:grid; grid-template-columns:minmax(140px,200px) minmax(0,1fr) 92px;
+  gap:14px; align-items:center; padding:9px 0; border-bottom:1px solid var(--rule-soft)}
+.gaprow:last-child{border-bottom:0}
+.gaprow .nm{font-size:12.5px; line-height:1.35}
+.gaprow .nm .sub{display:block; color:var(--ink-3); font-size:10.5px}
+.bars{display:flex; flex-direction:column; gap:3px}
+.bar{height:11px; position:relative; background:var(--rule-soft)}
+.bar i{position:absolute; inset:0 auto 0 0; display:block; border-radius:0 2px 2px 0}
+.bar.a i{background:var(--tokyo)} .bar.b i{background:var(--tokai)}
+.bar span{position:absolute; top:50%; transform:translateY(-50%); left:calc(var(--w) + 6px);
+  font-family:var(--font-num); font-size:10px; color:var(--ink-2); white-space:nowrap}
+.gapval{text-align:right; font-family:var(--font-num); font-variant-numeric:tabular-nums;
+  font-size:13px; font-weight:600}
+.gapval small{display:block; font-size:10px; font-weight:400; color:var(--ink-3)}
+
+/* ---------- table ---------- */
+.tablewrap{overflow-x:auto; padding:2px 0 0}
+table{border-collapse:collapse; width:100%; font-size:12.5px; min-width:660px}
+th,td{padding:7px 14px; text-align:right; border-bottom:1px solid var(--rule-soft); white-space:nowrap}
+th{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
+  font-weight:500; border-bottom:1px solid var(--rule); position:sticky; top:0; background:var(--surface)}
+td.name,th.name{text-align:left; white-space:normal; min-width:240px}
+tbody tr:hover{background:var(--surface-2)}
+td.n{font-family:var(--font-num); font-variant-numeric:tabular-nums}
+tr.d0 td.name{font-weight:700}
+tr.d1 td.name{font-weight:600}
+tr.d2 td.name{padding-left:30px}
+tr.d3 td.name{padding-left:52px; color:var(--ink-2)}
+tr.d4 td.name{padding-left:74px; color:var(--ink-2)}
+.dot{display:inline-block;width:6px;height:6px;background:var(--tokyo);margin-right:7px;vertical-align:1px}
+
+footer.foot{margin-top:34px; padding-top:16px; border-top:1px solid var(--rule);
+  color:var(--ink-3); font-size:11.5px; line-height:1.65; display:grid; gap:6px}
+footer.foot b{color:var(--ink-2); font-weight:600}
+.themebtn{appearance:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);
+  font:inherit;font-size:11.5px;padding:5px 10px;cursor:pointer}
+.themebtn:hover{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">県民経済計算 · 産業階層分解</p>
+      <h1>東京 vs 東海 — お金はどこを流れているか</h1>
+      <p class="sub">GDPを一次・二次・三次に分け、三次産業をさらに4段階まで掘り下げて、
+        東海で新規創出・増強できる領域を探す</p>
+    </div>
+    <button class="themebtn" id="themeToggle" type="button">表示を切り替え</button>
+  </header>
+  <div class="rule-thin"></div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="cols">
+    <aside class="rail">
+      <div class="grp">
+        <span class="lab">View</span>
+        <div class="seg" id="segView">
+          <button type="button" data-v="flow">フロー図</button>
+          <button type="button" data-v="gap">格差の内訳</button>
+          <button type="button" data-v="table">数値表</button>
+        </div>
+      </div>
+      <div class="grp">
+        <span class="lab">Region</span>
+        <div class="seg" id="segRegion"></div>
+      </div>
+      <div class="legend">
+        <div class="row"><span class="chipbox"></span>
+          <span><b>東海で新規創出・増強できる</b>分野。東京に集中していて、
+            東海側で新たに作る・伸ばす余地があるとシート上で判定されたもの</span></div>
+        <div class="row"><span class="chipbox dim"></span>
+          <span><b>対象外</b>。人口に張り付く需要（小売・医療・運輸など）と、
+            東海がすでに担っている分野（自動車整備・製造系派遣・ハードウェアR&amp;D・農協など）。
+            下位の階層で対象外になった枝も薄く描いています</span></div>
+        <div class="row" style="border-top:1px solid var(--rule);padding-top:9px">
+          <span style="color:var(--ink-3)">帯の太さ＝金額。比較モードでは東京と東海を同じ縮尺で描いているので、帯の高さの差がそのまま規模の差です。分類をクリックすると内訳へ降ります。</span></div>
+      </div>
+    </aside>
+
+    <main>
+      <section class="panel">
+        <div class="panel-head">
+          <div class="crumbs" id="crumbs"></div>
+          <span class="note" id="headNote"></span>
+        </div>
+        <div id="body"></div>
+      </section>
+
+      <footer class="foot">
+        <div><b>出典</b> 「頭おかしい野望.xlsx」シート1。人口・GDP・産業別構成比は同ファイルの入力値をそのまま使用。</div>
+        <div><b>計算方法</b> 金額はすべて構成比から再計算しています（シートの金額表は参照していません）。各階層の内訳の合計は、必ず親の金額に一致します。</div>
+        <div><b>増強余地の判定</b> 元シートの「代替可能の有無」行をそのまま使っています。X が付いた列を対象外、それ以外を新規創出・増強できる分野として扱い、下位の階層へ引き継ぎます。</div>
+        <div><b>読み方の注意</b> 構成比は概算値のため、下位階層ほど誤差が積み上がります。桁の大小を読む道具として使ってください。</div>
+      </footer>
+    </main>
+  </div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = {"regions":{"東京都":{"name":"全産業","detail":"名目GDP 125.0 兆円","value":125.05,"children":[{"name":"一次産業","detail":"農林水産業","value":0.05},{"name":"二次産業","detail":"製造業・建設業・鉱業","value":14.0},{"name":"三次産業","detail":"サービス業全般","value":111.0,"children":[{"name":"卸売・小売業","value":23.31,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":8.158499999999998,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":10.4895,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":2.331,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":2.331,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":14.43,"substitutable":false,"detail":"持ち家家賃含む"},{"name":"専門・技術・業務支援","value":17.76,"substitutable":true,"children":[{"name":"① 専門サービス","value":6.748800000000001,"substitutable":true,"detail":"法務・会計・コンサル・広告等","children":[{"name":"① 広告業","value":3.2394240000000005,"substitutable":true,"detail":"総合広告代理店・Web広告・PR等","children":[{"name":"① インターネット・デジタル広告","value":1.2309811200000003,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":1.1337984,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.5507020800000001,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.3239424000000001,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":1.7546880000000002,"substitutable":true,"detail":"シンクタンク・経営指導・市場調査等","children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.7896096000000001,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.43867200000000006,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.21056256,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.31584384000000004,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":1.214784,"substitutable":true,"detail":"弁護士・税理士・公認会計士・弁理士等","children":[{"name":"① 税務・会計","value":0.4251744,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.38873088000000006,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.21866112000000001,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.1822176,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.539904,"substitutable":true,"detail":"工業デザイン・商業写真・翻訳通訳等","children":[{"name":"① プロダクト・工業・空間デザイン","value":0.134976,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.1889664,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.10798080000000002,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.10798080000000002,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":2.4864000000000006,"substitutable":true,"detail":"機械・電気設計、建築設計等","children":[{"name":"① 機械・電気・電子設計・開発","value":0.7956480000000002,"substitutable":true,"detail":"自動車・機器・ロボット等のハードウェア設計"},{"name":"② 建築・土木設計・監理","value":1.0442880000000003,"substitutable":true,"detail":"組織設計事務所・建設コンサル・構造設計等"},{"name":"③ 測量・地質調査・環境測定","value":0.2983680000000001,"substitutable":true,"detail":"建設事前の測量・ボーリング調査・環境アセス等"},{"name":"④ 技術検査・分析・品質保証","value":0.3480960000000001,"substitutable":true,"detail":"非破壊検査・材料試験・製品の品質分析等"}]},{"name":"③ 学術・開発研究","value":1.9536000000000002,"substitutable":true,"detail":"民間企業の研究所・受託開発拠点","children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.29304,"substitutable":false,"detail":"モビリティ・ロボット・航空宇宙・工作機械等"},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.48840000000000006,"substitutable":true,"detail":"製薬・高分子・有機化学・電子材料・食品等"},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.7423680000000001,"substitutable":true,"detail":"経営調査・政策研究・AI/データ分析基礎等"},{"name":"④ 受託評価・試作・評価機関","value":0.42979200000000006,"substitutable":true,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等"}]},{"name":"④ 人材サービス","value":3.1968,"substitutable":true,"detail":"人材派遣・職業紹介","children":[{"name":"① オフィス・IT系 労働者派遣","value":1.27872,"substitutable":true,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等"},{"name":"② 製造・技術・現場系 労働者派遣","value":0.31968,"substitutable":false,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等"},{"name":"③ 職業紹介・転職エージェント","value":1.022976,"substitutable":true,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等"},{"name":"④ 求人メディア・RPO・その他","value":0.575424,"substitutable":true,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等"}]},{"name":"⑤ 施設管理・セキュリティ","value":2.1312,"substitutable":true,"detail":"ビル清掃・設備点検・警備保障等","children":[{"name":"① 警備保障","value":0.74592,"substitutable":true,"detail":"施設警備・機械警備・交通誘導・イベント警備等"},{"name":"② ビル清掃・環境衛生管理","value":0.8098560000000001,"substitutable":true,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等"},{"name":"③ ビル設備保守・点検","value":0.42624000000000006,"substitutable":true,"detail":"電気・空調・給排水・エレベーター・消防設備点検等"},{"name":"④ 工場・プラント保全・特殊管理","value":0.14918400000000004,"substitutable":true,"detail":"工場清掃・機械設備の保全・公害防止施設管理等"}]},{"name":"⑥ その他業務支援","value":1.2432000000000003,"substitutable":true,"detail":"コールセンター・事務代行等","children":[{"name":"① コールセンター・コンタクトセンター","value":0.4724160000000001,"substitutable":true,"detail":"カスタマーサポート・電話代行・ヘルプデスク等"},{"name":"② 事務代行・バックオフィスBPO","value":0.3978240000000001,"substitutable":true,"detail":"データ入力・経理給与計算代行・受発注処理等"},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.22377600000000006,"substitutable":true,"detail":"展示会設営・各種イベント運営代行・会場設営等"},{"name":"④ 発送代行・書類電子化・その他作業","value":0.14918400000000004,"substitutable":true,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等"}]}]},{"name":"情報通信業","value":14.43,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":5.772,"substitutable":true,"detail":"SIer・システム開発・組込みソフト等","children":[{"name":"① 業務システム受託開発・SI","value":2.5974000000000004,"substitutable":true,"detail":"金融・流通・官公庁・企業の基幹系システム構築"},{"name":"② 組込み・制御系ソフト開発","value":0.69264,"substitutable":true,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御"},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":1.443,"substitutable":true,"detail":"自社プロダクト・業務用SaaS・Webサービス開発"},{"name":"④ システム運用・保守・インフラ構築","value":1.03896,"substitutable":true,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク"}]},{"name":"② 通信業","value":2.5974,"substitutable":true,"detail":"携帯キャリア・固定通信・プロバイダ等","children":[{"name":"① 移動電気通信","value":1.4285700000000001,"substitutable":true,"detail":"携帯キャリア本社/支社・MVNO・移動体通信"},{"name":"② 固定電気通信・プロバイダ","value":0.7792199999999999,"substitutable":true,"detail":"光回線・固定電話・地域系通信・CATVインターネット等"},{"name":"③ データセンター・通信インフラ運用・その他","value":0.38960999999999996,"substitutable":true,"detail":"DC運用・クラウド基盤・衛星通信等"}]},{"name":"③ コンテンツ・出版・ゲーム","value":2.5974,"substitutable":true,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.987012,"substitutable":true,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等"},{"name":"② 出版・書籍・雑誌","value":0.7792199999999999,"substitutable":true,"detail":"大手出版社・漫画・専門書・電子書籍等"},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.5714279999999999,"substitutable":true,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等"},{"name":"④ 新聞社・報道","value":0.25974,"substitutable":true,"detail":"全国紙・ブロック紙・地方新聞・通信社"}]},{"name":"④ インターネットサービス","value":2.3088,"substitutable":true,"detail":"ポータル・SNS・ECプラットフォーム等","children":[{"name":"① EC・オークション・フリマ","value":0.80808,"substitutable":true,"detail":"楽天市場・メルカリ・ZOZO・地場EC等"},{"name":"② SNS・マッチング・コミュニケーション","value":0.6464640000000001,"substitutable":true,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等"},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.34632,"substitutable":true,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等"},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.507936,"substitutable":true,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等"}]},{"name":"⑤ 放送業","value":1.1544,"substitutable":true,"detail":"テレビ局・ラジオ局","children":[{"name":"① 民放地上波テレビ","value":0.6349200000000002,"substitutable":true,"detail":"キー局・中京広域局・地方系列局・独立局"},{"name":"② NHK（公共放送）","value":0.23088000000000003,"substitutable":true,"detail":"NHK放送センター・地域拠点局・地方放送局"},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.207792,"substitutable":true,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等"},{"name":"④ ラジオ放送（AM・FM）","value":0.08080800000000002,"substitutable":true,"detail":"民放ラジオ局・FM局・コミュニティFM等"}]}]},{"name":"金融・保険業","value":12.21,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":4.6398,"substitutable":true,"detail":"メガバンク・地銀・信金・農協等","children":[{"name":"① メガバンク・都市銀行・信託銀行","value":2.691084,"substitutable":true,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等"},{"name":"② 地方銀行・第二地方銀行","value":0.835164,"substitutable":true,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等"},{"name":"③ 信用金庫・信用組合","value":0.556776,"substitutable":true,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等"},{"name":"④ 農協・漁協・その他機関","value":0.556776,"substitutable":true,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等"}]},{"name":"② 保険業・共済","value":3.1746000000000003,"substitutable":true,"detail":"生命保険・損害保険・保険代理店等","children":[{"name":"① 生命保険業","value":1.3333320000000002,"substitutable":true,"detail":"大手生保・外資系生保・かんぽ生命等"},{"name":"② 損害保険業","value":1.2063480000000002,"substitutable":true,"detail":"メガ損保・自動車保険・火災/新種保険等"},{"name":"③ 保険代理店・保険サービス","value":0.380952,"substitutable":true,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等"},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.253968,"substitutable":true,"detail":"JA共済・全労済・県民共済・CO-OP共済等"}]},{"name":"③ 証券・投資運用・信託","value":2.6862000000000004,"substitutable":true,"detail":"証券会社・投資信託・ファンド等","children":[{"name":"① 証券商品取引業","value":1.0207560000000002,"substitutable":true,"detail":"大手証券・ネット証券・地場証券の売買・引受"},{"name":"② 投資運用・アセットマネジメント","value":0.8595840000000001,"substitutable":true,"detail":"投資信託委託会社・投資顧問会社・資産運用"},{"name":"③ ファンド運用・VC・PE・REIT","value":0.590964,"substitutable":true,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等"},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.21489600000000003,"substitutable":true,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等"}]},{"name":"④ クレジット・金融補助","value":1.7094000000000003,"substitutable":true,"detail":"カード会社・貸金・保証会社・決済等","children":[{"name":"① クレジットカード・信販・オートローン","value":0.6495720000000001,"substitutable":true,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等"},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.51282,"substitutable":true,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等"},{"name":"③ 信用保証・家賃保証・債権回収","value":0.307692,"substitutable":true,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等"},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.23931600000000006,"substitutable":true,"detail":"アコム・プロミス・アイフル・事業資金融資等"}]}]},{"name":"医療・社会福祉","value":6.66,"substitutable":false},{"name":"運輸・郵便業","value":5.550000000000001,"substitutable":false},{"name":"宿泊・飲食サービス","value":3.33,"substitutable":false},{"name":"教育・公務・その他","value":13.32,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":3.1968,"substitutable":true,"detail":"大学・小中高・塾・予備校・スクール等","children":[{"name":"① 学校教育","value":1.7582400000000002,"substitutable":true,"detail":"大学・短期大学・高校・中学・小学校・専門学校等"},{"name":"② 学習塾・予備校","value":0.703296,"substitutable":true,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等"},{"name":"③ 教養・技能教授業","value":0.383616,"substitutable":true,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等"},{"name":"④ その他の教育・学習支援業","value":0.351648,"substitutable":true,"detail":"通信教育・資格スクール・企業研修・学習施設等"}]},{"name":"② 公務","value":3.7296000000000005,"substitutable":true,"detail":"中央省庁・都県庁・市役所・警察・消防等","children":[{"name":"① 国家行政・立法・司法","value":1.6783200000000003,"substitutable":true,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等"},{"name":"② 地方一般行政","value":1.11888,"substitutable":true,"detail":"都県庁・市役所・区役所・町村役場等"},{"name":"③ 警察（治安・交通）","value":0.55944,"substitutable":true,"detail":"警視庁・各県警察本部・警察署・交番等"},{"name":"④ 消防・防災","value":0.37296000000000007,"substitutable":true,"detail":"東京消防庁・各市町村消防本部・広域消防組合等"}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":2.7972,"substitutable":true,"detail":"車検・機械保全・産廃処理・清掃等","children":[{"name":"① 自動車整備・修理業","value":0.615384,"substitutable":false,"detail":"車検・板金塗装・ディーラー整備・整備工場等"},{"name":"② 産業用機械・電気機器保全・修理","value":0.7832160000000001,"substitutable":true,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等"},{"name":"③ 廃棄物処理・清掃・リサイクル","value":1.11888,"substitutable":true,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等"},{"name":"④ その他の各種修理・整備業","value":0.27972,"substitutable":true,"detail":"OA機器修理・事務機器保守・家庭用品修繕等"}]},{"name":"④ 生活関連サービス・娯楽業","value":2.9304,"substitutable":true,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","children":[{"name":"① 娯楽業","value":1.230768,"substitutable":true,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等"},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.644688,"substitutable":true,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等"},{"name":"③ 冠婚葬祭業","value":0.468864,"substitutable":true,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等"},{"name":"④ 旅行業・写真・その他生活関連","value":0.58608,"substitutable":true,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等"}]},{"name":"⑤ 複合サービス・その他","value":0.666,"substitutable":true,"detail":"農協/JA営農・生協・各種団体等","children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.0333,"substitutable":false,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等"},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.2997,"substitutable":true,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等"},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.1998,"substitutable":true,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等"},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.1332,"substitutable":true,"detail":"コープの個別宅配・生協店舗・医療福祉生協等"}]}]}]}]},"東海":{"name":"全産業","value":75.1,"detail":"名目GDP 74.7 兆円","children":[{"name":"一次産業","value":1.0999999999999999,"detail":"農林水産業"},{"name":"二次産業","value":29.5,"detail":"製造業・建設業・鉱業"},{"name":"三次産業","value":44.5,"detail":"サービス業全般","children":[{"name":"卸売・小売業","value":9.095999999999998,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":3.1832000000000003,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":2.16354,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":1.73988,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":2.0093799999999997,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":8.014,"detail":"持ち家家賃含む","substitutable":false},{"name":"専門・技術・業務支援","value":4.646,"substitutable":true,"children":[{"name":"① 専門サービス","value":0.63068,"detail":"法務・会計・コンサル・広告等","substitutable":true,"children":[{"name":"① 広告業","value":0.17252560000000003,"detail":"総合広告代理店・Web広告・PR等","substitutable":true,"children":[{"name":"① インターネット・デジタル広告","value":0.03234344,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":0.0519412,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.071792912,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.016448048,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":0.1384784,"detail":"シンクタンク・経営指導・市場調査等","substitutable":true,"children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.026960768000000003,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.022727168000000002,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.06516988800000001,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.023620575999999997,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":0.22697079999999997,"detail":"弁護士・税理士・公認会計士・弁理士等","substitutable":true,"children":[{"name":"① 税務・会計","value":0.1074019,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.042836943999999995,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.022874064,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.053857892,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.09270520000000002,"detail":"工業デザイン・商業写真・翻訳通訳等","substitutable":true,"children":[{"name":"① プロダクト・工業・空間デザイン","value":0.03348352,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.027651344,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.0175294,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.014040936,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":1.3729200000000001,"detail":"機械・電気設計、建築設計等","substitutable":true,"children":[{"name":"① 機械・電気・電子設計・開発","value":0.6647928,"detail":"自動車・機器・ロボット等のハードウェア設計","substitutable":true},{"name":"② 建築・土木設計・監理","value":0.32985119999999996,"detail":"組織設計事務所・建設コンサル・構造設計等","substitutable":true},{"name":"③ 測量・地質調査・環境測定","value":0.1774248,"detail":"建設事前の測量・ボーリング調査・環境アセス等","substitutable":true},{"name":"④ 技術検査・分析・品質保証","value":0.2008512,"detail":"非破壊検査・材料試験・製品の品質分析等","substitutable":true}]},{"name":"③ 学術・開発研究","value":0.6978,"detail":"民間企業の研究所・受託開発拠点","substitutable":true,"children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.3876192,"detail":"モビリティ・ロボット・航空宇宙・工作機械等","substitutable":false},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.11916960000000001,"detail":"製薬・高分子・有機化学・電子材料・食品等","substitutable":true},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.064764,"detail":"経営調査・政策研究・AI/データ分析基礎等","substitutable":true},{"name":"④ 受託評価・試作・評価機関","value":0.1262472,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等","substitutable":true}]},{"name":"④ 人材サービス","value":0.7814,"detail":"人材派遣・職業紹介","substitutable":true,"children":[{"name":"① オフィス・IT系 労働者派遣","value":0.23352640000000002,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等","substitutable":true},{"name":"② 製造・技術・現場系 労働者派遣","value":0.3543632,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等","substitutable":false},{"name":"③ 職業紹介・転職エージェント","value":0.0935224,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等","substitutable":true},{"name":"④ 求人メディア・RPO・その他","value":0.099988,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等","substitutable":true}]},{"name":"⑤ 施設管理・セキュリティ","value":0.7717599999999999,"detail":"ビル清掃・設備点検・警備保障等","substitutable":true,"children":[{"name":"① 警備保障","value":0.3022752,"detail":"施設警備・機械警備・交通誘導・イベント警備等","substitutable":true},{"name":"② ビル清掃・環境衛生管理","value":0.2291696,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等","substitutable":true},{"name":"③ ビル設備保守・点検","value":0.1389168,"detail":"電気・空調・給排水・エレベーター・消防設備点検等","substitutable":true},{"name":"④ 工場・プラント保全・特殊管理","value":0.1013984,"detail":"工場清掃・機械設備の保全・公害防止施設管理等","substitutable":true}]},{"name":"⑥ その他業務支援","value":0.39144,"detail":"コールセンター・事務代行等","substitutable":true,"children":[{"name":"① コールセンター・コンタクトセンター","value":0.130494,"detail":"カスタマーサポート・電話代行・ヘルプデスク等","substitutable":true},{"name":"② 事務代行・バックオフィスBPO","value":0.1183728,"detail":"データ入力・経理給与計算代行・受発注処理等","substitutable":true},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.0764832,"detail":"展示会設営・各種イベント運営代行・会場設営等","substitutable":true},{"name":"④ 発送代行・書類電子化・その他作業","value":0.06609000000000001,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等","substitutable":true}]}]},{"name":"情報通信業","value":2.176,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":1.2026599999999998,"detail":"SIer・システム開発・組込みソフト等","substitutable":true,"children":[{"name":"① 業務システム受託開発・SI","value":0.407266,"detail":"金融・流通・官公庁・企業の基幹系システム構築","substitutable":true},{"name":"② 組込み・制御系ソフト開発","value":0.4873444,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御","substitutable":true},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":0.11038999999999997,"detail":"自社プロダクト・業務用SaaS・Webサービス開発","substitutable":true},{"name":"④ システム運用・保守・インフラ構築","value":0.1976596,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク","substitutable":true}]},{"name":"② 通信業","value":0.48185,"detail":"携帯キャリア・固定通信・プロバイダ等","substitutable":true,"children":[{"name":"① 移動電気通信","value":0.17513920000000002,"detail":"携帯キャリア本社/支社・MVNO・移動体通信","substitutable":true},{"name":"② 固定電気通信・プロバイダ","value":0.2255724,"detail":"光回線・固定電話・地域系通信・CATVインターネット等","substitutable":true},{"name":"③ データセンター・通信インフラ運用・その他","value":0.08113840000000001,"detail":"DC運用・クラウド基盤・衛星通信等","substitutable":true}]},{"name":"③ コンテンツ・出版・ゲーム","value":0.14526,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","substitutable":true,"children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.034476,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等","substitutable":true},{"name":"② 出版・書籍・雑誌","value":0.0143496,"detail":"大手出版社・漫画・専門書・電子書籍等","substitutable":true},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.0256392,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等","substitutable":true},{"name":"④ 新聞社・報道","value":0.0707952,"detail":"全国紙・ブロック紙・地方新聞・通信社","substitutable":true}]},{"name":"④ インターネットサービス","value":0.14468,"detail":"ポータル・SNS・ECプラットフォーム等","substitutable":true,"children":[{"name":"① EC・オークション・フリマ","value":0.0526224,"detail":"楽天市場・メルカリ・ZOZO・地場EC等","substitutable":true},{"name":"② SNS・マッチング・コミュニケーション","value":0.0160064,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等","substitutable":true},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.0441448,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等","substitutable":true},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.0319064,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等","substitutable":true}]},{"name":"⑤ 放送業","value":0.20154999999999998,"detail":"テレビ局・ラジオ局","substitutable":true,"children":[{"name":"① 民放地上波テレビ","value":0.119263,"detail":"キー局・中京広域局・地方系列局・独立局","substitutable":true},{"name":"② NHK（公共放送）","value":0.040902999999999995,"detail":"NHK放送センター・地域拠点局・地方放送局","substitutable":true},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.017197999999999998,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等","substitutable":true},{"name":"④ ラジオ放送（AM・FM）","value":0.024186000000000003,"detail":"民放ラジオ局・FM局・コミュニティFM等","substitutable":true}]}]},{"name":"金融・保険業","value":2.025,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":1.1049200000000001,"detail":"メガバンク・地銀・信金・農協等","substitutable":true,"children":[{"name":"① メガバンク・都市銀行・信託銀行","value":0.18249200000000002,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等","substitutable":true},{"name":"② 地方銀行・第二地方銀行","value":0.487252,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等","substitutable":true},{"name":"③ 信用金庫・信用組合","value":0.28669920000000004,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等","substitutable":true},{"name":"④ 農協・漁協・その他機関","value":0.14847680000000002,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等","substitutable":true}]},{"name":"② 保険業・共済","value":0.5447900000000001,"detail":"生命保険・損害保険・保険代理店等","substitutable":true,"children":[{"name":"① 生命保険業","value":0.16378000000000004,"detail":"大手生保・外資系生保・かんぽ生命等","substitutable":true},{"name":"② 損害保険業","value":0.1779833,"detail":"メガ損保・自動車保険・火災/新種保険等","substitutable":true},{"name":"③ 保険代理店・保険サービス","value":0.10662380000000002,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等","substitutable":true},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.09640290000000001,"detail":"JA共済・全労済・県民共済・CO-OP共済等","substitutable":true}]},{"name":"③ 証券・投資運用・信託","value":0.10174,"detail":"証券会社・投資信託・ファンド等","substitutable":true,"children":[{"name":"① 証券商品取引業","value":0.0733084,"detail":"大手証券・ネット証券・地場証券の売買・引受","substitutable":true},{"name":"② 投資運用・アセットマネジメント","value":0.0104016,"detail":"投資信託委託会社・投資顧問会社・資産運用","substitutable":true},{"name":"③ ファンド運用・VC・PE・REIT","value":0.0104556,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等","substitutable":true},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.0075744,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等","substitutable":true}]},{"name":"④ クレジット・金融補助","value":0.27355,"detail":"カード会社・貸金・保証会社・決済等","substitutable":true,"children":[{"name":"① クレジットカード・信販・オートローン","value":0.1274464,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等","substitutable":true},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.0360694,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等","substitutable":true},{"name":"③ 信用保証・家賃保証・債権回収","value":0.0772082,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等","substitutable":true},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.032826,"detail":"アコム・プロミス・アイフル・事業資金融資等","substitutable":true}]}]},{"name":"医療・社会福祉","value":5.438,"substitutable":false},{"name":"運輸・郵便業","value":3.756,"substitutable":false},{"name":"宿泊・飲食サービス","value":1.931,"substitutable":false},{"name":"教育・公務・その他","value":7.417999999999999,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":1.4278199999999999,"detail":"大学・小中高・塾・予備校・スクール等","substitutable":true,"children":[{"name":"① 学校教育","value":0.6934475999999999,"detail":"大学・短期大学・高校・中学・小学校・専門学校等","substitutable":true},{"name":"② 学習塾・予備校","value":0.29365800000000003,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等","substitutable":true},{"name":"③ 教養・技能教授業","value":0.2913264,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等","substitutable":true},{"name":"④ その他の教育・学習支援業","value":0.149388,"detail":"通信教育・資格スクール・企業研修・学習施設等","substitutable":true}]},{"name":"② 公務","value":1.72517,"detail":"中央省庁・都県庁・市役所・警察・消防等","substitutable":true,"children":[{"name":"① 国家行政・立法・司法","value":0.212942,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等","substitutable":true},{"name":"② 地方一般行政","value":0.9925394999999999,"detail":"都県庁・市役所・区役所・町村役場等","substitutable":true},{"name":"③ 警察（治安・交通）","value":0.3035014,"detail":"警視庁・各県警察本部・警察署・交番等","substitutable":true},{"name":"④ 消防・防災","value":0.21618709999999997,"detail":"東京消防庁・各市町村消防本部・広域消防組合等","substitutable":true}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":1.9562000000000004,"detail":"車検・機械保全・産廃処理・清掃等","substitutable":true,"children":[{"name":"① 自動車整備・修理業","value":0.715938,"detail":"車検・板金塗装・ディーラー整備・整備工場等","substitutable":false},{"name":"② 産業用機械・電気機器保全・修理","value":0.6025400000000001,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等","substitutable":true},{"name":"③ 廃棄物処理・清掃・リサイクル","value":0.506576,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等","substitutable":true},{"name":"④ その他の各種修理・整備業","value":0.131146,"detail":"OA機器修理・事務機器保守・家庭用品修繕等","substitutable":true}]},{"name":"④ 生活関連サービス・娯楽業","value":1.80795,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","substitutable":true,"children":[{"name":"① 娯楽業","value":0.967698,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等","substitutable":true},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.374955,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等","substitutable":true},{"name":"③ 冠婚葬祭業","value":0.320661,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等","substitutable":true},{"name":"④ 旅行業・写真・その他生活関連","value":0.144636,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等","substitutable":true}]},{"name":"⑤ 複合サービス・その他","value":0.5008600000000001,"detail":"農協/JA営農・生協・各種団体等","substitutable":true,"children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.18898920000000002,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等","substitutable":false},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.1370624,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等","substitutable":true},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.0733332,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等","substitutable":true},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.1014752,"detail":"コープの個別宅配・生協店舗・医療福祉生協等","substitutable":true}]}]}]}]},"愛知県":{"name":"全産業","detail":"名目GDP 41.0 兆円","value":41.4,"children":[{"name":"一次産業","detail":"農林水産業","value":0.7},{"name":"二次産業","detail":"製造業・建設業・鉱業","value":16.2},{"name":"三次産業","detail":"サービス業全般","value":24.5,"children":[{"name":"卸売・小売業","value":5.39,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":2.156,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":1.3475,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":0.8084999999999999,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":1.078,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":3.92,"substitutable":false,"detail":"持ち家家賃含む"},{"name":"専門・技術・業務支援","value":2.94,"substitutable":true,"children":[{"name":"① 専門サービス","value":0.441,"substitutable":true,"detail":"法務・会計・コンサル・広告等","children":[{"name":"① 広告業","value":0.1323,"substitutable":true,"detail":"総合広告代理店・Web広告・PR等","children":[{"name":"① インターネット・デジタル広告","value":0.02646,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":0.042336,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.050274,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.01323,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":0.10584,"substitutable":true,"detail":"シンクタンク・経営指導・市場調査等","children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.0232848,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.0190512,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.0444528,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.0190512,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":0.13671,"substitutable":true,"detail":"弁護士・税理士・公認会計士・弁理士等","children":[{"name":"① 税務・会計","value":0.0615195,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.027342,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.016405199999999998,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.0314433,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.06615,"substitutable":true,"detail":"工業デザイン・商業写真・翻訳通訳等","children":[{"name":"① プロダクト・工業・空間デザイン","value":0.02646,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.018522,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.011907,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.009261,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":0.9408,"substitutable":true,"detail":"機械・電気設計、建築設計等","children":[{"name":"① 機械・電気・電子設計・開発","value":0.508032,"substitutable":true,"detail":"自動車・機器・ロボット等のハードウェア設計"},{"name":"② 建築・土木設計・監理","value":0.206976,"substitutable":true,"detail":"組織設計事務所・建設コンサル・構造設計等"},{"name":"③ 測量・地質調査・環境測定","value":0.09408,"substitutable":true,"detail":"建設事前の測量・ボーリング調査・環境アセス等"},{"name":"④ 技術検査・分析・品質保証","value":0.131712,"substitutable":true,"detail":"非破壊検査・材料試験・製品の品質分析等"}]},{"name":"③ 学術・開発研究","value":0.4704,"substitutable":true,"detail":"民間企業の研究所・受託開発拠点","children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.29164799999999996,"substitutable":false,"detail":"モビリティ・ロボット・航空宇宙・工作機械等"},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.056448,"substitutable":true,"detail":"製薬・高分子・有機化学・電子材料・食品等"},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.04704,"substitutable":true,"detail":"経営調査・政策研究・AI/データ分析基礎等"},{"name":"④ 受託評価・試作・評価機関","value":0.075264,"substitutable":true,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等"}]},{"name":"④ 人材サービス","value":0.4704,"substitutable":true,"detail":"人材派遣・職業紹介","children":[{"name":"① オフィス・IT系 労働者派遣","value":0.150528,"substitutable":true,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等"},{"name":"② 製造・技術・現場系 労働者派遣","value":0.197568,"substitutable":false,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等"},{"name":"③ 職業紹介・転職エージェント","value":0.065856,"substitutable":true,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等"},{"name":"④ 求人メディア・RPO・その他","value":0.056448,"substitutable":true,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等"}]},{"name":"⑤ 施設管理・セキュリティ","value":0.4116,"substitutable":true,"detail":"ビル清掃・設備点検・警備保障等","children":[{"name":"① 警備保障","value":0.15640800000000002,"substitutable":true,"detail":"施設警備・機械警備・交通誘導・イベント警備等"},{"name":"② ビル清掃・環境衛生管理","value":0.131712,"substitutable":true,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等"},{"name":"③ ビル設備保守・点検","value":0.074088,"substitutable":true,"detail":"電気・空調・給排水・エレベーター・消防設備点検等"},{"name":"④ 工場・プラント保全・特殊管理","value":0.049392,"substitutable":true,"detail":"工場清掃・機械設備の保全・公害防止施設管理等"}]},{"name":"⑥ その他業務支援","value":0.2058,"substitutable":true,"detail":"コールセンター・事務代行等","children":[{"name":"① コールセンター・コンタクトセンター","value":0.07203,"substitutable":true,"detail":"カスタマーサポート・電話代行・ヘルプデスク等"},{"name":"② 事務代行・バックオフィスBPO","value":0.06174,"substitutable":true,"detail":"データ入力・経理給与計算代行・受発注処理等"},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.04116,"substitutable":true,"detail":"展示会設営・各種イベント運営代行・会場設営等"},{"name":"④ 発送代行・書類電子化・その他作業","value":0.03087,"substitutable":true,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等"}]}]},{"name":"情報通信業","value":1.47,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":0.8525999999999999,"substitutable":true,"detail":"SIer・システム開発・組込みソフト等","children":[{"name":"① 業務システム受託開発・SI","value":0.27283199999999996,"substitutable":true,"detail":"金融・流通・官公庁・企業の基幹系システム構築"},{"name":"② 組込み・制御系ソフト開発","value":0.38366999999999996,"substitutable":true,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御"},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":0.07673399999999998,"substitutable":true,"detail":"自社プロダクト・業務用SaaS・Webサービス開発"},{"name":"④ システム運用・保守・インフラ構築","value":0.119364,"substitutable":true,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク"}]},{"name":"② 通信業","value":0.294,"substitutable":true,"detail":"携帯キャリア・固定通信・プロバイダ等","children":[{"name":"① 移動電気通信","value":0.11172,"substitutable":true,"detail":"携帯キャリア本社/支社・MVNO・移動体通信"},{"name":"② 固定電気通信・プロバイダ","value":0.1323,"substitutable":true,"detail":"光回線・固定電話・地域系通信・CATVインターネット等"},{"name":"③ データセンター・通信インフラ運用・その他","value":0.049980000000000004,"substitutable":true,"detail":"DC運用・クラウド基盤・衛星通信等"}]},{"name":"③ コンテンツ・出版・ゲーム","value":0.1029,"substitutable":true,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.025725,"substitutable":true,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等"},{"name":"② 出版・書籍・雑誌","value":0.01029,"substitutable":true,"detail":"大手出版社・漫画・専門書・電子書籍等"},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.018522,"substitutable":true,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等"},{"name":"④ 新聞社・報道","value":0.048363,"substitutable":true,"detail":"全国紙・ブロック紙・地方新聞・通信社"}]},{"name":"④ インターネットサービス","value":0.0882,"substitutable":true,"detail":"ポータル・SNS・ECプラットフォーム等","children":[{"name":"① EC・オークション・フリマ","value":0.028224,"substitutable":true,"detail":"楽天市場・メルカリ・ZOZO・地場EC等"},{"name":"② SNS・マッチング・コミュニケーション","value":0.010584,"substitutable":true,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等"},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.033516,"substitutable":true,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等"},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.015876,"substitutable":true,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等"}]},{"name":"⑤ 放送業","value":0.1323,"substitutable":true,"detail":"テレビ局・ラジオ局","children":[{"name":"① 民放地上波テレビ","value":0.082026,"substitutable":true,"detail":"キー局・中京広域局・地方系列局・独立局"},{"name":"② NHK（公共放送）","value":0.023814,"substitutable":true,"detail":"NHK放送センター・地域拠点局・地方放送局"},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.010584,"substitutable":true,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等"},{"name":"④ ラジオ放送（AM・FM）","value":0.015876,"substitutable":true,"detail":"民放ラジオ局・FM局・コミュニティFM等"}]}]},{"name":"金融・保険業","value":1.225,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":0.6370000000000001,"substitutable":true,"detail":"メガバンク・地銀・信金・農協等","children":[{"name":"① メガバンク・都市銀行・信託銀行","value":0.14014000000000001,"substitutable":true,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等"},{"name":"② 地方銀行・第二地方銀行","value":0.24206000000000005,"substitutable":true,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等"},{"name":"③ 信用金庫・信用組合","value":0.17836000000000005,"substitutable":true,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等"},{"name":"④ 農協・漁協・その他機関","value":0.07644000000000001,"substitutable":true,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等"}]},{"name":"② 保険業・共済","value":0.33075000000000004,"substitutable":true,"detail":"生命保険・損害保険・保険代理店等","children":[{"name":"① 生命保険業","value":0.10584000000000002,"substitutable":true,"detail":"大手生保・外資系生保・かんぽ生命等"},{"name":"② 損害保険業","value":0.1157625,"substitutable":true,"detail":"メガ損保・自動車保険・火災/新種保険等"},{"name":"③ 保険代理店・保険サービス","value":0.059535000000000005,"substitutable":true,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等"},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.049612500000000004,"substitutable":true,"detail":"JA共済・全労済・県民共済・CO-OP共済等"}]},{"name":"③ 証券・投資運用・信託","value":0.0735,"substitutable":true,"detail":"証券会社・投資信託・ファンド等","children":[{"name":"① 証券商品取引業","value":0.049980000000000004,"substitutable":true,"detail":"大手証券・ネット証券・地場証券の売買・引受"},{"name":"② 投資運用・アセットマネジメント","value":0.00882,"substitutable":true,"detail":"投資信託委託会社・投資顧問会社・資産運用"},{"name":"③ ファンド運用・VC・PE・REIT","value":0.00882,"substitutable":true,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等"},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.00588,"substitutable":true,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等"}]},{"name":"④ クレジット・金融補助","value":0.18375,"substitutable":true,"detail":"カード会社・貸金・保証会社・決済等","children":[{"name":"① クレジットカード・信販・オートローン","value":0.09555,"substitutable":true,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等"},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.025725,"substitutable":true,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等"},{"name":"③ 信用保証・家賃保証・債権回収","value":0.040425,"substitutable":true,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等"},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.02205,"substitutable":true,"detail":"アコム・プロミス・アイフル・事業資金融資等"}]}]},{"name":"医療・社会福祉","value":2.695,"substitutable":false},{"name":"運輸・郵便業","value":2.205,"substitutable":false},{"name":"宿泊・飲食サービス","value":0.98,"substitutable":false},{"name":"教育・公務・その他","value":3.675,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":0.735,"substitutable":true,"detail":"大学・小中高・塾・予備校・スクール等","children":[{"name":"① 学校教育","value":0.3675,"substitutable":true,"detail":"大学・短期大学・高校・中学・小学校・専門学校等"},{"name":"② 学習塾・予備校","value":0.1617,"substitutable":true,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等"},{"name":"③ 教養・技能教授業","value":0.1323,"substitutable":true,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等"},{"name":"④ その他の教育・学習支援業","value":0.0735,"substitutable":true,"detail":"通信教育・資格スクール・企業研修・学習施設等"}]},{"name":"② 公務","value":0.8085,"substitutable":true,"detail":"中央省庁・都県庁・市役所・警察・消防等","children":[{"name":"① 国家行政・立法・司法","value":0.121275,"substitutable":true,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等"},{"name":"② 地方一般行政","value":0.44467500000000004,"substitutable":true,"detail":"都県庁・市役所・区役所・町村役場等"},{"name":"③ 警察（治安・交通）","value":0.14553,"substitutable":true,"detail":"警視庁・各県警察本部・警察署・交番等"},{"name":"④ 消防・防災","value":0.09702,"substitutable":true,"detail":"東京消防庁・各市町村消防本部・広域消防組合等"}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":1.0290000000000001,"substitutable":true,"detail":"車検・機械保全・産廃処理・清掃等","children":[{"name":"① 自動車整備・修理業","value":0.39102000000000003,"substitutable":false,"detail":"車検・板金塗装・ディーラー整備・整備工場等"},{"name":"② 産業用機械・電気機器保全・修理","value":0.3292800000000001,"substitutable":true,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等"},{"name":"③ 廃棄物処理・清掃・リサイクル","value":0.24696,"substitutable":true,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等"},{"name":"④ その他の各種修理・整備業","value":0.06174,"substitutable":true,"detail":"OA機器修理・事務機器保守・家庭用品修繕等"}]},{"name":"④ 生活関連サービス・娯楽業","value":0.8819999999999999,"substitutable":true,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","children":[{"name":"① 娯楽業","value":0.45863999999999994,"substitutable":true,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等"},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.19404,"substitutable":true,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等"},{"name":"③ 冠婚葬祭業","value":0.15875999999999998,"substitutable":true,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等"},{"name":"④ 旅行業・写真・その他生活関連","value":0.07056,"substitutable":true,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等"}]},{"name":"⑤ 複合サービス・その他","value":0.22049999999999997,"substitutable":true,"detail":"農協/JA営農・生協・各種団体等","children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.06614999999999999,"substitutable":false,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等"},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.07056,"substitutable":true,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等"},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.039689999999999996,"substitutable":true,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等"},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.0441,"substitutable":true,"detail":"コープの個別宅配・生協店舗・医療福祉生協等"}]}]}]}]},"岐阜県":{"name":"全産業","detail":"名目GDP 8.0 兆円","value":8.0,"children":[{"name":"一次産業","detail":"農林水産業","value":0.1},{"name":"二次産業","detail":"製造業・建設業・鉱業","value":3.0},{"name":"三次産業","detail":"サービス業全般","value":4.9,"children":[{"name":"卸売・小売業","value":0.882,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":0.2205,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":0.20286,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":0.22932,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":0.22932,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":1.0290000000000001,"substitutable":false,"detail":"持ち家家賃含む"},{"name":"専門・技術・業務支援","value":0.392,"substitutable":true,"children":[{"name":"① 専門サービス","value":0.039200000000000006,"substitutable":true,"detail":"法務・会計・コンサル・広告等","children":[{"name":"① 広告業","value":0.007840000000000001,"substitutable":true,"detail":"総合広告代理店・Web広告・PR等","children":[{"name":"① インターネット・デジタル広告","value":0.0010976000000000002,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":0.0017248000000000003,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.004390400000000001,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.0006272000000000002,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":0.006272000000000001,"substitutable":true,"detail":"シンクタンク・経営指導・市場調査等","children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.0006272000000000001,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.0006272000000000001,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.004139520000000001,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.0008780800000000002,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":0.019600000000000003,"substitutable":true,"detail":"弁護士・税理士・公認会計士・弁理士等","children":[{"name":"① 税務・会計","value":0.010192000000000001,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.0031360000000000003,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.0011760000000000002,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.005096000000000001,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.0054880000000000016,"substitutable":true,"detail":"工業デザイン・商業写真・翻訳通訳等","children":[{"name":"① プロダクト・工業・空間デザイン","value":0.0012073600000000004,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.0020854400000000005,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.0012073600000000004,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.0009878400000000002,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":0.09408,"substitutable":true,"detail":"機械・電気設計、建築設計等","children":[{"name":"① 機械・電気・電子設計・開発","value":0.0301056,"substitutable":true,"detail":"自動車・機器・ロボット等のハードウェア設計"},{"name":"② 建築・土木設計・監理","value":0.028224,"substitutable":true,"detail":"組織設計事務所・建設コンサル・構造設計等"},{"name":"③ 測量・地質調査・環境測定","value":0.0206976,"substitutable":true,"detail":"建設事前の測量・ボーリング調査・環境アセス等"},{"name":"④ 技術検査・分析・品質保証","value":0.0150528,"substitutable":true,"detail":"非破壊検査・材料試験・製品の品質分析等"}]},{"name":"③ 学術・開発研究","value":0.04704,"substitutable":true,"detail":"民間企業の研究所・受託開発拠点","children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.018816,"substitutable":false,"detail":"モビリティ・ロボット・航空宇宙・工作機械等"},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.0103488,"substitutable":true,"detail":"製薬・高分子・有機化学・電子材料・食品等"},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.0037632,"substitutable":true,"detail":"経営調査・政策研究・AI/データ分析基礎等"},{"name":"④ 受託評価・試作・評価機関","value":0.014112,"substitutable":true,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等"}]},{"name":"④ 人材サービス","value":0.07448,"substitutable":true,"detail":"人材派遣・職業紹介","children":[{"name":"① オフィス・IT系 労働者派遣","value":0.0193648,"substitutable":true,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等"},{"name":"② 製造・技術・現場系 労働者派遣","value":0.0387296,"substitutable":false,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等"},{"name":"③ 職業紹介・転職エージェント","value":0.005958400000000001,"substitutable":true,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等"},{"name":"④ 求人メディア・RPO・その他","value":0.010427200000000001,"substitutable":true,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等"}]},{"name":"⑤ 施設管理・セキュリティ","value":0.09016,"substitutable":true,"detail":"ビル清掃・設備点検・警備保障等","children":[{"name":"① 警備保障","value":0.037867200000000004,"substitutable":true,"detail":"施設警備・機械警備・交通誘導・イベント警備等"},{"name":"② ビル清掃・環境衛生管理","value":0.023441600000000003,"substitutable":true,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等"},{"name":"③ ビル設備保守・点検","value":0.0162288,"substitutable":true,"detail":"電気・空調・給排水・エレベーター・消防設備点検等"},{"name":"④ 工場・プラント保全・特殊管理","value":0.012622400000000002,"substitutable":true,"detail":"工場清掃・機械設備の保全・公害防止施設管理等"}]},{"name":"⑥ その他業務支援","value":0.04704,"substitutable":true,"detail":"コールセンター・事務代行等","children":[{"name":"① コールセンター・コンタクトセンター","value":0.014112,"substitutable":true,"detail":"カスタマーサポート・電話代行・ヘルプデスク等"},{"name":"② 事務代行・バックオフィスBPO","value":0.0150528,"substitutable":true,"detail":"データ入力・経理給与計算代行・受発注処理等"},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.0084672,"substitutable":true,"detail":"展示会設営・各種イベント運営代行・会場設営等"},{"name":"④ 発送代行・書類電子化・その他作業","value":0.009408,"substitutable":true,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等"}]}]},{"name":"情報通信業","value":0.147,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":0.07056,"substitutable":true,"detail":"SIer・システム開発・組込みソフト等","children":[{"name":"① 業務システム受託開発・SI","value":0.028224,"substitutable":true,"detail":"金融・流通・官公庁・企業の基幹系システム構築"},{"name":"② 組込み・制御系ソフト開発","value":0.0169344,"substitutable":true,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御"},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":0.007056,"substitutable":true,"detail":"自社プロダクト・業務用SaaS・Webサービス開発"},{"name":"④ システム運用・保守・インフラ構築","value":0.0183456,"substitutable":true,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク"}]},{"name":"② 通信業","value":0.04116,"substitutable":true,"detail":"携帯キャリア・固定通信・プロバイダ等","children":[{"name":"① 移動電気通信","value":0.013171200000000001,"substitutable":true,"detail":"携帯キャリア本社/支社・MVNO・移動体通信"},{"name":"② 固定電気通信・プロバイダ","value":0.0214032,"substitutable":true,"detail":"光回線・固定電話・地域系通信・CATVインターネット等"},{"name":"③ データセンター・通信インフラ運用・その他","value":0.0065856000000000005,"substitutable":true,"detail":"DC運用・クラウド基盤・衛星通信等"}]},{"name":"③ コンテンツ・出版・ゲーム","value":0.00882,"substitutable":true,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.002205,"substitutable":true,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等"},{"name":"② 出版・書籍・雑誌","value":0.0007056,"substitutable":true,"detail":"大手出版社・漫画・専門書・電子書籍等"},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.001323,"substitutable":true,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等"},{"name":"④ 新聞社・報道","value":0.0045864,"substitutable":true,"detail":"全国紙・ブロック紙・地方新聞・通信社"}]},{"name":"④ インターネットサービス","value":0.01176,"substitutable":true,"detail":"ポータル・SNS・ECプラットフォーム等","children":[{"name":"① EC・オークション・フリマ","value":0.005292,"substitutable":true,"detail":"楽天市場・メルカリ・ZOZO・地場EC等"},{"name":"② SNS・マッチング・コミュニケーション","value":0.0010584,"substitutable":true,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等"},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.0021168,"substitutable":true,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等"},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.0032928000000000002,"substitutable":true,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等"}]},{"name":"⑤ 放送業","value":0.0147,"substitutable":true,"detail":"テレビ局・ラジオ局","children":[{"name":"① 民放地上波テレビ","value":0.007056,"substitutable":true,"detail":"キー局・中京広域局・地方系列局・独立局"},{"name":"② NHK（公共放送）","value":0.004116,"substitutable":true,"detail":"NHK放送センター・地域拠点局・地方放送局"},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.001764,"substitutable":true,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等"},{"name":"④ ラジオ放送（AM・FM）","value":0.001764,"substitutable":true,"detail":"民放ラジオ局・FM局・コミュニティFM等"}]}]},{"name":"金融・保険業","value":0.196,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":0.1176,"substitutable":true,"detail":"メガバンク・地銀・信金・農協等","children":[{"name":"① メガバンク・都市銀行・信託銀行","value":0.009408,"substitutable":true,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等"},{"name":"② 地方銀行・第二地方銀行","value":0.065856,"substitutable":true,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等"},{"name":"③ 信用金庫・信用組合","value":0.02352,"substitutable":true,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等"},{"name":"④ 農協・漁協・その他機関","value":0.018816,"substitutable":true,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等"}]},{"name":"② 保険業・共済","value":0.050960000000000005,"substitutable":true,"detail":"生命保険・損害保険・保険代理店等","children":[{"name":"① 生命保険業","value":0.013249600000000002,"substitutable":true,"detail":"大手生保・外資系生保・かんぽ生命等"},{"name":"② 損害保険業","value":0.014268800000000003,"substitutable":true,"detail":"メガ損保・自動車保険・火災/新種保険等"},{"name":"③ 保険代理店・保険サービス","value":0.011211200000000001,"substitutable":true,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等"},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.0122304,"substitutable":true,"detail":"JA共済・全労済・県民共済・CO-OP共済等"}]},{"name":"③ 証券・投資運用・信託","value":0.00588,"substitutable":true,"detail":"証券会社・投資信託・ファンド等","children":[{"name":"① 証券商品取引業","value":0.0049391999999999995,"substitutable":true,"detail":"大手証券・ネット証券・地場証券の売買・引受"},{"name":"② 投資運用・アセットマネジメント","value":0.000294,"substitutable":true,"detail":"投資信託委託会社・投資顧問会社・資産運用"},{"name":"③ ファンド運用・VC・PE・REIT","value":0.000294,"substitutable":true,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等"},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.00035279999999999996,"substitutable":true,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等"}]},{"name":"④ クレジット・金融補助","value":0.02156,"substitutable":true,"detail":"カード会社・貸金・保証会社・決済等","children":[{"name":"① クレジットカード・信販・オートローン","value":0.007545999999999999,"substitutable":true,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等"},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.0023715999999999997,"substitutable":true,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等"},{"name":"③ 信用保証・家賃保証・債権回収","value":0.0090552,"substitutable":true,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等"},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.0025872,"substitutable":true,"detail":"アコム・プロミス・アイフル・事業資金融資等"}]}]},{"name":"医療・社会福祉","value":0.735,"substitutable":false},{"name":"運輸・郵便業","value":0.3430000000000001,"substitutable":false},{"name":"宿泊・飲食サービス","value":0.196,"substitutable":false},{"name":"教育・公務・その他","value":0.9800000000000001,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":0.1764,"substitutable":true,"detail":"大学・小中高・塾・予備校・スクール等","children":[{"name":"① 学校教育","value":0.08114400000000001,"substitutable":true,"detail":"大学・短期大学・高校・中学・小学校・専門学校等"},{"name":"② 学習塾・予備校","value":0.031752,"substitutable":true,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等"},{"name":"③ 教養・技能教授業","value":0.042336,"substitutable":true,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等"},{"name":"④ その他の教育・学習支援業","value":0.021168,"substitutable":true,"detail":"通信教育・資格スクール・企業研修・学習施設等"}]},{"name":"② 公務","value":0.24500000000000002,"substitutable":true,"detail":"中央省庁・都県庁・市役所・警察・消防等","children":[{"name":"① 国家行政・立法・司法","value":0.024500000000000004,"substitutable":true,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等"},{"name":"② 地方一般行政","value":0.14700000000000002,"substitutable":true,"detail":"都県庁・市役所・区役所・町村役場等"},{"name":"③ 警察（治安・交通）","value":0.041650000000000006,"substitutable":true,"detail":"警視庁・各県警察本部・警察署・交番等"},{"name":"④ 消防・防災","value":0.03185,"substitutable":true,"detail":"東京消防庁・各市町村消防本部・広域消防組合等"}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":0.24500000000000002,"substitutable":true,"detail":"車検・機械保全・産廃処理・清掃等","children":[{"name":"① 自動車整備・修理業","value":0.0882,"substitutable":false,"detail":"車検・板金塗装・ディーラー整備・整備工場等"},{"name":"② 産業用機械・電気機器保全・修理","value":0.06860000000000001,"substitutable":true,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等"},{"name":"③ 廃棄物処理・清掃・リサイクル","value":0.06860000000000001,"substitutable":true,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等"},{"name":"④ その他の各種修理・整備業","value":0.019600000000000003,"substitutable":true,"detail":"OA機器修理・事務機器保守・家庭用品修繕等"}]},{"name":"④ 生活関連サービス・娯楽業","value":0.23520000000000002,"substitutable":true,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","children":[{"name":"① 娯楽業","value":0.127008,"substitutable":true,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等"},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.047040000000000005,"substitutable":true,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等"},{"name":"③ 冠婚葬祭業","value":0.042336,"substitutable":true,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等"},{"name":"④ 旅行業・写真・その他生活関連","value":0.018816000000000003,"substitutable":true,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等"}]},{"name":"⑤ 複合サービス・その他","value":0.07840000000000001,"substitutable":true,"detail":"農協/JA営農・生協・各種団体等","children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.035280000000000006,"substitutable":false,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等"},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.018032000000000003,"substitutable":true,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等"},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.009408000000000001,"substitutable":true,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等"},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.015680000000000003,"substitutable":true,"detail":"コープの個別宅配・生協店舗・医療福祉生協等"}]}]}]}]},"三重県":{"name":"全産業","detail":"名目GDP 8.2 兆円","value":8.2,"children":[{"name":"一次産業","detail":"農林水産業","value":0.1},{"name":"二次産業","detail":"製造業・建設業・鉱業","value":3.6},{"name":"三次産業","detail":"サービス業全般","value":4.5,"children":[{"name":"卸売・小売業","value":0.8099999999999999,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":0.20249999999999999,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":0.17009999999999997,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":0.2187,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":0.2187,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":0.945,"substitutable":false,"detail":"持ち家家賃含む"},{"name":"専門・技術・業務支援","value":0.36,"substitutable":true,"children":[{"name":"① 専門サービス","value":0.036,"substitutable":true,"detail":"法務・会計・コンサル・広告等","children":[{"name":"① 広告業","value":0.0072,"substitutable":true,"detail":"総合広告代理店・Web広告・PR等","children":[{"name":"① インターネット・デジタル広告","value":0.001008,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":0.001584,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.004032,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.000576,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":0.0057599999999999995,"substitutable":true,"detail":"シンクタンク・経営指導・市場調査等","children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.000576,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.000576,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.0038016,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.0008064,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":0.018,"substitutable":true,"detail":"弁護士・税理士・公認会計士・弁理士等","children":[{"name":"① 税務・会計","value":0.00936,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.0028799999999999997,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.0010799999999999998,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.00468,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.00504,"substitutable":true,"detail":"工業デザイン・商業写真・翻訳通訳等","children":[{"name":"① プロダクト・工業・空間デザイン","value":0.001008,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.0019152000000000001,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.0012096,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.0009072,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":0.09,"substitutable":true,"detail":"機械・電気設計、建築設計等","children":[{"name":"① 機械・電気・電子設計・開発","value":0.0324,"substitutable":true,"detail":"自動車・機器・ロボット等のハードウェア設計"},{"name":"② 建築・土木設計・監理","value":0.0252,"substitutable":true,"detail":"組織設計事務所・建設コンサル・構造設計等"},{"name":"③ 測量・地質調査・環境測定","value":0.018,"substitutable":true,"detail":"建設事前の測量・ボーリング調査・環境アセス等"},{"name":"④ 技術検査・分析・品質保証","value":0.0144,"substitutable":true,"detail":"非破壊検査・材料試験・製品の品質分析等"}]},{"name":"③ 学術・開発研究","value":0.0468,"substitutable":true,"detail":"民間企業の研究所・受託開発拠点","children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.021060000000000002,"substitutable":false,"detail":"モビリティ・ロボット・航空宇宙・工作機械等"},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.014976000000000001,"substitutable":true,"detail":"製薬・高分子・有機化学・電子材料・食品等"},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.0032760000000000003,"substitutable":true,"detail":"経営調査・政策研究・AI/データ分析基礎等"},{"name":"④ 受託評価・試作・評価機関","value":0.007488000000000001,"substitutable":true,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等"}]},{"name":"④ 人材サービス","value":0.0648,"substitutable":true,"detail":"人材派遣・職業紹介","children":[{"name":"① オフィス・IT系 労働者派遣","value":0.015551999999999998,"substitutable":true,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等"},{"name":"② 製造・技術・現場系 労働者派遣","value":0.03564,"substitutable":false,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等"},{"name":"③ 職業紹介・転職エージェント","value":0.004536,"substitutable":true,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等"},{"name":"④ 求人メディア・RPO・その他","value":0.009072,"substitutable":true,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等"}]},{"name":"⑤ 施設管理・セキュリティ","value":0.07919999999999999,"substitutable":true,"detail":"ビル清掃・設備点検・警備保障等","children":[{"name":"① 警備保障","value":0.03168,"substitutable":true,"detail":"施設警備・機械警備・交通誘導・イベント警備等"},{"name":"② ビル清掃・環境衛生管理","value":0.020592,"substitutable":true,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等"},{"name":"③ ビル設備保守・点検","value":0.014255999999999998,"substitutable":true,"detail":"電気・空調・給排水・エレベーター・消防設備点検等"},{"name":"④ 工場・プラント保全・特殊管理","value":0.012672,"substitutable":true,"detail":"工場清掃・機械設備の保全・公害防止施設管理等"}]},{"name":"⑥ その他業務支援","value":0.043199999999999995,"substitutable":true,"detail":"コールセンター・事務代行等","children":[{"name":"① コールセンター・コンタクトセンター","value":0.013824,"substitutable":true,"detail":"カスタマーサポート・電話代行・ヘルプデスク等"},{"name":"② 事務代行・バックオフィスBPO","value":0.012959999999999998,"substitutable":true,"detail":"データ入力・経理給与計算代行・受発注処理等"},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.007775999999999999,"substitutable":true,"detail":"展示会設営・各種イベント運営代行・会場設営等"},{"name":"④ 発送代行・書類電子化・その他作業","value":0.00864,"substitutable":true,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等"}]}]},{"name":"情報通信業","value":0.135,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":0.0675,"substitutable":true,"detail":"SIer・システム開発・組込みソフト等","children":[{"name":"① 業務システム受託開発・SI","value":0.025650000000000003,"substitutable":true,"detail":"金融・流通・官公庁・企業の基幹系システム構築"},{"name":"② 組込み・制御系ソフト開発","value":0.018900000000000004,"substitutable":true,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御"},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":0.0054,"substitutable":true,"detail":"自社プロダクト・業務用SaaS・Webサービス開発"},{"name":"④ システム運用・保守・インフラ構築","value":0.017550000000000003,"substitutable":true,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク"}]},{"name":"② 通信業","value":0.03645,"substitutable":true,"detail":"携帯キャリア・固定通信・プロバイダ等","children":[{"name":"① 移動電気通信","value":0.011664,"substitutable":true,"detail":"携帯キャリア本社/支社・MVNO・移動体通信"},{"name":"② 固定電気通信・プロバイダ","value":0.018954000000000002,"substitutable":true,"detail":"光回線・固定電話・地域系通信・CATVインターネット等"},{"name":"③ データセンター・通信インフラ運用・その他","value":0.005832,"substitutable":true,"detail":"DC運用・クラウド基盤・衛星通信等"}]},{"name":"③ コンテンツ・出版・ゲーム","value":0.0081,"substitutable":true,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.0014579999999999999,"substitutable":true,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等"},{"name":"② 出版・書籍・雑誌","value":0.00081,"substitutable":true,"detail":"大手出版社・漫画・専門書・電子書籍等"},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.001215,"substitutable":true,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等"},{"name":"④ 新聞社・報道","value":0.004617,"substitutable":true,"detail":"全国紙・ブロック紙・地方新聞・通信社"}]},{"name":"④ インターネットサービス","value":0.0108,"substitutable":true,"detail":"ポータル・SNS・ECプラットフォーム等","children":[{"name":"① EC・オークション・フリマ","value":0.004860000000000001,"substitutable":true,"detail":"楽天市場・メルカリ・ZOZO・地場EC等"},{"name":"② SNS・マッチング・コミュニケーション","value":0.000972,"substitutable":true,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等"},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.0017280000000000002,"substitutable":true,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等"},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.0032400000000000003,"substitutable":true,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等"}]},{"name":"⑤ 放送業","value":0.012150000000000001,"substitutable":true,"detail":"テレビ局・ラジオ局","children":[{"name":"① 民放地上波テレビ","value":0.005589000000000001,"substitutable":true,"detail":"キー局・中京広域局・地方系列局・独立局"},{"name":"② NHK（公共放送）","value":0.0036450000000000002,"substitutable":true,"detail":"NHK放送センター・地域拠点局・地方放送局"},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.001458,"substitutable":true,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等"},{"name":"④ ラジオ放送（AM・FM）","value":0.001458,"substitutable":true,"detail":"民放ラジオ局・FM局・コミュニティFM等"}]}]},{"name":"金融・保険業","value":0.18,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":0.10439999999999999,"substitutable":true,"detail":"メガバンク・地銀・信金・農協等","children":[{"name":"① メガバンク・都市銀行・信託銀行","value":0.008352,"substitutable":true,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等"},{"name":"② 地方銀行・第二地方銀行","value":0.056376,"substitutable":true,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等"},{"name":"③ 信用金庫・信用組合","value":0.02088,"substitutable":true,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等"},{"name":"④ 農協・漁協・その他機関","value":0.018792,"substitutable":true,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等"}]},{"name":"② 保険業・共済","value":0.048600000000000004,"substitutable":true,"detail":"生命保険・損害保険・保険代理店等","children":[{"name":"① 生命保険業","value":0.012636000000000001,"substitutable":true,"detail":"大手生保・外資系生保・かんぽ生命等"},{"name":"② 損害保険業","value":0.013608000000000002,"substitutable":true,"detail":"メガ損保・自動車保険・火災/新種保険等"},{"name":"③ 保険代理店・保険サービス","value":0.010692000000000002,"substitutable":true,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等"},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.011664,"substitutable":true,"detail":"JA共済・全労済・県民共済・CO-OP共済等"}]},{"name":"③ 証券・投資運用・信託","value":0.005399999999999999,"substitutable":true,"detail":"証券会社・投資信託・ファンド等","children":[{"name":"① 証券商品取引業","value":0.004481999999999999,"substitutable":true,"detail":"大手証券・ネット証券・地場証券の売買・引受"},{"name":"② 投資運用・アセットマネジメント","value":0.00027,"substitutable":true,"detail":"投資信託委託会社・投資顧問会社・資産運用"},{"name":"③ ファンド運用・VC・PE・REIT","value":0.00032399999999999996,"substitutable":true,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等"},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.00032399999999999996,"substitutable":true,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等"}]},{"name":"④ クレジット・金融補助","value":0.021599999999999998,"substitutable":true,"detail":"カード会社・貸金・保証会社・決済等","children":[{"name":"① クレジットカード・信販・オートローン","value":0.007559999999999999,"substitutable":true,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等"},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.0023759999999999996,"substitutable":true,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等"},{"name":"③ 信用保証・家賃保証・債権回収","value":0.009071999999999998,"substitutable":true,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等"},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.0025919999999999997,"substitutable":true,"detail":"アコム・プロミス・アイフル・事業資金融資等"}]}]},{"name":"医療・社会福祉","value":0.6300000000000001,"substitutable":false},{"name":"運輸・郵便業","value":0.36,"substitutable":false},{"name":"宿泊・飲食サービス","value":0.225,"substitutable":false},{"name":"教育・公務・その他","value":0.855,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":0.15389999999999998,"substitutable":true,"detail":"大学・小中高・塾・予備校・スクール等","children":[{"name":"① 学校教育","value":0.070794,"substitutable":true,"detail":"大学・短期大学・高校・中学・小学校・専門学校等"},{"name":"② 学習塾・予備校","value":0.027701999999999994,"substitutable":true,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等"},{"name":"③ 教養・技能教授業","value":0.036936,"substitutable":true,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等"},{"name":"④ その他の教育・学習支援業","value":0.018468,"substitutable":true,"detail":"通信教育・資格スクール・企業研修・学習施設等"}]},{"name":"② 公務","value":0.21375,"substitutable":true,"detail":"中央省庁・都県庁・市役所・警察・消防等","children":[{"name":"① 国家行政・立法・司法","value":0.021375,"substitutable":true,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等"},{"name":"② 地方一般行政","value":0.1261125,"substitutable":true,"detail":"都県庁・市役所・区役所・町村役場等"},{"name":"③ 警察（治安・交通）","value":0.038474999999999995,"substitutable":true,"detail":"警視庁・各県警察本部・警察署・交番等"},{"name":"④ 消防・防災","value":0.0277875,"substitutable":true,"detail":"東京消防庁・各市町村消防本部・広域消防組合等"}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":0.2052,"substitutable":true,"detail":"車検・機械保全・産廃処理・清掃等","children":[{"name":"① 自動車整備・修理業","value":0.069768,"substitutable":false,"detail":"車検・板金塗装・ディーラー整備・整備工場等"},{"name":"② 産業用機械・電気機器保全・修理","value":0.06156,"substitutable":true,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等"},{"name":"③ 廃棄物処理・清掃・リサイクル","value":0.05745600000000001,"substitutable":true,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等"},{"name":"④ その他の各種修理・整備業","value":0.016416,"substitutable":true,"detail":"OA機器修理・事務機器保守・家庭用品修繕等"}]},{"name":"④ 生活関連サービス・娯楽業","value":0.21375,"substitutable":true,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","children":[{"name":"① 娯楽業","value":0.11970000000000001,"substitutable":true,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等"},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.038474999999999995,"substitutable":true,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等"},{"name":"③ 冠婚葬祭業","value":0.038474999999999995,"substitutable":true,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等"},{"name":"④ 旅行業・写真・その他生活関連","value":0.0171,"substitutable":true,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等"}]},{"name":"⑤ 複合サービス・その他","value":0.0684,"substitutable":true,"detail":"農協/JA営農・生協・各種団体等","children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.031464000000000006,"substitutable":false,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等"},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.016416,"substitutable":true,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等"},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.008208,"substitutable":true,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等"},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.012312,"substitutable":true,"detail":"コープの個別宅配・生協店舗・医療福祉生協等"}]}]}]}]},"静岡県":{"name":"全産業","detail":"名目GDP 17.5 兆円","value":17.5,"children":[{"name":"一次産業","detail":"農林水産業","value":0.2},{"name":"二次産業","detail":"製造業・建設業・鉱業","value":6.7},{"name":"三次産業","detail":"サービス業全般","value":10.6,"children":[{"name":"卸売・小売業","value":2.014,"substitutable":false,"children":[{"name":"① 機械器具・自動車・産業資材卸売","value":0.6042,"detail":"工作機械・自動車部品・電子部品・建築資材等のBtoB卸"},{"name":"② 食品・医薬品・消費財・総合商社（卸売）","value":0.44308,"detail":"大手総合商社・食品卸・医薬品卸・日用品問屋等"},{"name":"③ 総合・食品・日用品小売","value":0.48335999999999996,"detail":"食品スーパー・コンビニ・ドラッグストア・百貨店等"},{"name":"④ 専門店・耐久消費財小売","value":0.48335999999999996,"detail":"自動車ディーラー・家電量販店・ホームセンター・アパレル等"}]},{"name":"不動産業","value":2.12,"substitutable":false,"detail":"持ち家家賃含む"},{"name":"専門・技術・業務支援","value":0.954,"substitutable":true,"children":[{"name":"① 専門サービス","value":0.11447999999999998,"substitutable":true,"detail":"法務・会計・コンサル・広告等","children":[{"name":"① 広告業","value":0.025185599999999995,"substitutable":true,"detail":"総合広告代理店・Web広告・PR等","children":[{"name":"① インターネット・デジタル広告","value":0.0037778399999999993,"detail":"運用型広告・SNS広告・Web動画広告・SEO/SEM等"},{"name":"② 総合広告・マスメディア広告","value":0.006296399999999999,"detail":"テレビ・ラジオ・新聞・雑誌CM、大手総合代理店等"},{"name":"③ SP・プロモーション・折込・屋外広告","value":0.013096511999999998,"detail":"チラシ折込・販促物・イベント企画・交通/看板広告等"},{"name":"④ PR・ブランディング・マーケティング支援","value":0.0020148479999999996,"detail":"プレスリリース代行・PR会社・ブランド戦略・調査等"}]},{"name":"② 経営コンサルティング・調査業","value":0.020606399999999997,"substitutable":true,"detail":"シンクタンク・経営指導・市場調査等","children":[{"name":"① 戦略・総合・DXコンサルティング","value":0.0024727679999999998,"detail":"外資系コンサル・総合コンサル・事業戦略・IT/DX導入支援等"},{"name":"② シンクタンク・官公庁・経済リサーチ","value":0.0024727679999999998,"detail":"大手総合研究所・政策リサーチ・マクロ経済調査・官公庁調査等"},{"name":"③ 中小企業経営指導・地銀系コンサル","value":0.012775967999999999,"detail":"地銀系シンクタンク・地場経営指導・事業承継・税理士/診断士等"},{"name":"④ 市場調査・マーケティングリサーチ","value":0.0028848959999999996,"detail":"ネットリサーチ・消費者パネル調査・アンケート・現地調査等"}]},{"name":"③ 法律・会計・税務・特許等の士業","value":0.052660799999999994,"substitutable":true,"detail":"弁護士・税理士・公認会計士・弁理士等","children":[{"name":"① 税務・会計","value":0.026330399999999997,"detail":"税理士事務所・公認会計士事務所・大手監査法人等"},{"name":"② 法律","value":0.009478943999999998,"detail":"弁護士事務所・四大法律事務所・企業法務・一般民事等"},{"name":"③ 特許・知的財産","value":0.004212863999999999,"detail":"弁理士・特許事務所・商標・意匠出願代理等"},{"name":"④ 労務・登記・許認可","value":0.012638591999999999,"detail":"社会保険労務士・司法書士・行政書士・土地家屋調査士等"}]},{"name":"④ デザイン・写真・その他","value":0.0160272,"substitutable":true,"detail":"工業デザイン・商業写真・翻訳通訳等","children":[{"name":"① プロダクト・工業・空間デザイン","value":0.00480816,"detail":"自動車/家電/産業機械デザイン・UI/UX・空間インテリア等"},{"name":"② グラフィック・Web・パッケージデザイン","value":0.0051287039999999996,"detail":"広告ビジュアル・CI/VIブランディング・Webデザイン・包装設計等"},{"name":"③ 商業写真・広告撮影・映像プロダクション","value":0.00320544,"detail":"商品カタログ撮影・広告写真・建築/竣工写真・観光ドローン撮影等"},{"name":"④ 翻訳・通訳・ローカライズ・その他","value":0.0028848959999999996,"detail":"マニュアル翻訳・国際会議通訳・技術文書・多言語支援等"}]}]},{"name":"② 技術・エンジニアリング","value":0.24804,"substitutable":true,"detail":"機械・電気設計、建築設計等","children":[{"name":"① 機械・電気・電子設計・開発","value":0.09425520000000001,"substitutable":true,"detail":"自動車・機器・ロボット等のハードウェア設計"},{"name":"② 建築・土木設計・監理","value":0.0694512,"substitutable":true,"detail":"組織設計事務所・建設コンサル・構造設計等"},{"name":"③ 測量・地質調査・環境測定","value":0.0446472,"substitutable":true,"detail":"建設事前の測量・ボーリング調査・環境アセス等"},{"name":"④ 技術検査・分析・品質保証","value":0.039686400000000004,"substitutable":true,"detail":"非破壊検査・材料試験・製品の品質分析等"}]},{"name":"③ 学術・開発研究","value":0.13356,"substitutable":true,"detail":"民間企業の研究所・受託開発拠点","children":[{"name":"① 自動車・機械・ハードウェア系R&D","value":0.056095200000000005,"substitutable":false,"detail":"モビリティ・ロボット・航空宇宙・工作機械等"},{"name":"② 化学・素材・バイオ・医薬品系R&D","value":0.03739680000000001,"substitutable":true,"detail":"製薬・高分子・有機化学・電子材料・食品等"},{"name":"③ シンクタンク・社会科学・IT先端R&D","value":0.010684800000000001,"substitutable":true,"detail":"経営調査・政策研究・AI/データ分析基礎等"},{"name":"④ 受託評価・試作・評価機関","value":0.0293832,"substitutable":true,"detail":"受託試験・臨床試験（CRO）・品質評価ラボ等"}]},{"name":"④ 人材サービス","value":0.17171999999999998,"substitutable":true,"detail":"人材派遣・職業紹介","children":[{"name":"① オフィス・IT系 労働者派遣","value":0.0480816,"substitutable":true,"detail":"一般事務・経理・コールセンター・ITエンジニア派遣等"},{"name":"② 製造・技術・現場系 労働者派遣","value":0.08242559999999999,"substitutable":false,"detail":"工場ライン・機械オペレーター・フォークリフト・施工管理等"},{"name":"③ 職業紹介・転職エージェント","value":0.017172,"substitutable":true,"detail":"中途採用仲介・エグゼクティブサーチ・ヘッドハンティング等"},{"name":"④ 求人メディア・RPO・その他","value":0.0240408,"substitutable":true,"detail":"求人サイト・採用代行（RPO）・イベントスタッフ派遣等"}]},{"name":"⑤ 施設管理・セキュリティ","value":0.1908,"substitutable":true,"detail":"ビル清掃・設備点検・警備保障等","children":[{"name":"① 警備保障","value":0.07632,"substitutable":true,"detail":"施設警備・機械警備・交通誘導・イベント警備等"},{"name":"② ビル清掃・環境衛生管理","value":0.053424000000000006,"substitutable":true,"detail":"オフィス・商業施設・病院清掃、ペストコントロール等"},{"name":"③ ビル設備保守・点検","value":0.034344,"substitutable":true,"detail":"電気・空調・給排水・エレベーター・消防設備点検等"},{"name":"④ 工場・プラント保全・特殊管理","value":0.026712000000000003,"substitutable":true,"detail":"工場清掃・機械設備の保全・公害防止施設管理等"}]},{"name":"⑥ その他業務支援","value":0.0954,"substitutable":true,"detail":"コールセンター・事務代行等","children":[{"name":"① コールセンター・コンタクトセンター","value":0.030528,"substitutable":true,"detail":"カスタマーサポート・電話代行・ヘルプデスク等"},{"name":"② 事務代行・バックオフィスBPO","value":0.02862,"substitutable":true,"detail":"データ入力・経理給与計算代行・受発注処理等"},{"name":"③ イベント・展示会運営・ディスプレイ","value":0.01908,"substitutable":true,"detail":"展示会設営・各種イベント運営代行・会場設営等"},{"name":"④ 発送代行・書類電子化・その他作業","value":0.017172,"substitutable":true,"detail":"ダイレクトメール発送・スキャニング・テープ起こし等"}]}]},{"name":"情報通信業","value":0.424,"substitutable":true,"children":[{"name":"① ソフトウェア受託・ITサービス","value":0.212,"substitutable":true,"detail":"SIer・システム開発・組込みソフト等","children":[{"name":"① 業務システム受託開発・SI","value":0.08055999999999999,"substitutable":true,"detail":"金融・流通・官公庁・企業の基幹系システム構築"},{"name":"② 組込み・制御系ソフト開発","value":0.06784,"substitutable":true,"detail":"自動車ECU・自動運転・ロボット・電子機器等の制御"},{"name":"③ パッケージソフト・SaaS/クラウド開発","value":0.0212,"substitutable":true,"detail":"自社プロダクト・業務用SaaS・Webサービス開発"},{"name":"④ システム運用・保守・インフラ構築","value":0.0424,"substitutable":true,"detail":"サーバー構築・運用監視・ネットワーク保守・ヘルプデスク"}]},{"name":"② 通信業","value":0.11024,"substitutable":true,"detail":"携帯キャリア・固定通信・プロバイダ等","children":[{"name":"① 移動電気通信","value":0.038584,"substitutable":true,"detail":"携帯キャリア本社/支社・MVNO・移動体通信"},{"name":"② 固定電気通信・プロバイダ","value":0.0529152,"substitutable":true,"detail":"光回線・固定電話・地域系通信・CATVインターネット等"},{"name":"③ データセンター・通信インフラ運用・その他","value":0.018740800000000002,"substitutable":true,"detail":"DC運用・クラウド基盤・衛星通信等"}]},{"name":"③ コンテンツ・出版・ゲーム","value":0.025439999999999997,"substitutable":true,"detail":"ゲーム開発・アニメ・映画・書籍・新聞等","children":[{"name":"① ゲーム開発・デジタルコンテンツ","value":0.005088,"substitutable":true,"detail":"家庭用ゲーム・スマホアプリ・Webコンテンツ等"},{"name":"② 出版・書籍・雑誌","value":0.002544,"substitutable":true,"detail":"大手出版社・漫画・専門書・電子書籍等"},{"name":"③ 映画・アニメ・映像制作・音楽","value":0.004579199999999999,"substitutable":true,"detail":"映画配給・アニメスタジオ・番組制作・レコード会社等"},{"name":"④ 新聞社・報道","value":0.013228799999999999,"substitutable":true,"detail":"全国紙・ブロック紙・地方新聞・通信社"}]},{"name":"④ インターネットサービス","value":0.03392,"substitutable":true,"detail":"ポータル・SNS・ECプラットフォーム等","children":[{"name":"① EC・オークション・フリマ","value":0.0142464,"substitutable":true,"detail":"楽天市場・メルカリ・ZOZO・地場EC等"},{"name":"② SNS・マッチング・コミュニケーション","value":0.003392,"substitutable":true,"detail":"LINE・Ameba・マッチングアプリ・コミュニティ等"},{"name":"③ 専門特化型（バーティカル）ポータル","value":0.006784,"substitutable":true,"detail":"中古車検索Goo-net・不動産・グルメ・転職ポータル等"},{"name":"④ 総合ポータル・ニュース・Webメディア","value":0.0094976,"substitutable":true,"detail":"Yahoo! JAPAN・SmartNews・地域情報Webメディア等"}]},{"name":"⑤ 放送業","value":0.0424,"substitutable":true,"detail":"テレビ局・ラジオ局","children":[{"name":"① 民放地上波テレビ","value":0.024592,"substitutable":true,"detail":"キー局・中京広域局・地方系列局・独立局"},{"name":"② NHK（公共放送）","value":0.009328,"substitutable":true,"detail":"NHK放送センター・地域拠点局・地方放送局"},{"name":"③ BS・CS・ケーブルテレビ（CATV）","value":0.003392,"substitutable":true,"detail":"BSデジタル・CS専門チャンネル・有料放送・自主放送等"},{"name":"④ ラジオ放送（AM・FM）","value":0.005088,"substitutable":true,"detail":"民放ラジオ局・FM局・コミュニティFM等"}]}]},{"name":"金融・保険業","value":0.424,"substitutable":true,"children":[{"name":"① 銀行業・預金取扱機関","value":0.24591999999999997,"substitutable":true,"detail":"メガバンク・地銀・信金・農協等","children":[{"name":"① メガバンク・都市銀行・信託銀行","value":0.024592,"substitutable":true,"detail":"三菱UFJ・三井住友・みずほ・りそな・三井住友信託等"},{"name":"② 地方銀行・第二地方銀行","value":0.12295999999999999,"substitutable":true,"detail":"静岡銀・十六銀・百五銀・大垣共立銀・あいちFG等"},{"name":"③ 信用金庫・信用組合","value":0.0639392,"substitutable":true,"detail":"岡崎信金・浜松いわた信金・岐阜信金・城南信金等"},{"name":"④ 農協・漁協・その他機関","value":0.0344288,"substitutable":true,"detail":"JAバンク・JFマリンバンク・ゆうちょ銀行等"}]},{"name":"② 保険業・共済","value":0.11448,"substitutable":true,"detail":"生命保険・損害保険・保険代理店等","children":[{"name":"① 生命保険業","value":0.032054400000000004,"substitutable":true,"detail":"大手生保・外資系生保・かんぽ生命等"},{"name":"② 損害保険業","value":0.034344,"substitutable":true,"detail":"メガ損保・自動車保険・火災/新種保険等"},{"name":"③ 保険代理店・保険サービス","value":0.0251856,"substitutable":true,"detail":"カーディーラー代理店・ショップ型代理店・損害査定等"},{"name":"④ 共済事業（JA共済・都道府県民共済等）","value":0.022896,"substitutable":true,"detail":"JA共済・全労済・県民共済・CO-OP共済等"}]},{"name":"③ 証券・投資運用・信託","value":0.01696,"substitutable":true,"detail":"証券会社・投資信託・ファンド等","children":[{"name":"① 証券商品取引業","value":0.013907199999999998,"substitutable":true,"detail":"大手証券・ネット証券・地場証券の売買・引受"},{"name":"② 投資運用・アセットマネジメント","value":0.0010176,"substitutable":true,"detail":"投資信託委託会社・投資顧問会社・資産運用"},{"name":"③ ファンド運用・VC・PE・REIT","value":0.0010176,"substitutable":true,"detail":"ベンチャーキャピタル・プライベートエクイティ・不動産ファンド等"},{"name":"④ 信託会社・IFA・金融商品仲介","value":0.0010176,"substitutable":true,"detail":"独立系アドバイザー（IFA）・独立信託・仲介業等"}]},{"name":"④ クレジット・金融補助","value":0.04664,"substitutable":true,"detail":"カード会社・貸金・保証会社・決済等","children":[{"name":"① クレジットカード・信販・オートローン","value":0.0167904,"substitutable":true,"detail":"JCB・三井住友カード・トヨタファイナンス・オリコ等"},{"name":"② キャッシュレス決済・決済代行・FinTech","value":0.0055968,"substitutable":true,"detail":"PayPay・GMO-PG・決済代行・カード決済ネットワーク等"},{"name":"③ 信用保証・家賃保証・債権回収","value":0.018656000000000002,"substitutable":true,"detail":"信用保証協会・地銀系保証会社・家賃保証・サービサー等"},{"name":"④ 消費者金融・事業者貸金・ファクタリング","value":0.0055968,"substitutable":true,"detail":"アコム・プロミス・アイフル・事業資金融資等"}]}]},{"name":"医療・社会福祉","value":1.378,"substitutable":false},{"name":"運輸・郵便業","value":0.848,"substitutable":false},{"name":"宿泊・飲食サービス","value":0.53,"substitutable":false},{"name":"教育・公務・その他","value":1.908,"substitutable":true,"children":[{"name":"① 教育・学習支援業","value":0.36252,"substitutable":true,"detail":"大学・小中高・塾・予備校・スクール等","children":[{"name":"① 学校教育","value":0.1740096,"substitutable":true,"detail":"大学・短期大学・高校・中学・小学校・専門学校等"},{"name":"② 学習塾・予備校","value":0.072504,"substitutable":true,"detail":"進学塾・大学受験予備校・補習塾・個別指導塾等"},{"name":"③ 教養・技能教授業","value":0.0797544,"substitutable":true,"detail":"自動車教習所・スポーツ教室・英会話・音楽教室等"},{"name":"④ その他の教育・学習支援業","value":0.036252,"substitutable":true,"detail":"通信教育・資格スクール・企業研修・学習施設等"}]},{"name":"② 公務","value":0.45791999999999994,"substitutable":true,"detail":"中央省庁・都県庁・市役所・警察・消防等","children":[{"name":"① 国家行政・立法・司法","value":0.045792,"substitutable":true,"detail":"中央省庁・国会・裁判所・税務署・国の地方出先機関等"},{"name":"② 地方一般行政","value":0.27475199999999994,"substitutable":true,"detail":"都県庁・市役所・区役所・町村役場等"},{"name":"③ 警察（治安・交通）","value":0.0778464,"substitutable":true,"detail":"警視庁・各県警察本部・警察署・交番等"},{"name":"④ 消防・防災","value":0.059529599999999995,"substitutable":true,"detail":"東京消防庁・各市町村消防本部・広域消防組合等"}]},{"name":"③ 自動車整備・機械修理・廃棄物処理","value":0.477,"substitutable":true,"detail":"車検・機械保全・産廃処理・清掃等","children":[{"name":"① 自動車整備・修理業","value":0.16695,"substitutable":false,"detail":"車検・板金塗装・ディーラー整備・整備工場等"},{"name":"② 産業用機械・電気機器保全・修理","value":0.14309999999999998,"substitutable":true,"detail":"工場生産機械・工作機械・建機・エレベーター修繕等"},{"name":"③ 廃棄物処理・清掃・リサイクル","value":0.13356,"substitutable":true,"detail":"産廃処理・一般ゴミ収集・浄化槽管理・環境清掃等"},{"name":"④ その他の各種修理・整備業","value":0.03339,"substitutable":true,"detail":"OA機器修理・事務機器保守・家庭用品修繕等"}]},{"name":"④ 生活関連サービス・娯楽業","value":0.477,"substitutable":true,"detail":"理美容・冠婚葬祭・パチンコ・レジャー等","children":[{"name":"① 娯楽業","value":0.26235,"substitutable":true,"detail":"パチンコ・ゴルフ場・レジャー施設・フィットネス・カラオケ等"},{"name":"② 洗濯・理容・美容・エステ・浴場業","value":0.0954,"substitutable":true,"detail":"美容室・理容店・クリーニング・エステ・スーパー銭湯等"},{"name":"③ 冠婚葬祭業","value":0.08109,"substitutable":true,"detail":"結婚式場・ウェディング・葬儀業・斎場・互助会等"},{"name":"④ 旅行業・写真・その他生活関連","value":0.03816,"substitutable":true,"detail":"旅行代理店・写真館・フォトスタジオ・家事代行等"}]},{"name":"⑤ 複合サービス・その他","value":0.13356,"substitutable":true,"detail":"農協/JA営農・生協・各種団体等","children":[{"name":"① 農協（JA）・漁協（JF）の営農・経済事業","value":0.056095200000000005,"substitutable":false,"detail":"農畜産物・水産物の集荷販売・資材購買・直売所等"},{"name":"② 郵便局・日本郵便（窓口・物流複合機能）","value":0.032054400000000004,"substitutable":true,"detail":"郵便集配・ゆうパック・金融窓口代理・郵便局運営等"},{"name":"③ 各種団体・業界団体・事業協同組合","value":0.016027200000000002,"substitutable":true,"detail":"商工会議所・経済団体・労働組合・業界協会・政治団体等"},{"name":"④ 生活協同組合（生協・CO-OP）","value":0.0293832,"substitutable":true,"detail":"コープの個別宅配・生協店舗・医療福祉生協等"}]}]}]}]}},"meta":{"pop":{"東京都":1400.0,"愛知県":748.0,"岐阜県":194.0,"三重県":173.0,"静岡県":358.0,"東海":1473.0},"gdp":{"東京都":125.0,"愛知県":41.0,"岐阜県":8.0,"三重県":8.2,"静岡県":17.5,"東海":74.7}}};
+const REGIONS = ["東京都","東海","愛知県","岐阜県","三重県","静岡県"];
+const TOKAI_HUE = new Set(["東海","愛知県","岐阜県","三重県","静岡県"]);
+
+const state = { view:"flow", region:"both", focus:[] };
+const $ = s => document.querySelector(s);
+const el = (t,c) => { const n=document.createElement(t); if(c) n.className=c; return n; };
+const SVGNS = "http://www.w3.org/2000/svg";
+const svgEl = (t,a={}) => { const n=document.createElementNS(SVGNS,t);
+  for(const k in a) n.setAttribute(k,a[k]); return n; };
+
+/* ---------- values ---------- */
+const UNIT = "兆円";   // シートの金額はすべて兆円。換算はしない
+function fmt(v){
+  const a = Math.abs(v);
+  return v.toFixed(a>=10?1:a>=1?2:3);
+}
+function fmtSigned(v){ return (v>0?"+":v<0?"−":"") + fmt(Math.abs(v)); }
+
+/* ---------- tree helpers ---------- */
+function nodeAt(region, path){
+  let n = DATA.regions[region];
+  for(const i of path) n = n.children[i];
+  return n;
+}
+function pathExists(region, path){
+  let n = DATA.regions[region];
+  for(const i of path){ if(!n.children || !n.children[i]) return false; n = n.children[i]; }
+  return true;
+}
+function hue(region){ return TOKAI_HUE.has(region) ? "var(--tokai)" : "var(--tokyo)"; }
+function activeRegions(){
+  return state.region==="both" ? ["東京都","東海"] : [state.region];
+}
+/** 現在の focus に至るまでに「増強余地あり」判定を受け継いでいるか */
+function inheritedSubstit(){
+  let n = DATA.regions["東京都"], sub = null;
+  for(const i of state.focus){ n = n.children[i]; sub = n.substitutable ?? sub; }
+  return sub;
+}
+
+/* ---------- layout: strict partition sankey ---------- */
+function layout(root, opts){
+  const {y0, height, cols, nodeW, initialSubstit} = opts;
+  const nodes = [], links = [];
+  function walk(node, y, h, depth, path, substit){
+    const rec = { d:node, name:node.name, detail:node.detail||"", value:node.value,
+                  x:cols[depth], y, h, depth, path, substit,
+                  hasKids: !!(node.children && node.children.length) };
+    nodes.push(rec);
+    if(!rec.hasKids || depth+1 >= cols.length) return rec;
+    const ks = node.children, n = ks.length;
+    const total = ks.reduce((s,k)=>s+k.value,0) || 1;
+    const totalPad = Math.min(h*0.06, (n+1)*4);
+    const gap = totalPad/(n+1);
+    const avail = h - totalPad;
+    let cur = y + gap, cum = 0;
+    for(let i=0;i<n;i++){
+      const k = ks[i];
+      const ch = Math.max(avail * k.value/total, 0.6);
+      const sub = k.substitutable ?? substit;   // 親の判定を子へ引き継ぐ
+      const kid = walk(k, cur, ch, depth+1, path.concat(i), sub);
+      links.push({
+        x0: rec.x + nodeW, x1: kid.x,
+        a0: y + h*cum/total, a1: y + h*(cum+k.value)/total,
+        b0: kid.y, b1: kid.y + kid.h,
+        from: rec, to: kid, substit: sub
+      });
+      cum += k.value; cur += ch + gap;
+    }
+    return rec;
+  }
+  walk(root, y0, height, 0, [], initialSubstit ?? null);
+  return {nodes, links};
+}
+function ribbon(l){
+  const xm = (l.x0 + l.x1)/2;
+  return `M${l.x0},${l.a0} C${xm},${l.a0} ${xm},${l.b0} ${l.x1},${l.b0}`
+       + ` L${l.x1},${l.b1} C${xm},${l.b1} ${xm},${l.a1} ${l.x0},${l.a1} Z`;
+}
+function maxDepthOf(node, cap){
+  if(!node.children || cap===0) return 0;
+  return 1 + Math.max(...node.children.map(c=>maxDepthOf(c,cap-1)));
+}
+
+/* ---------- flow view ---------- */
+function renderFlow(host){
+  const regions = activeRegions();
+  const shown = regions.filter(r=>pathExists(r,state.focus));
+  if(!shown.length){ host.append(Object.assign(el("div"),{textContent:"データがありません",
+    style:"padding:40px;text-align:center;color:var(--ink-3)"})); return; }
+
+  const roots = shown.map(r => ({region:r, node:nodeAt(r,state.focus)}));
+  const maxVal = Math.max(...roots.map(o=>o.node.value));
+  // 一度に描くのは4列まで。5列目は帯が薄すぎて読めないので、ドリルダウンに任せる
+  const depth  = Math.max(...roots.map(o=>maxDepthOf(o.node,3)));
+
+  const W = Math.max(760, Math.min(1290, (host.clientWidth||1180) - 40));
+  const nodeW = 12, colN = depth+1;
+  // 浅い列は短いラベル、深い列は長いラベル。幅を均等割りせず重み付けする
+  const weights = [.50,.80,1.25,1.40,1.05].slice(0,colN);
+  const wsum = weights.reduce((s,v)=>s+v,0);
+  const colW = weights.map(w => W*w/wsum);
+  const cols = colW.reduce((acc,w,i)=>(acc.push(i? acc[i-1]+colW[i-1] : 0), acc), [])
+                   .map(Math.round);
+  const labelW = colW.map(w => Math.max(92, w - nodeW - 14));
+
+  const plotH = shown.length>1 ? 540 : 640;
+  const pxPer = plotH / maxVal;
+  const bandGap = 46, padTop = 26;
+
+  const canvas = el("div","canvas");
+  const stack = el("div"); stack.style.position="relative"; stack.style.width = W+"px";
+  canvas.append(stack);
+  host.append(canvas);   // ラベル高さを実測するため先にDOMへ入れておく
+
+  let cursorY = 0;
+  const svgH = roots.reduce((s,o)=>s + o.node.value*pxPer + bandGap, padTop) - bandGap + 16;
+  const svg = svgEl("svg",{class:"flow", width:W, height:Math.round(svgH),
+                           viewBox:`0 0 ${W} ${Math.round(svgH)}`});
+  stack.append(svg);
+
+  cursorY = padTop;
+  for(const o of roots){
+    const h = o.node.value*pxPer;
+    const {nodes, links} = layout(o.node, {y0:cursorY, height:h, cols, nodeW,
+                                          initialSubstit:inheritedSubstit()});
+    const g = svgEl("g"); svg.append(g);
+    const c = hue(o.region);
+
+    // band label
+    const bl = svgEl("text",{x:0, y:cursorY-9, class:"bandlabel"});
+    bl.textContent = o.region + "  " + fmt(o.node.value) + " " + UNIT;
+    svg.append(bl);
+    const bline = svgEl("line",{x1:0,y1:cursorY-4,x2:W,y2:cursorY-4,
+      stroke:"var(--rule)","stroke-width":1}); svg.append(bline);
+
+    for(const l of links){
+      g.append(svgEl("path",{d:ribbon(l), fill:c, stroke:"none",
+        class:"lnk" + (l.substit===false ? " dim" : "")}));
+    }
+    for(const n of nodes){
+      const dim = n.substit===false;
+      const r = svgEl("rect",{x:n.x, y:n.y, width:nodeW, height:Math.max(n.h,1), fill:c,
+        class:"nd hitnode" + (dim?" dim":"") + (n.hasKids?"":" leaf")});
+      bindNode(r, n, o, roots);
+      g.append(r);
+    }
+    placeLabels(stack, nodes, nodeW, labelW);
+    cursorY += h + bandGap;
+  }
+}
+const LABEL_MIN = 7;    // これより薄い帯にはラベルを出さない（ホバーで補う）
+const LABEL_FULL = 24;  // これ以上なら名称の折返し＋金額まで出す
+
+function makeLabel(n, nodeW, labelW, dim, compact){
+  const full = n.h >= LABEL_FULL && !compact;
+  const d = el("div","nodelab" + (full?"":" tiny"));
+  d.style.left = (n.x + nodeW + 7) + "px";
+  d.style.width = labelW + "px";
+  d.style.maxHeight = Math.max(n.h, 14) + "px";
+  if(dim) d.style.color = "var(--ink-2)";
+  const nm = el("span","nm"); nm.textContent = n.name;
+  if(full) nm.style.whiteSpace = "normal";
+  d.append(nm);
+  if(n.d.substitutable === true && full){  // 増強余地ありと判定された系統の起点だけに付ける
+    const chip = el("span","chip"); chip.textContent = "増強余地"; nm.append(chip);
+  }
+  if(full){
+    const v = el("span","vl");
+    v.textContent = fmt(n.value) + " " + UNIT;
+    d.append(v);
+  }
+  return d;
+}
+
+/**
+ * 列ごとにラベルを配置する。金額の大きい帯から先に場所を確保し、
+ * 空きが無いものは少しだけずらす。それでも収まらなければ出さない（ホバーで補う）。
+ */
+const LABEL_SHIFTS = [0,-4,4,-9,9,-15,15,-21,21];
+const LABEL_GAP = 3;
+
+function placeLabels(stack, nodes, nodeW, labelW){
+  const byCol = new Map();
+  for(const n of nodes){
+    if(n.h < LABEL_MIN) continue;
+    if(!byCol.has(n.depth)) byCol.set(n.depth, []);
+    byCol.get(n.depth).push(n);
+  }
+  for(const [depth, list] of byCol){
+    list.sort((a,b)=>b.value - a.value);
+    const taken = [];
+    const fits = (t,h) => t >= 0 &&
+      taken.every(([a,b]) => t+h+LABEL_GAP <= a || t >= b+LABEL_GAP);
+    for(const n of list){
+      // まず金額付きで置き、入らなければ名称だけの1行に落として再挑戦する
+      for(const compact of [false, true]){
+        const d = makeLabel(n, nodeW, labelW[depth], n.substit===false, compact);
+        stack.append(d);
+        const h = d.offsetHeight;
+        const want = n.y + Math.max(0,(n.h-h)/2);
+        const top = LABEL_SHIFTS.map(s=>want+s).find(t => fits(t,h));
+        d.remove();
+        if(top === undefined) continue;
+        d.style.top = top + "px";
+        stack.append(d);
+        taken.push([top, top+h]);
+        break;
+      }
+    }
+  }
+}
+function bindNode(rect, n, o, roots){
+  rect.addEventListener("mousemove", ev => showTip(ev, n, o, roots));
+  rect.addEventListener("mouseleave", hideTip);
+  if(n.hasKids && n.path.length){
+    rect.addEventListener("click", () => {
+      state.focus = state.focus.concat(n.path); hideTip(); render();
+    });
+  }
+}
+
+/* ---------- tooltip ---------- */
+const tip = $("#tip");
+function showTip(ev, n, o, roots){
+  const rows = [];
+  rows.push(["金額", fmt(n.value) + " " + UNIT]);
+  const rootVal = roots.find(r=>r.region===o.region).node.value;
+  rows.push(["表示中の全体比", (n.value/rootVal*100).toFixed(1) + "%"]);
+  // cross-region compare
+  const other = roots.find(r=>r.region!==o.region);
+  if(other && pathExists(other.region, state.focus.concat(n.path))){
+    const ov = nodeAt(other.region, state.focus.concat(n.path)).value;
+    rows.push([other.region, fmt(ov) + " " + UNIT]);
+    rows.push(["差", fmtSigned(n.value - ov) + " " + UNIT]);
+    if(ov>0) rows.push(["倍率", (n.value/ov).toFixed(2) + "x"]);
+  }
+  tip.innerHTML = "";
+  const t = el("div","t"); t.textContent = n.name; tip.append(t);
+  if(n.detail){ const d = el("div","d"); d.textContent = n.detail; tip.append(d); }
+  const dl = el("dl");
+  for(const [k,v] of rows){ const dt=el("dt"); dt.textContent=k; const dd=el("dd"); dd.textContent=v;
+    dl.append(dt,dd); }
+  tip.append(dl);
+  if(n.substit !== null && n.substit !== undefined){
+    const s = el("div"); s.style.cssText="margin-top:7px;font-size:10.5px;color:var(--ink-3)";
+    s.textContent = n.substit ? "東海で新規創出・増強できる系統"
+                               : "対象外（人口密着型、または東海がすでに担っている）";
+    tip.append(s);
+  }
+  if(n.hasKids){
+    const s = el("div"); s.style.cssText="margin-top:5px;font-size:10.5px;color:var(--ink-3)";
+    s.textContent = "クリックで内訳へ"; tip.append(s);
+  }
+  tip.classList.add("on");
+  const pad=14, w=tip.offsetWidth, h=tip.offsetHeight;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if(x + w > innerWidth - 8) x = ev.clientX - w - pad;
+  if(y + h > innerHeight - 8) y = innerHeight - h - 8;
+  tip.style.left = x+"px"; tip.style.top = y+"px";
+}
+function hideTip(){ tip.classList.remove("on"); }
+
+/* ---------- gap view ---------- */
+function renderGap(host){
+  const A = "東京都", B = "東海";
+  if(!pathExists(A,state.focus) || !pathExists(B,state.focus)){
+    host.append(Object.assign(el("div"),{textContent:"この階層は比較できません",
+      style:"padding:40px;text-align:center;color:var(--ink-3)"})); return; }
+  const na = nodeAt(A,state.focus), nb = nodeAt(B,state.focus);
+  const kids = (na.children||[]).map((c,i)=>({
+    i, name:c.name, detail:c.detail, substit:c.substitutable,
+    a: c.value, b: nb.children[i].value, hasKids: !!c.children
+  }));
+  if(!kids.length){
+    host.append(Object.assign(el("div"),{textContent:"これ以上の内訳はありません",
+      style:"padding:40px;text-align:center;color:var(--ink-3)"})); return; }
+  kids.forEach(k=>k.gap = k.a - k.b);
+  kids.sort((x,y)=>y.gap - x.gap);
+  const max = Math.max(...kids.map(k=>Math.max(k.a,k.b)));
+
+  const wrap = el("div","gapwrap");
+  for(const k of kids){
+    const row = el("div","gaprow");
+    const nm = el("div","nm");
+    const strong = el("span"); strong.textContent = k.name;
+    if(k.hasKids){
+      const b = el("button"); b.type="button";
+      b.style.cssText="appearance:none;border:0;background:transparent;font:inherit;color:var(--tokyo);cursor:pointer;padding:0;text-align:left";
+      b.textContent = k.name;
+      b.addEventListener("click", ()=>{ state.focus = state.focus.concat(k.i); render(); });
+      nm.append(b);
+    } else nm.append(strong);
+    if(k.detail){ const s = el("span","sub"); s.textContent = k.detail; nm.append(s); }
+    row.append(nm);
+
+    const bars = el("div","bars");
+    for(const [cls,val,lab] of [["a",k.a,"東京"],["b",k.b,"東海"]]){
+      const bar = el("div","bar "+cls);
+      const w = (val/max*100).toFixed(2)+"%";
+      const i = el("i"); i.style.width = w; bar.append(i);
+      const sp = el("span"); sp.style.setProperty("--w", w);
+      sp.textContent = lab + " " + fmt(val); bar.append(sp);
+      bars.append(bar);
+    }
+    row.append(bars);
+
+    const gv = el("div","gapval");
+    gv.textContent = fmtSigned(k.gap);
+    gv.style.color = k.gap>=0 ? "var(--tokyo)" : "var(--tokai)";
+    const sm = el("small");
+    sm.textContent = k.b>0 ? "東海は" + (k.b/k.a*100).toFixed(0) + "%" : "—";
+    gv.append(sm);
+    row.append(gv);
+    wrap.append(row);
+  }
+  const foot = el("div");
+  foot.style.cssText="margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:11.5px;color:var(--ink-3)";
+  const totA = kids.reduce((s,k)=>s+k.a,0), totB = kids.reduce((s,k)=>s+k.b,0);
+  foot.textContent = `この階層の合計　東京 ${fmt(totA)} / 東海 ${fmt(totB)} ${UNIT}　差 ${fmtSigned(totA-totB)}`;
+  wrap.append(foot);
+  host.append(wrap);
+}
+
+/* ---------- table view ---------- */
+function renderTable(host){
+  const A="東京都", B="東海";
+  const wrap = el("div","tablewrap");
+  const t = el("table");
+  t.innerHTML = `<thead><tr>
+    <th class="name">分類</th><th>東京 (${UNIT})</th><th>東海 (${UNIT})</th>
+    <th>差</th><th>東海／東京</th><th>増強余地</th></tr></thead>`;
+  const tb = el("tbody");
+  (function walk(a, b, depth, isSub){
+    const av = a.value, bv = b.value;
+    const tr = el("tr"); tr.className = "d"+depth;
+    const sub = a.substitutable ?? isSub;
+    const td0 = el("td","name");
+    if(depth===0){ const dot = el("span","dot");
+      dot.style.background = sub===false ? "var(--ink-3)" : "var(--tokyo)";
+      td0.append(dot); }
+    td0.append(document.createTextNode(a.name));
+    if(a.detail){ const s=el("span"); s.style.cssText="display:block;color:var(--ink-3);font-size:10.5px";
+      s.textContent=a.detail; td0.append(s); }
+    tr.append(td0);
+    [av, bv, av-bv].forEach((v,i)=>{ const td=el("td","n");
+      td.textContent = i===2 ? fmtSigned(v) : fmt(v); tr.append(td); });
+    const td4 = el("td","n"); td4.textContent = av>0 ? (bv/av*100).toFixed(0)+"%" : "—"; tr.append(td4);
+    const td5 = el("td","n"); td5.style.color="var(--ink-3)";
+    td5.textContent = sub===null ? "" : (sub ? "あり" : "—"); tr.append(td5);
+    tb.append(tr);
+    if(a.children) a.children.forEach((c,i)=>walk(c, b.children[i], depth+1, sub));
+  })(nodeAt(A,state.focus), nodeAt(B,state.focus), 0, inheritedSubstit());
+  t.append(tb); wrap.append(t); host.append(wrap);
+}
+
+/* ---------- stats ---------- */
+/* サマリーは常に実額（兆円）。単位トグルの影響を受けない固定の見出し。 */
+function renderStats(){
+  const s = $("#stats"); s.innerHTML="";
+  const m = DATA.meta;
+  const tk = DATA.regions["東京都"], th = DATA.regions["東海"];
+  const tert = n => n.children[2].value;
+  const tert2 = n => n.children[2];
+  const substGap = tk.children[2].children.reduce((acc,c,i)=>
+      acc + (c.substitutable ? c.value - th.children[2].children[i].value : 0), 0);
+  // 末端まで辿り、対象外と印を付けた枝を除いた正味
+  const netGap = (a,b,inherited)=>{
+    const sub = a.substitutable ?? inherited;
+    if(sub === false) return 0;
+    if(!a.children) return a.value - b.value;
+    return a.children.reduce((s,c,i)=>s + netGap(c, b.children[i], sub), 0);
+  };
+  const cards = [
+    ["名目GDP", m.gdp["東京都"].toFixed(1), "兆円", "東京都"],
+    ["名目GDP", m.gdp["東海"].toFixed(1), "兆円", "東海4県"],
+    ["人口", m.pop["東京都"].toFixed(0)+" / "+m.pop["東海"].toFixed(0), "万人",
+      "東京 / 東海　人口は東海が多い"],
+    ["三次産業の差", (tert(tk)-tert(th)).toFixed(1), "兆円",
+      tert(tk).toFixed(1)+" − "+tert(th).toFixed(1)],
+  ];
+  for(const [k,v,u,n] of cards){
+    const c = el("div","stat" + (v.includes("/") ? " pair" : ""));
+    const kk = el("div","k"); kk.textContent = k;
+    const vv = el("div","v"); vv.textContent = v;
+    const uu = el("span","u"); uu.textContent = u; vv.append(uu);
+    const nn = el("div","n"); nn.textContent = n;
+    c.append(kk,vv,nn); s.append(c);
+  }
+  const lead = el("div","stat lead");
+  const kk = el("div","k"); kk.textContent = "新規創出・増強が狙える差";
+  const vv = el("div","v"); vv.textContent = substGap.toFixed(1);
+  const uu = el("span","u"); uu.textContent = "兆円"; vv.append(uu);
+  const nn = el("div","n");
+  nn.textContent = "三次産業の差 " + (tert(tk)-tert(th)).toFixed(1) + " 兆円の "
+                 + (substGap/(tert(tk)-tert(th))*100).toFixed(0) + "%"
+                 + "　末端の対象外を除くと " + netGap(tert2(tk), tert2(th)).toFixed(1);
+  lead.append(kk,vv,nn); s.append(lead);
+}
+
+/* ---------- crumbs & chrome ---------- */
+function renderCrumbs(){
+  const c = $("#crumbs"); c.innerHTML="";
+  const names = ["全産業"];
+  let n = DATA.regions["東京都"];
+  for(const i of state.focus){ n = n.children[i]; names.push(n.name); }
+  names.forEach((nm,idx)=>{
+    if(idx){ const s=el("span","sep"); s.textContent="›"; c.append(s); }
+    const b = el("button"); b.type="button"; b.textContent = nm;
+    if(idx===names.length-1) b.disabled = true;
+    else b.addEventListener("click", ()=>{ state.focus = state.focus.slice(0,idx); render(); });
+    c.append(b);
+  });
+}
+function buildSeg(id, items, key, onPick){
+  const seg = $(id); seg.innerHTML="";
+  for(const it of items){
+    const b = el("button"); b.type="button"; b.textContent = it.label;
+    if(it.color){ const sw = el("span","swatch"); sw.style.background = it.color; b.prepend(sw); }
+    b.dataset.val = it.val;
+    b.addEventListener("click", ()=>{ state[key]=it.val; onPick&&onPick(); render(); });
+    seg.append(b);
+  }
+}
+function syncSeg(id, attr, key){
+  $(id).querySelectorAll("button").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset[attr] === state[key])));
+}
+
+/* ---------- URL に状態を持たせる（リロード復元・リンク共有用） ---------- */
+function writeHash(){
+  const p = new URLSearchParams({view:state.view, region:state.region});
+  if(state.focus.length) p.set("focus", state.focus.join("-"));
+  // location.hash への代入はページ先頭へ飛ぶので replaceState を使う
+  try{ history.replaceState(null, "", "#" + p.toString()); }catch(e){/* file:// 等 */}
+}
+function readHash(){
+  const p = new URLSearchParams(location.hash.slice(1));
+  const view = p.get("view"), region = p.get("region");
+  if(["flow","gap","table"].includes(view)) state.view = view;
+  if(region==="both" || REGIONS.includes(region)) state.region = region;
+  const f = (p.get("focus")||"").split("-").filter(s=>s!=="").map(Number);
+  state.focus = f.every(Number.isInteger) && pathExists("東京都", f) ? f : [];
+}
+
+function render(){
+  writeHash();
+  renderStats(); renderCrumbs();
+  const body = $("#body"); body.innerHTML="";
+  const note = $("#headNote");
+  if(state.view==="flow"){
+    note.textContent = state.region==="both" ? "同一縮尺・上下で比較" : "";
+    renderFlow(body);
+  } else if(state.view==="gap"){
+    note.textContent = "この階層の直下を東京 vs 東海で比較（差の大きい順）";
+    renderGap(body);
+  } else {
+    note.textContent = "この階層以下のすべて";
+    renderTable(body);
+  }
+  syncSeg("#segView","v","view");
+  syncSeg("#segRegion","val","region");
+  // 地域の選択はフロー図だけで意味を持つ（他のビューは東京 vs 東海の固定比較）
+  $("#segRegion").parentElement.style.opacity = state.view==="flow" ? 1 : .4;
+  $("#segRegion").querySelectorAll("button").forEach(b=> b.disabled = state.view!=="flow");
+}
+
+/* ---------- init ---------- */
+buildSeg("#segRegion", [
+  {val:"both",   label:"東京 vs 東海"},
+  {val:"東京都", label:"東京都",  color:"var(--tokyo)"},
+  {val:"東海",   label:"東海4県", color:"var(--tokai)"},
+  {val:"愛知県", label:"愛知県",  color:"var(--tokai)"},
+  {val:"岐阜県", label:"岐阜県",  color:"var(--tokai)"},
+  {val:"三重県", label:"三重県",  color:"var(--tokai)"},
+  {val:"静岡県", label:"静岡県",  color:"var(--tokai)"},
+], "region");
+$("#segView").querySelectorAll("button").forEach(b=>
+  b.addEventListener("click", ()=>{ state.view=b.dataset.v; render(); }));
+$("#themeToggle").addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  const dark = cur ? cur==="dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+  render();
+});
+addEventListener("hashchange", ()=>{ readHash(); render(); });
+let rt; addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(render,140); });
+readHash();
+render();
+</script>
