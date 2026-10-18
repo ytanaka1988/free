@@ -376,6 +376,8 @@ details.szd summary:focus-visible{outline:2px solid var(--accent)}
 .ai button.sec{background:transparent;color:var(--accent)} .ai button:disabled{opacity:.6;cursor:default}
 .ai .aio{white-space:pre-wrap;font-size:13.5px;line-height:1.7;margin-top:8px;padding:8px 10px;border-radius:6px;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
 .ai .aio:empty{display:none} .ai small{display:block;color:var(--muted);font-size:11.5px;margin-top:4px}
+.nf2{font-size:12.5px;margin-top:5px;padding:4px 8px;border-radius:4px;border-left:3px solid var(--sc,var(--accent));background:color-mix(in srgb,var(--sc,var(--accent)) 9%,var(--surface))}
+.nfo{font-size:12px;color:var(--muted);margin-top:4px}
 .hand.scn{background:var(--sc,var(--accent))}
 .sz li.op{list-style:none;margin-left:-1.1em;border-left:3px solid var(--bx-new);background:color-mix(in srgb,var(--bx-new) 12%,var(--surface));border-radius:4px;padding:4px 8px;margin-top:4px}
 
@@ -785,11 +787,11 @@ function renderList(){
       <div class="row-head"><span>市町村</span><span>いまの強み</span><span>AI時代の将来像</span><span>地銀の打ち手</span></div>`;
     let reg=null;
     if(state.sort!=='reg') pr.sort((a,b)=>state.sort==='gdp'?b.gdp-a.gdp:b.gap-a.gap);
-    for(const r of pr){
+    for(const r of pr){ const NF=adaptNF(r);
       if(state.sort==='reg' && r.r!==reg){reg=r.r; h+=`<div class="reg-h">${esc(reg)}</div>`;}
       h += `<div class="row"><div><div class="nm">${esc(r.n)}${r.size.hand?'<span class="hand">手書き</span>':''} <span class="jk-badge" style="--bc:var(--bx-${r.junkan.box})">${BX[r.junkan.box][0]}</span></div><div class="pills">${r.t.map(t=>`<span class="pill" style="--tc:var(--t-${t})">${TL[t]}</span>`).join('')}</div></div>
-        <div><span class="lbl">いまの強み</span><p>${esc(r.now)}</p></div>
-        <div class="fut"><span class="lbl">AI時代の将来像</span><p>${esc(r.fut)}</p></div>
+        <div style="--sc:var(${stageOf(M).c})"><span class="lbl">いまの強み</span>${nowHTML(r,NF)}</div>
+        <div class="fut" style="--sc:var(${stageOf(M).c})"><span class="lbl">AI時代の将来像${NF.ch?'（'+MXS()+'倍の前提）':''}</span>${futHTML(r,NF,false)}</div>
         <div><span class="lbl">地銀の打ち手</span><p>${esc(r.bank)}</p><p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">金融：</span>地銀 ${r.fin.cg.lead.join('・')}／信金 ${r.fin.sk.n.join('・')}／メガ 関与${r.fin.mg.lvl}</p>${(COS_BY_MUNI[r.p+'|'+r.n]||[]).length?`<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">主な企業：</span>${COS_BY_MUNI[r.p+'|'+r.n].map(c=>esc(c.n)).join('、')}</p>`:''}<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">商工会・自治体：</span>${esc(r.local.sci.who)}／${esc(r.local.gov.who)}</p><p class="fldline" style="font-size:12.5px;color:var(--muted)">${MXS()}倍のとき：${r.ok?'今の伸びで届く':'上乗せ '+fmt(r.gap)}</p><p class="fldline"><span class="lbl" style="display:inline">取りに行く分野：</span>${r.fld.top.map(([i,v])=>esc(FLD[i].n)+(r.fld.ok?'':`（${fmt(v)}）`)).join('・')}</p></div>
         <details class="szd"><summary>企業規模別の戦略（大企業・中小企業・零細企業）${r.size.hand?'<span class="hand">手書き・調査済み</span>':''}${r.size.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}${r.size.opp?'<span class="hand" style="background:var(--bx-new)">稼ぎ頭の打ち手を追加</span>':''}</summary>${r.size.hand?`<p class="hnote" style="padding:0 12px">${esc(r.size.note)}</p>`:''}${r.size.rev?`<p class="hnote" style="padding:0 12px">${esc(r.size.revnote)}</p>`:''}<div class="szg">${SZ.map(([k,l])=>{const s=r.size[k], A=adaptTier(r,k); return `<div><h5>${l}<small>${r.ok?'':fmt(s.gap)}</small></h5><p>${esc(s.aim)}</p>${A.aim2?`<p><b>この前提での狙い：</b>${esc(A.aim2)}</p>`:''}<ul>${A.acts.map(a=>`<li${/^【(これから|後回し)】/.test(a)?' style="color:var(--muted)"':''}>${esc(a.replace('【これから】','これから育てる分野：').replace('【後回し】','この前提では後回し：').replace('【この前提で】','この前提で加える：').replace('【取りに行く分野】','取りに行く分野：').replace('【実データの稼ぎ頭】','実データの稼ぎ頭を伸ばす：'))}</li>`).join('')}</ul><div class="w">担い手：${esc(A.who)}</div></div>`}).join('')}</div></details>
         <div class="gdpline"><span>GDP（2023年度）<span class="num">${fmt(r.gdp)}</span></span>
@@ -1150,7 +1152,7 @@ function aiPrompt(r,k){const s=r.size[k], A=adaptTier(r,k), J=r.junkan||{}, p=r.
 # 市町村
 ${r.p} ${r.n}（${tl}向けの戦略）
 今の姿：${r.now}
-未来の姿：${r.fut}
+未来の姿（手書き）：${r.fut}${adaptNF(r).ch?'\n未来の姿（この前提でルールで書き換えた案）：'+adaptNF(r).fut:''}
 市町村内総生産（2023年度）：${fmt(r.gdp)}
 域外から稼いでいる産業（地域経済循環分析）：${J.top||'不明'}
 取りに行く分野（上位）：${r.fld.top.slice(0,3).map(([i])=>FLD[i].n).join('、')}
@@ -1195,6 +1197,27 @@ async function aiRun(r,k){if(!SAMPLE||aiCtl) return; const key=scenKey(r,k), ctl
       if(e&&e.text) AIC.set(key,e.text.trim()+'\n\n（'+msg+'）'); else alert(msg);}}
   finally{aiCtl=null; renderPanel();}}
 if(window.claude&&claude.use) claude.use('sample').then(s=>{SAMPLE=s; if(s&&pTab==='size') renderPanel();}).catch(()=>{});
+
+function adaptNF(r){if(isDefaultScen()) return {ch:false};
+  const st=stageOf(M), J=r.junkan||{}, top=J.top?'「'+J.top+'」':'主力産業';
+  const fn=r.fld.top.slice(0,2).map(([i])=>'「'+FLD[i].n+'」'), f1=fn[0]||'新しい分野', f12=fn.join('と')||f1;
+  const p=r.pop, w=p?1+PW()*(p.wr-1):1, d=fxAdj(r)-1, net=fxNet(r);
+  const n=[]; const se=FX!==150?scenEarners(r):null;
+  n.push(`今の伸びのままだと2035年は${(r.bau/r.gdp).toFixed(2)}倍（${fmt(r.bau)}）で、${r.ok?MXS()+'倍の目標に届く見込み':MXS()+'倍まであと'+fmt(r.gap)}`);
+  if(se&&se.length) n.push(`${FX}円で見た域外から稼ぐ産業：${se.map(x=>'「'+x[0]+'」').join('')}`);
+  if(POP>=0&&p) n.push(`働き手（15〜64歳）は2035年までに${w>=1?'+':'−'}${Math.abs(Math.round((w-1)*100))}%（推計${POP===1?'どおり':'の'+Math.round(POP*100)+'%'}）`);
+  if(Math.abs(d)>=0.005) n.push(`為替${FX}円で見通しは${d>0?'+':'−'}${Math.abs(d*100).toFixed(1)}%（${net>0?'輸出の比重が大きい':'輸入する燃料・原材料の比重が大きい'}）`);
+  let f;
+  if(r.ok) f=`今の伸びで${MXS()}倍に届く地域。${top}を伸ばし続け、余力で周りの市町村に仕事と投資を広げる。`;
+  else if(st.id==='guard') f=`${top}の生産と取引網が事業承継で受け継がれ、会社と雇用の数を保っている地域。新しい分野は${f1}から小さく始めている。`;
+  else if(st.id==='tokyo') f=`東京に頼っていた${f12}を地元で担い、${top}と組み合わせて稼ぐ地域。`;
+  else if(st.id==='world') f=`${top}と${f1}を、保守・データのサービスごと海外に売り、外から稼ぐ地域。`;
+  else f=`${f12}が新しい柱に加わり、産業の構成そのものが変わった地域。誘致と創業で人と企業が集まっている。`;
+  if(POP>=0&&w<0.9) f+=`働き手が${Math.round((1-w)*100)}%減っても、省人化・AIで仕事が回る。`; else if(POP>=0&&w>1.02) f+=`人が増え、暮らしのサービスも厚くなっている。`;
+  if(FX>=165&&d>=0.005) f+=`円安を追い風に輸出が伸びている。`; else if(FX>=165&&d<=-0.005) f+=`燃料・原材料が高くても稼げる、省エネ型の産業になっている。`; else if(FX<=135&&d<=-0.005) f+=`円高でも崩れない、保守・サービスの収入が柱になっている。`;
+  return {ch:true,now2:n.join('。')+'。',fut:f};}
+const nowHTML=(r,A)=>`<p>${esc(r.now)}</p>${A.ch?`<p class="nf2"><b>この前提で見ると：</b>${esc(A.now2)}</p>`:''}`;
+const futHTML=(r,A,b)=>A.ch?`<p>${b?'<b>':''}${esc(A.fut)}${b?'</b>':''}</p><p class="nfo">元の将来像：${esc(r.fut)}</p>`:`<p>${b?'<b>':''}${esc(r.fut)}${b?'</b>':''}</p>`;
 
 const SZ=[['lg','大企業'],['md','中小企業'],['sm','零細企業']];
 let szTab='lg';
@@ -1282,8 +1305,8 @@ function renderPanel(){
     ${r.fx?`<dt>為替の影響</dt><dd>10円の円安で見通し ${fxNet(r)*10/150*100>=0?'+':'−'}${Math.abs(fxNet(r)*10/150*100).toFixed(1)}%<small style="color:var(--muted)">（海外向け売上 GDPの${Math.round(r.fx.X*100)}%・輸入に頼る仕入れ ${Math.round(r.fx.I*100)}%）</small></dd>`:''}
     <dt>2035年 目標</dt><dd><b>${fmt(r.tgt)}</b>（${MXS()}倍）</dd>
     <dt>上乗せ</dt><dd>${r.ok?'過去のペースのままで'+MXS()+'倍を超える見込み':fmt(r.gap)+'：'+r.lev.map(([t,v])=>`${TL[t]} ${fmt(v)}`).join('／')}</dd></dl>
-    <div class="blk"><span class="lbl" style="display:block">いまの強み</span><p>${esc(r.now)}</p></div>
-    <div class="blk"><span class="lbl" style="display:block">AI時代の将来像</span><p><b>${esc(r.fut)}</b></p></div>
+    <div class="blk" style="--sc:var(${stageOf(M).c})"><span class="lbl" style="display:block">いまの強み</span>${nowHTML(r,adaptNF(r))}</div>
+    <div class="blk" style="--sc:var(${stageOf(M).c})"><span class="lbl" style="display:block">AI時代の将来像${adaptNF(r).ch?'（'+MXS()+'倍の前提で書き換え）':''}</span>${futHTML(r,adaptNF(r),true)}</div>
     <div class="blk"><span class="lbl" style="display:block">地銀の打ち手</span><p>${esc(r.bank)}</p></div>
     ${(COS_BY_MUNI[s.key]||[]).length?`<div class="blk"><span class="lbl" style="display:block">主な企業・拠点</span><table class="cotab"><tbody>${COS_BY_MUNI[s.key].map(c=>`<tr><td><b>${esc(c.n)}</b></td><td class="k">${c.k}</td><td>${esc(c.r)}</td></tr>`).join('')}</tbody></table></div>`:''}
     ${(BELT_OF[s.key]||[]).length?`<div class="blk"><span class="lbl" style="display:block">所属する企業帯</span><div class="memb">${BELT_OF[s.key].map(b=>`<button data-belt="${b.id}">${b.code} ${esc(b.name)}</button>`).join('')}</div></div>`:''}
