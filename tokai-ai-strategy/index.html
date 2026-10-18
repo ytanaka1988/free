@@ -423,6 +423,13 @@ section[data-view]{scroll-margin-top:150px}
 @media (max-width:640px){.mstage{display:none}.msum{flex-basis:100%}.stick{position:static}.stats{grid-template-columns:repeat(2,1fr)}:root{--stickh:0px}}
 
 .mbar2{padding-top:0}
+.scen>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:5px 0 7px;font-size:12.5px;color:var(--muted)}
+.scen>summary::-webkit-details-marker{display:none}
+.scen>summary .scl{color:var(--ink);font-weight:500;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--surface)}
+.scen>summary .scl::after{content:" ▾"} .scen[open]>summary .scl::after{content:" ▴"}
+.scen>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.scen>summary .scs b{color:var(--ink)}
+.scen[open]{padding-bottom:4px}
 .mlab2{font-size:12.5px;color:var(--ink);font-weight:500;white-space:nowrap}
 .pseg button{font-size:12.5px;padding:4px 10px}
 #fxRange{flex:0 1 180px;min-width:120px;accent-color:var(--accent)}
@@ -454,6 +461,7 @@ section[data-view]{scroll-margin-top:150px}
     <button type="button" data-v="list"><b>市町村一覧</b><small>検索・絞り込み</small></button>
     <button type="button" data-v="about"><b>示唆と出典</b><small>根拠と次の一手</small></button>
   </nav>
+  <details class="scen" id="scen"><summary><span class="scl">前提を変えて試す</span><span class="scs" id="scenSum"></span></summary>
   <div class="mbar" id="mbar">
     <label for="mRange" class="mlab">2035年の目標</label>
     <input type="range" id="mRange" min="1.1" max="3" step="0.1" value="1.5" aria-describedby="mOut">
@@ -477,6 +485,7 @@ section[data-view]{scroll-margin-top:150px}
     <span class="msum" id="mSum2"></span>
   </div>
   <div class="mstage" id="mStageTxt"></div>
+  </details>
   </div>
 
 
@@ -1045,6 +1054,7 @@ function applyM(m){
   // header UI
   const st=stageOf(M), rate=((Math.pow(M,1/12)-1)*100).toFixed(1), n=DATA.rows.filter(r=>!r.ok).length, pct=Math.round(tot/DATA.tk.net*100);
   document.getElementById('mOut').innerHTML=`<b>${MXS()}倍</b><small>年${rate}%</small>`;
+  document.getElementById('scenSum').innerHTML=isDefaultScen()?`いまは標準の前提（<b>1.5倍</b>・人口は過去の伸びのまま・<b>150円</b>）。目標の倍率・人口・為替を変えると、数字と戦略の文章が変わります。`:`<b>${MXS()}倍</b>（${st.l}）・人口：${POP<0?'過去の伸びのまま':POP===1?'社人研の推計どおり':POP===0.5?'減少を半分に':'横ばい'}・<b>${FX}円</b>　<span style="color:var(--aichi)">標準と違う前提で表示中</span>`;
   const sEl=document.getElementById('mStage'); sEl.textContent=st.l; sEl.style.setProperty('--sc',`var(${st.c})`);
   document.getElementById('mSum').innerHTML=`上乗せ <b>${fmt(tot)}</b>・<b>${n}</b>市町村・東京から取り込める分の <b>${pct}%</b>`;
   const tEl=document.getElementById('mStageTxt'); tEl.innerHTML=`<b>${MXS()}倍＝「${st.l}」の段階。</b>${st.t}`; tEl.style.setProperty('--sc',`var(${st.c})`);
@@ -1076,6 +1086,7 @@ let mT; document.getElementById('mRange').addEventListener('input',()=>{const v=
 document.getElementById('popSeg').addEventListener('click',e=>{const b=e.target.closest('button[data-pop]'); if(!b) return; POP=parseFloat(b.dataset.pop); onM();});
 document.getElementById('fxRange').addEventListener('input',()=>{document.getElementById('fxOut').innerHTML=`<b>${document.getElementById('fxRange').value}円</b>`; clearTimeout(mT); mT=setTimeout(onM,60);});
 document.getElementById('mReset').addEventListener('click',()=>{document.getElementById('mRange').value='1.5'; onM();});
+document.getElementById('scen').addEventListener('toggle',()=>setStickH());
 function setStickH(){const el=document.querySelector('.stick'); const h=getComputedStyle(el).position==='sticky'?el.offsetHeight:0; document.documentElement.style.setProperty('--stickh',h+'px');}
 addEventListener('resize',setStickH);
 
@@ -1141,62 +1152,6 @@ function adaptTier(r,k){const s=r.size[k]; const base=actsFor(r,k); if(isDefault
   return {aim:s.aim,aim2,acts,who:wh.length?wh.join('／')+'／'+s.who:s.who,kpi:kp.length?kp.join('・')+'／'+s.kpi:s.kpi,ch};}
 const actLi=a=>a.startsWith('【この前提で】')?`<li class="sc"><b>この前提で加える：</b>${esc(a.slice(7))}</li>`:a.startsWith('【後回し】')?`<li class="lo">この前提では後回し：${esc(a.slice(5))}</li>`:a.startsWith('【取りに行く分野】')?`<li class="fa"><b>取りに行く分野：</b>${esc(a.slice(9))}</li>`:a.startsWith('【これから】')?`<li class="nx"><b>これから育てる分野：</b>${esc(a.slice(6))}</li>`:a.startsWith('【実データの稼ぎ頭】')?`<li class="op"><b>実データの稼ぎ頭を伸ばす：</b>${esc(a.slice(10))}</li>`:`<li>${esc(a)}</li>`;
 
-let SAMPLE=null, aiCtl=null, aiOff=false; const AIC=new Map();
-const scenKey=(r,k)=>[r.p,r.n,k,MXS(),POP,FX].join('|');
-const scenLabel=()=>`${MXS()}倍（${stageOf(M).l}）・${POP<0?'人口は過去の伸びのまま':'人口推計'+(POP===1?'どおり':'の'+Math.round(POP*100)+'%')}・為替${FX}円`;
-function aiPrompt(r,k){const s=r.size[k], A=adaptTier(r,k), J=r.junkan||{}, p=r.pop, tl=SZ.find(x=>x[0]===k)[1];
-  const w=p?1+PW()*(p.wr-1):1, base=actsFor(r,k).map(a=>'- '+a.replace(/^【[^】]+】/,'')).join('\n');
-  return `あなたは地域の産業政策に詳しい専門家です。東海地方の市町村の「企業規模別の戦略」の本文を、下の前提に合わせて書き直してください。
-読み手は自治体・商工会・金融機関の担当者です。専門用語は避け、やさしい日本語で、具体的に書きます。
-
-# 市町村
-${r.p} ${r.n}（${tl}向けの戦略）
-今の姿：${r.now}
-未来の姿（手書き）：${r.fut}${adaptNF(r).ch?'\n未来の姿（この前提でルールで書き換えた案）：'+adaptNF(r).fut:''}
-市町村内総生産（2023年度）：${fmt(r.gdp)}
-域外から稼いでいる産業（地域経済循環分析）：${J.top||'不明'}
-取りに行く分野（上位）：${r.fld.top.slice(0,3).map(([i])=>FLD[i].n).join('、')}
-
-# 前提
-2035年の目標：2023年度の${MXS()}倍（${fmt(r.tgt)}）。段階は「${stageOf(M).l}」：${stageOf(M).t.replace(/<[^>]+>/g,'')}
-今の伸びのままの2035年見通し：${fmt(r.bau)}。${r.ok?'目標には今の伸びで届く見込み。':'上乗せが必要な額：'+fmt(r.gap)+'（うち'+tl+'の目安 '+fmt(s.gap)+'）'}
-人口：${POP<0?'過去の伸びのまま（見通しの数字には推計を反映していない）。社人研推計では':'社人研推計の'+Math.round(POP*100)+'%を反映。'}働き手（15〜64歳）は2035年に2023年比 ${((w-1)*100).toFixed(0)}%
-為替：1ドル${FX}円（基準150円）。この市町村の2035年見通しへの影響 ${((fxAdj(r)-1)*100).toFixed(1)}%
-
-# 手書きの元の本文（調査にもとづく。固有名詞・事実は残す）
-狙い：${s.aim}
-打ち手：
-${base}
-担い手：${s.who}
-指標：${s.kpi}
-
-# ルールで機械的に足した案（参考）
-${A.aim2?'狙い：'+A.aim2+'\n':''}${A.acts.filter(a=>a.startsWith('【この前提で】')).map(a=>'- '+a.slice(7)).join('\n')||'（なし）'}
-
-# 書き方
-- 元の本文にある企業名・制度名・機関名などの事実は残し、新しい固有名詞や数字を作らない
-- 前提に合わない打ち手は削るか後ろに回し、合う打ち手を前に出す
-- 次の形だけで答える（前置き・まとめ・記号の装飾は不要）
-狙い：（1文）
-打ち手：
-・（4〜6行、1行60字以内）
-担い手：（1行）
-指標：（1行）
-前提で変えた点：（1〜2文）`;}
-function aiBox(r,k){if(!SAMPLE||aiOff) return '';
-  const key=scenKey(r,k), c=AIC.get(key);
-  return `<div class="ai"><button data-ai="${esc(r.p+'|'+r.n)}" data-aik="${k}"${aiCtl?' disabled':''}>${c?'もう一度書き直してもらう':'この前提でClaudeに書き直してもらう'}</button>${aiCtl?' <button class="sec" data-aistop="1">止める</button>':''}
-   <div class="aio" id="aiOut">${c?esc(c):''}</div><small>${c?'Claudeが書き直した文（'+esc(scenLabel())+'）。事実は元の本文と出典で確かめてください。':'押すと、この市町村のデータと前提をClaudeに送り、本文を書き直してもらいます（見る人のClaudeの利用枠を使います。最初に許可を確認します）。'}</small></div>`;}
-async function aiRun(r,k){if(!SAMPLE||aiCtl) return; const key=scenKey(r,k), ctl=new AbortController(); aiCtl=ctl; renderPanel();
-  const out=()=>document.getElementById('aiOut'); if(out()) out().textContent='考えています…';
-  try{const op={signal:ctl.signal,onText:({text})=>{const o=out(); if(o) o.textContent=text;}}; if(AIC.has(key)) op.cache=false; const {text}=await SAMPLE(aiPrompt(r,k),op);
-    AIC.set(key,text.trim());}
-  catch(e){const c=e&&e.code;
-    if(c==='not_granted'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed'){aiOff=true;}
-    else{const msg=c==='cancelled'?'止めました。':c==='rate_limited'?'混み合っています。少し待ってからもう一度押してください。':c==='prompt_too_large'?'送る文が長すぎました。':'書き直しに失敗しました。もう一度押してください。';
-      if(e&&e.text) AIC.set(key,e.text.trim()+'\n\n（'+msg+'）'); else alert(msg);}}
-  finally{aiCtl=null; renderPanel();}}
-if(window.claude&&claude.use) claude.use('sample').then(s=>{SAMPLE=s; if(s&&pTab==='size') renderPanel();}).catch(()=>{});
 
 function adaptNF(r){if(isDefaultScen()) return {ch:false};
   const st=stageOf(M), J=r.junkan||{}, top=J.top?'「'+J.top+'」':'主力産業';
@@ -1251,7 +1206,7 @@ function sizeBox(r){const s=r.size[szTab]; const A=adaptTier(r,szTab);
   return `<div class="blk"><span class="lbl" style="display:block">企業規模別の戦略${hd}</span>${hn}
    <div class="sz-tabs" role="tablist">${SZ.map(([k,l])=>`<button role="tab" data-sz="${k}" aria-selected="${k===szTab}">${l}</button>`).join('')}</div>
    <div class="sz" style="--sc:var(${stageOf(M).c})">${A.ch?`<p class="hnote" style="margin:0 0 6px"><span class="hand scn">前提に合わせて書き換え</span>${MXS()}倍・${POP<0?'人口は過去の伸びのまま':'人口推計'+(POP===1?'どおり':'の'+Math.round(POP*100)+'%')}・${FX}円の前提で、本文を並べ替え・追記しています（ルールによる自動の書き換え）。</p>`:''}<p class="aim">${esc(A.aim)}</p>${A.aim2?`<p class="aim2"><b>この前提での狙い：</b>${esc(A.aim2)}</p>`:''}<ul>${A.acts.map(actLi).join('')}</ul>${s.prev?`<p class="pv">見直し前の狙い：${esc(s.prev.aim)}</p>`:''}
-   <div class="meta"><span>担い手</span><b>${esc(A.who)}</b><span>指標</span><b>${esc(A.kpi)}${s.kpi2?'／稼ぎ頭：'+esc(s.kpi2):''}</b><span>上乗せの目安</span><b>${r.ok?'趨勢で'+MXS()+'倍を達成見込み':fmt(s.gap)+'（配分は仮定）'}</b></div>${A.ch?`<details class="orig"><summary>手書きの元の本文を見る</summary><p>${esc(s.aim)}</p><ul>${actsFor(r,szTab).map(actLi).join('')}</ul><div>担い手：${esc(s.who)}／指標：${esc(s.kpi)}</div></details>`:''}${aiBox(r,szTab)}</div></div>`;}
+   <div class="meta"><span>担い手</span><b>${esc(A.who)}</b><span>指標</span><b>${esc(A.kpi)}${s.kpi2?'／稼ぎ頭：'+esc(s.kpi2):''}</b><span>上乗せの目安</span><b>${r.ok?'趨勢で'+MXS()+'倍を達成見込み':fmt(s.gap)+'（配分は仮定）'}</b></div>${A.ch?`<details class="orig"><summary>手書きの元の本文を見る</summary><p>${esc(s.aim)}</p><ul>${actsFor(r,szTab).map(actLi).join('')}</ul><div>担い手：${esc(s.who)}／指標：${esc(s.kpi)}</div></details>`:''}</div></div>`;}
 
 const mapState={mode:'type',sel:{kind:'muni',key:'愛知県|名古屋市'}};
 const svg=document.getElementById('mapSvg');
@@ -1353,8 +1308,6 @@ svg.addEventListener('pointerleave',()=>tip.hidden=true);
 document.getElementById('panel').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return;
   if(b.dataset.ptab){pTab=b.dataset.ptab; renderPanel(); return;}
   if(b.dataset.sz){szTab=b.dataset.sz; renderPanel(); return;}
-  if(b.dataset.ai){aiRun(byKey[b.dataset.ai],b.dataset.aik); return;}
-  if(b.dataset.aistop){aiCtl&&aiCtl.abort(); return;}
   if(b.dataset.sel){mapState.sel={kind:'muni',key:b.dataset.sel}; paintMap();}
   if(b.dataset.belt){mapState.sel={kind:'belt',key:b.dataset.belt}; document.getElementById('showBelt').checked=true; paintMap();}
   if(b.dataset.list){state.q=b.dataset.list; state.types.clear(); state.pref='all'; document.getElementById('q').value=state.q; renderAll(); go('list');}});
