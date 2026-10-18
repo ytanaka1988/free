@@ -366,6 +366,12 @@ details.szd summary:focus-visible{outline:2px solid var(--accent)}
 .panel .sz p.pv{color:var(--muted);font-size:12px;margin:6px 0 0}
 .tier-sci{--tc:var(--t-haas)}.tier-gov{--tc:var(--t-life)}
 .tier .bs{font-size:11.5px;color:var(--muted);margin-top:4px}
+.sz li.sc{list-style:none;margin-left:-1.1em;border-left:3px solid var(--sc,var(--accent));background:color-mix(in srgb,var(--sc,var(--accent)) 10%,var(--surface));border-radius:4px;padding:4px 8px;margin-top:4px}
+.sz li.lo{color:var(--muted);text-decoration:none;font-size:12.5px}
+.sz .aim2{font-size:12.5px;margin:4px 0 0;padding:4px 8px;border-radius:4px;background:color-mix(in srgb,var(--sc,var(--accent)) 10%,var(--surface))}
+.sz details.orig{margin-top:8px;font-size:12.5px;color:var(--muted)} .sz details.orig summary{cursor:pointer}
+.sz details.orig ul{margin:4px 0}
+.hand.scn{background:var(--sc,var(--accent))}
 .sz li.op{list-style:none;margin-left:-1.1em;border-left:3px solid var(--bx-new);background:color-mix(in srgb,var(--bx-new) 12%,var(--surface));border-radius:4px;padding:4px 8px;margin-top:4px}
 
 :root{--tr-up:var(--accent);--tr-new:var(--t-log);--tr-flat:var(--muted);--tr-down:var(--aichi)}
@@ -780,7 +786,7 @@ function renderList(){
         <div><span class="lbl">いまの強み</span><p>${esc(r.now)}</p></div>
         <div class="fut"><span class="lbl">AI時代の将来像</span><p>${esc(r.fut)}</p></div>
         <div><span class="lbl">地銀の打ち手</span><p>${esc(r.bank)}</p><p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">金融：</span>地銀 ${r.fin.cg.lead.join('・')}／信金 ${r.fin.sk.n.join('・')}／メガ 関与${r.fin.mg.lvl}</p>${(COS_BY_MUNI[r.p+'|'+r.n]||[]).length?`<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">主な企業：</span>${COS_BY_MUNI[r.p+'|'+r.n].map(c=>esc(c.n)).join('、')}</p>`:''}<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">商工会・自治体：</span>${esc(r.local.sci.who)}／${esc(r.local.gov.who)}</p><p class="fldline" style="font-size:12.5px;color:var(--muted)">${MXS()}倍のとき：${r.ok?'今の伸びで届く':'上乗せ '+fmt(r.gap)}</p><p class="fldline"><span class="lbl" style="display:inline">取りに行く分野：</span>${r.fld.top.map(([i,v])=>esc(FLD[i].n)+(r.fld.ok?'':`（${fmt(v)}）`)).join('・')}</p></div>
-        <details class="szd"><summary>企業規模別の戦略（大企業・中小企業・零細企業）${r.size.hand?'<span class="hand">手書き・調査済み</span>':''}${r.size.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}${r.size.opp?'<span class="hand" style="background:var(--bx-new)">稼ぎ頭の打ち手を追加</span>':''}</summary>${r.size.hand?`<p class="hnote" style="padding:0 12px">${esc(r.size.note)}</p>`:''}${r.size.rev?`<p class="hnote" style="padding:0 12px">${esc(r.size.revnote)}</p>`:''}<div class="szg">${SZ.map(([k,l])=>{const s=r.size[k]; return `<div><h5>${l}<small>${r.ok?'':fmt(s.gap)}</small></h5><p>${esc(s.aim)}</p><ul>${actsFor(r,k).map(a=>`<li${a.startsWith('【これから】')?' style="color:var(--muted)"':''}>${esc(a.replace('【これから】','これから育てる分野：').replace('【取りに行く分野】','取りに行く分野：').replace('【実データの稼ぎ頭】','実データの稼ぎ頭を伸ばす：'))}</li>`).join('')}</ul><div class="w">担い手：${esc(s.who)}</div></div>`}).join('')}</div></details>
+        <details class="szd"><summary>企業規模別の戦略（大企業・中小企業・零細企業）${r.size.hand?'<span class="hand">手書き・調査済み</span>':''}${r.size.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}${r.size.opp?'<span class="hand" style="background:var(--bx-new)">稼ぎ頭の打ち手を追加</span>':''}</summary>${r.size.hand?`<p class="hnote" style="padding:0 12px">${esc(r.size.note)}</p>`:''}${r.size.rev?`<p class="hnote" style="padding:0 12px">${esc(r.size.revnote)}</p>`:''}<div class="szg">${SZ.map(([k,l])=>{const s=r.size[k], A=adaptTier(r,k); return `<div><h5>${l}<small>${r.ok?'':fmt(s.gap)}</small></h5><p>${esc(s.aim)}</p>${A.aim2?`<p><b>この前提での狙い：</b>${esc(A.aim2)}</p>`:''}<ul>${A.acts.map(a=>`<li${/^【(これから|後回し)】/.test(a)?' style="color:var(--muted)"':''}>${esc(a.replace('【これから】','これから育てる分野：').replace('【後回し】','この前提では後回し：').replace('【この前提で】','この前提で加える：').replace('【取りに行く分野】','取りに行く分野：').replace('【実データの稼ぎ頭】','実データの稼ぎ頭を伸ばす：'))}</li>`).join('')}</ul><div class="w">担い手：${esc(A.who)}</div></div>`}).join('')}</div></details>
         <div class="gdpline"><span>GDP（2023年度）<span class="num">${fmt(r.gdp)}</span></span>
           <span class="badge" title="${esc(r.srcd)}">公式値</span>
           <span>過去10年 <span class="num">年${r.trend}%</span></span>
@@ -1092,15 +1098,51 @@ function actsFor(r,k){const s=r.size[k]; if(!r.fld.dyn) return s.acts; const ti=
   const F=FLD[it[0]]; const ph=(DATA.phr[F.g]||[])[ti]; if(!ph) return s.acts;
   return s.acts.map(x=>x.startsWith('【取りに行く分野】')?'【取りに行く分野】'+ph.split('{f}').join(F.n):x);}
 
+const CATS=[['EXP',/海外|輸出|HaaS|グローバル|世界|外需|JETRO|外貨/],['TKY',/東京|本社|ソフト|金融|ファンド|スタートアップ|データ|IT/],['SUC',/承継|再生|M&A|後継|廃業|引継/],['INB',/観光|インバウンド|宿泊|旅行|訪日/],['SAVE',/省人|自動化|ロボット|人手|外国人|DX|AI導入|デジタル化/],['ENE',/燃料|省エネ|エネルギー|脱炭素|水素|再エネ|GX|電力/],['LOC',/商店|生活|介護|福祉|買い物|子育て|暮らし/]];
+function scenW(r){const st=stageOf(M).id, w={EXP:0,TKY:0,SUC:0,INB:0,SAVE:0,ENE:0,LOC:0};
+  if(st==='guard'){w.SUC+=2;w.LOC+=1;w.EXP-=1;} else if(st==='tokyo'){w.TKY+=1;} else if(st==='world'){w.EXP+=2;w.INB+=1;w.LOC-=1;} else {w.EXP+=1;w.TKY+=1;w.LOC-=1;w.SUC-=1;}
+  const pw=r.pop&&POP>=0?1+POP*(r.pop.wr-1):1; if(pw<0.9){w.SAVE+=2;} else if(pw>1.02){w.LOC+=1;}
+  if(FX>=165){w.EXP+=fxNet(r)>0?1:0;w.INB+=1;w.ENE+=1;} else if(FX<=135){w.EXP-=1;w.INB-=1;}
+  return {w,pw};}
+const SC_AIM={guard:['取引先の事業承継と設備更新を支え、{top}の生産と雇用を地域に残す','後継者のいない会社を承継・統合し、{top}を支える取引網を守る','廃業を減らし、暮らしに要る店とサービスを地域に残す'],
+ world:['{top}と製造業のサービス（HaaS）を海外に売り、外から稼ぐ額を増やす','大企業の海外展開に部品・保守・ソフトで同行し、自社でも輸出する','インバウンドと越境ECで、地域の産品と体験を海外の客に売る'],
+ transform:['新しい事業所・研究拠点を呼び込み、{f}を産業の柱にもう1本加える','業態転換（新分野進出）で、{f}の部材・サービスの供給側に入る','創業・移住起業を増やし、新しい担い手を地域に呼び込む']};
+const SC_ACT={guard:['{top}の取引先（2次・3次）の事業承継をM&Aで支え、設備更新の資金をつける','後継者のいない取引先を、事業承継・引継ぎ支援センターと信金で同業の会社に引き継ぐ','廃業予定の店・工房を、従業員や移住者への承継で残す（商工会が窓口）'],
+ world:['{top}の製品に保守・データサービス（HaaS）をつけ、海外の顧客に売る','JETROの商談会・海外展示会に出て、部品・試作・保守を直接輸出する','越境EC・インバウンド向けに、地域の産品と体験を外国語で売る'],
+ transform:['{f}の研究・量産拠点を誘致し、大型投資を地域に呼ぶ','事業再構築の補助と地銀の転換資金で、{f}の部材・サービスに参入する','空き店舗・空き家を使った創業と移住起業を、自治体・信金で支える']};
+const SC_WHO={guard:['政府系金融（日本政策金融公庫・商工中金）：承継・設備資金','事業承継・引継ぎ支援センター／信金：引き継ぎ先探し','商工会・信金：承継・廃業防止'],
+ world:['メガバンク：海外拠点・貿易金融／JETRO','JETRO・地銀：海外展開の資金と商談','JETRO・観光協会：越境EC・インバウンド'],
+ transform:['政府系金融・ファンド：大型投資','地銀：事業再構築の転換資金','自治体・信金：創業・移住支援']};
+const SC_KPI={guard:'事業承継の件数・廃業の件数',world:'海外売上の比率',transform:'新規立地・創業の件数'};
+const POP_ACT={lo:['働き手が{x}%減る前提で、工場・物流の自動化とAIで1人あたりの生産を上げる','ロボット・AIの導入と外国人材の受け入れで、人が減っても受注を断らない','予約・会計・在庫のデジタル化で、少ない人数でも店を回す'],
+ hi:['増える働き手の受け皿として、採用と社宅・保育の整備を進める','増える住民向けの仕事（建設・保育・サービス）を取り込む','増える住民向けの店・サービスを開く']};
+const FX_ACT={lo:['円高（{fx}円）に備え、為替に左右されにくい保守・サービス収入を増やす','輸入部材・設備が安い間に、機械を入れ替える','輸入品が安くなる分、仕入れを見直して利益を残す'],
+ hiX:['円安（{fx}円）の間に輸出を増やし、増えた利益を設備更新とサービス化に回す','円安で増えた受注を、設備投資と賃上げに回す','円安で増える訪日客向けの商品・サービスを用意する'],
+ hiI:['円安（{fx}円）で上がる燃料・原材料に備え、燃料転換・省エネの投資を前倒しする','燃料・原材料の値上がり分を、省エネと価格転嫁の交渉で吸収する','電気代・仕入れ値の上昇に備え、省エネ設備と価格の見直しを進める']};
+const scSub=(s,r,ti)=>{const J=r.junkan||{}; const it=r.fld.top[ti]||r.fld.top[0]; return s.split('{top}').join(J.top?'「'+J.top+'」':'主力産業').split('{f}').join(it?FLD[it[0]].n:'新しい分野').split('{fx}').join(FX);};
+function adaptTier(r,k){const s=r.size[k]; const base=actsFor(r,k); if(isDefaultScen()) return {aim:s.aim,acts:base,who:s.who,kpi:s.kpi,ch:false};
+  const ti=['lg','md','sm'].indexOf(k), st=stageOf(M).id, {w,pw}=scenW(r);
+  const add=[], kp=[], wh=[]; let aim2='';
+  if(st!=='tokyo'&&!r.ok){aim2=scSub(SC_AIM[st][ti],r,ti); add.push(scSub(SC_ACT[st][ti],r,ti)); wh.push(SC_WHO[st][ti]); kp.push(SC_KPI[st]);}
+  if(pw<0.9){add.push(POP_ACT.lo[ti].replace('{x}',Math.round((1-pw)*100))); kp.push('1人あたり付加価値');} else if(pw>1.02){add.push(POP_ACT.hi[ti]); kp.push('転入者数');}
+  if(FX<=135&&Math.abs(fxAdj(r)-1)>=0.005){add.push(scSub(FX_ACT.lo[ti],r,ti)); kp.push('保守・サービス収入の比率');}
+  else if(FX>=165&&Math.abs(fxAdj(r)-1)>=0.005){const x=fxNet(r)>0; add.push(scSub((x?FX_ACT.hiX:FX_ACT.hiI)[ti],r,ti)); kp.push(x?'輸出額':'燃料・原材料の調達コスト');}
+  const sc=a=>{if(/^【/.test(a)) return 0.5; let v=0; for(const [c,re] of CATS) if(re.test(a)) v+=w[c]; return v;};
+  const ord=base.map((a,i)=>[a,sc(a),i]).sort((x,y)=>y[1]-x[1]||x[2]-y[2]);
+  const acts=add.map(a=>'【この前提で】'+a).concat(ord.filter(x=>x[1]>=0).map(x=>x[0]),ord.filter(x=>x[1]<0).map(x=>'【後回し】'+x[0]));
+  const ch=add.length>0||ord.some((x,i)=>x[2]!==i)||ord.some(x=>x[1]<0);
+  return {aim:s.aim,aim2,acts,who:wh.length?wh.join('／')+'／'+s.who:s.who,kpi:kp.length?kp.join('・')+'／'+s.kpi:s.kpi,ch};}
+const actLi=a=>a.startsWith('【この前提で】')?`<li class="sc"><b>この前提で加える：</b>${esc(a.slice(7))}</li>`:a.startsWith('【後回し】')?`<li class="lo">この前提では後回し：${esc(a.slice(5))}</li>`:a.startsWith('【取りに行く分野】')?`<li class="fa"><b>取りに行く分野：</b>${esc(a.slice(9))}</li>`:a.startsWith('【これから】')?`<li class="nx"><b>これから育てる分野：</b>${esc(a.slice(6))}</li>`:a.startsWith('【実データの稼ぎ頭】')?`<li class="op"><b>実データの稼ぎ頭を伸ばす：</b>${esc(a.slice(10))}</li>`:`<li>${esc(a)}</li>`;
+
 const SZ=[['lg','大企業'],['md','中小企業'],['sm','零細企業']];
 let szTab='lg';
-function sizeBox(r){const s=r.size[szTab];
+function sizeBox(r){const s=r.size[szTab]; const A=adaptTier(r,szTab);
   const hd=(r.size.hand?`<span class="hand">手書き・調査済み</span>`:'')+(r.size.rev?`<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>`:'')+(r.size.opp?`<span class="hand" style="background:var(--bx-new)">稼ぎ頭の打ち手を追加</span>`:'');
   const hn=r.size.hand?`<p class="hnote">${esc(r.size.note)}</p><ul class="hsrc">${r.size.srcs.map(([l,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${esc(l)}</a></li>`).join('')}</ul>`+(r.size.rev?`<p class="hnote" style="border-color:var(--aichi)">${esc(r.size.revnote)}</p>`:'')+(r.size.opp?`<p class="hnote" style="border-color:var(--bx-new)">${esc(r.size.opp.txt)}${r.size.opp.cos.length?' 主な企業：'+r.size.opp.cos.map(esc).join('、')+(r.size.opp.note?'（'+esc(r.size.opp.note)+'）':''):''}</p>${r.size.opp.src.length?`<ul class="hsrc">${r.size.opp.src.map(([l,u])=>`<li><a href="${u}" target="_blank" rel="noopener">${esc(l)}</a></li>`).join('')}</ul>`:''}`:''):'';
   return `<div class="blk"><span class="lbl" style="display:block">企業規模別の戦略${hd}</span>${hn}
    <div class="sz-tabs" role="tablist">${SZ.map(([k,l])=>`<button role="tab" data-sz="${k}" aria-selected="${k===szTab}">${l}</button>`).join('')}</div>
-   <div class="sz"><p class="aim">${esc(s.aim)}</p><ul>${actsFor(r,szTab).map(a=>a.startsWith('【取りに行く分野】')?`<li class="fa"><b>取りに行く分野：</b>${esc(a.slice(9))}</li>`:a.startsWith('【これから】')?`<li class="nx"><b>これから育てる分野：</b>${esc(a.slice(6))}</li>`:a.startsWith('【実データの稼ぎ頭】')?`<li class="op"><b>実データの稼ぎ頭を伸ばす：</b>${esc(a.slice(10))}</li>`:`<li>${esc(a)}</li>`).join('')}</ul>${s.prev?`<p class="pv">見直し前の狙い：${esc(s.prev.aim)}</p>`:''}
-   <div class="meta"><span>担い手</span><b>${esc(s.who)}</b><span>指標</span><b>${esc(s.kpi)}${s.kpi2?'／稼ぎ頭：'+esc(s.kpi2):''}</b><span>上乗せの目安</span><b>${r.ok?'趨勢で'+MXS()+'倍を達成見込み':fmt(s.gap)+'（配分は仮定）'}</b></div></div></div>`;}
+   <div class="sz" style="--sc:var(${stageOf(M).c})">${A.ch?`<p class="hnote" style="margin:0 0 6px"><span class="hand scn">前提に合わせて書き換え</span>${MXS()}倍・${POP<0?'人口は過去の伸びのまま':'人口推計'+(POP===1?'どおり':'の'+Math.round(POP*100)+'%')}・${FX}円の前提で、本文を並べ替え・追記しています（ルールによる自動の書き換え）。</p>`:''}<p class="aim">${esc(A.aim)}</p>${A.aim2?`<p class="aim2"><b>この前提での狙い：</b>${esc(A.aim2)}</p>`:''}<ul>${A.acts.map(actLi).join('')}</ul>${s.prev?`<p class="pv">見直し前の狙い：${esc(s.prev.aim)}</p>`:''}
+   <div class="meta"><span>担い手</span><b>${esc(A.who)}</b><span>指標</span><b>${esc(A.kpi)}${s.kpi2?'／稼ぎ頭：'+esc(s.kpi2):''}</b><span>上乗せの目安</span><b>${r.ok?'趨勢で'+MXS()+'倍を達成見込み':fmt(s.gap)+'（配分は仮定）'}</b></div>${A.ch?`<details class="orig"><summary>手書きの元の本文を見る</summary><p>${esc(s.aim)}</p><ul>${actsFor(r,szTab).map(actLi).join('')}</ul><div>担い手：${esc(s.who)}／指標：${esc(s.kpi)}</div></details>`:''}</div></div>`;}
 
 const mapState={mode:'type',sel:{kind:'muni',key:'愛知県|名古屋市'}};
 const svg=document.getElementById('mapSvg');
