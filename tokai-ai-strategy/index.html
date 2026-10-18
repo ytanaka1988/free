@@ -792,7 +792,7 @@ function renderList(){
       h += `<div class="row"><div><div class="nm">${esc(r.n)}${r.size.hand?'<span class="hand">手書き</span>':''} <span class="jk-badge" style="--bc:var(--bx-${r.junkan.box})">${BX[r.junkan.box][0]}</span></div><div class="pills">${r.t.map(t=>`<span class="pill" style="--tc:var(--t-${t})">${TL[t]}</span>`).join('')}</div></div>
         <div style="--sc:var(${stageOf(M).c})"><span class="lbl">いまの強み</span>${nowHTML(r,NF)}</div>
         <div class="fut" style="--sc:var(${stageOf(M).c})"><span class="lbl">AI時代の将来像${NF.ch?'（'+MXS()+'倍の前提）':''}</span>${futHTML(r,NF,false)}</div>
-        <div><span class="lbl">地銀の打ち手</span><p>${esc(r.bank)}</p><p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">金融：</span>地銀 ${r.fin.cg.lead.join('・')}／信金 ${r.fin.sk.n.join('・')}／メガ 関与${r.fin.mg.lvl}</p>${(COS_BY_MUNI[r.p+'|'+r.n]||[]).length?`<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">主な企業：</span>${COS_BY_MUNI[r.p+'|'+r.n].map(c=>esc(c.n)).join('、')}</p>`:''}<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">商工会・自治体：</span>${esc(r.local.sci.who)}／${esc(r.local.gov.who)}</p><p class="fldline" style="font-size:12.5px;color:var(--muted)">${MXS()}倍のとき：${r.ok?'今の伸びで届く':'上乗せ '+fmt(r.gap)}</p><p class="fldline"><span class="lbl" style="display:inline">取りに行く分野：</span>${r.fld.top.map(([i,v])=>esc(FLD[i].n)+(r.fld.ok?'':`（${fmt(v)}）`)).join('・')}</p></div>
+        <div style="--sc:var(${stageOf(M).c})"><span class="lbl">地銀の打ち手${NF.ch?'（'+MXS()+'倍の前提）':''}</span>${bankHTML(r,false)}<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">金融：</span>地銀 ${r.fin.cg.lead.join('・')}／信金 ${r.fin.sk.n.join('・')}／メガ 関与${r.fin.mg.lvl}</p>${(COS_BY_MUNI[r.p+'|'+r.n]||[]).length?`<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">主な企業：</span>${COS_BY_MUNI[r.p+'|'+r.n].map(c=>esc(c.n)).join('、')}</p>`:''}<p style="margin-top:6px;font-size:13px"><span class="lbl" style="display:inline">商工会・自治体：</span>${esc(r.local.sci.who)}／${esc(r.local.gov.who)}</p><p class="fldline" style="font-size:12.5px;color:var(--muted)">${MXS()}倍のとき：${r.ok?'今の伸びで届く':'上乗せ '+fmt(r.gap)}</p><p class="fldline"><span class="lbl" style="display:inline">取りに行く分野：</span>${r.fld.top.map(([i,v])=>esc(FLD[i].n)+(r.fld.ok?'':`（${fmt(v)}）`)).join('・')}</p></div>
         <details class="szd"><summary>企業規模別の戦略（大企業・中小企業・零細企業）${r.size.hand?'<span class="hand">手書き・調査済み</span>':''}${r.size.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}${r.size.opp?'<span class="hand" style="background:var(--bx-new)">稼ぎ頭の打ち手を追加</span>':''}</summary>${r.size.hand?`<p class="hnote" style="padding:0 12px">${esc(r.size.note)}</p>`:''}${r.size.rev?`<p class="hnote" style="padding:0 12px">${esc(r.size.revnote)}</p>`:''}<div class="szg">${SZ.map(([k,l])=>{const s=r.size[k], A=adaptTier(r,k); return `<div><h5>${l}<small>${r.ok?'':fmt(s.gap)}</small></h5><p>${esc(s.aim)}</p>${A.aim2?`<p><b>この前提での狙い：</b>${esc(A.aim2)}</p>`:''}<ul>${A.acts.map(a=>`<li${/^【(これから|後回し)】/.test(a)?' style="color:var(--muted)"':''}>${esc(a.replace('【これから】','これから育てる分野：').replace('【後回し】','この前提では後回し：').replace('【この前提で】','この前提で加える：').replace('【取りに行く分野】','取りに行く分野：').replace('【実データの稼ぎ頭】','実データの稼ぎ頭を伸ばす：'))}</li>`).join('')}</ul><div class="w">担い手：${esc(A.who)}</div></div>`}).join('')}</div></details>
         <div class="gdpline"><span>GDP（2023年度）<span class="num">${fmt(r.gdp)}</span></span>
           <span class="badge" title="${esc(r.srcd)}">公式値</span>
@@ -903,17 +903,17 @@ document.getElementById('bankTabs').addEventListener('click',e=>{const b=e.targe
 
 
 const MG_LVL={'大':'関与 大','中':'関与 中','小':'関与 小'};
-function localBox(r){const L=r.local;
-  return `<div class="blk"><span class="lbl" style="display:block">この市町村での商工会・自治体の役割</span><div class="tiers" style="margin-top:6px">
-   <div class="tier tier-sci"><h4>商工会・商工会議所<small>中小・小規模事業者の相談窓口</small></h4><p><b>${esc(L.sci.who)}</b></p><p>${esc(L.sci.role)}</p></div>
-   <div class="tier tier-gov"><h4>自治体<small>場・インフラ・人の受け皿</small></h4><p><b>${esc(L.gov.who)}</b></p><p>${esc(L.gov.role)}</p></div></div>
+function localBox(r){const L=r.local, A=adaptSup(r);
+  return `<div class="blk"><span class="lbl" style="display:block">この市町村での商工会・自治体の役割${A.ch?'<span class="hand scn" style="--sc:var('+stageOf(M).c+')">前提に合わせて追記</span>':''}</span><div class="tiers" style="margin-top:6px;--sc:var(${stageOf(M).c})">
+   <div class="tier tier-sci"><h4>商工会・商工会議所<small>中小・小規模事業者の相談窓口</small></h4><p><b>${esc(L.sci.who)}</b></p><p>${esc(L.sci.role)}</p>${supP(A.sci)}</div>
+   <div class="tier tier-gov"><h4>自治体<small>場・インフラ・人の受け皿</small></h4><p><b>${esc(L.gov.who)}</b></p><p>${esc(L.gov.role)}</p>${supP(A.gov)}</div></div>
    ${L.plans&&L.plans.length?`<details style="margin-top:6px;font-size:13px"><summary>経営発達支援計画（${L.plans.length}件）を見る</summary><ul style="margin:6px 0 0;padding-left:1.2em">${L.plans.map(p=>`<li><a href="${p.url}" target="_blank" rel="noopener">${esc(p.name)}</a>${p.date?'（'+esc(p.date)+'認定）':''}${p.goals.length?`<br><span style="color:var(--muted)">目標：${p.goals.map(esc).join('／')}</span>`:'<br><span style="color:var(--muted)">目標は読み取れず</span>'}</li>`).join('')}</ul></details>`:''}
    <p class="bs" style="font-size:11.5px;color:var(--muted);margin-top:4px">根拠：${L.basis.map(esc).join('・')}</p></div>`;}
-function finBox(r){const f=r.fin;
-  return `<div class="blk"><span class="lbl" style="display:block">この市町村での金融機関の役割${f.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}</span><div class="tiers" style="margin-top:6px">
-   <div class="tier tier-chiigin"><h4>地銀<small>中堅企業・リスクマネー</small></h4><p><b>主導：${f.cg.lead.join('・')}</b>${f.cg.co.length?`　協調：${f.cg.co.join('・')}`:''}</p><p>${esc(f.cg.role)}</p>${f.cg.prev?`<p class="pv">見直し前：${esc(f.cg.prev)}</p>`:''}</div>
-   <div class="tier tier-shinkin"><h4>信用金庫<small>小規模事業者・住民</small></h4><p><b>${f.sk.n.join('・')}</b></p><p>${esc(f.sk.role)}</p>${f.sk.prev?`<p class="pv">見直し前：${esc(f.sk.prev)}</p>`:''}</div>
-   <div class="tier tier-mega"><h4>メガバンク<small>${MG_LVL[f.mg.lvl]}</small></h4><p>${esc(f.mg.role)}</p>${f.mg.prev?`<p class="pv">見直し前（${MG_LVL[f.mg.prevlvl]}）：${esc(f.mg.prev)}</p>`:''}</div></div></div>`;}
+function finBox(r){const f=r.fin, A=adaptSup(r);
+  return `<div class="blk"><span class="lbl" style="display:block">この市町村での金融機関の役割${A.ch?'<span class="hand scn" style="--sc:var('+stageOf(M).c+')">前提に合わせて追記</span>':''}${f.rev?'<span class="hand" style="background:var(--aichi)">実データで見直し済み</span>':''}</span><div class="tiers" style="margin-top:6px;--sc:var(${stageOf(M).c})">
+   <div class="tier tier-chiigin"><h4>地銀<small>中堅企業・リスクマネー</small></h4><p><b>主導：${f.cg.lead.join('・')}</b>${f.cg.co.length?`　協調：${f.cg.co.join('・')}`:''}</p><p>${esc(f.cg.role)}</p>${supP(A.cg)}${f.cg.prev?`<p class="pv">見直し前：${esc(f.cg.prev)}</p>`:''}</div>
+   <div class="tier tier-shinkin"><h4>信用金庫<small>小規模事業者・住民</small></h4><p><b>${f.sk.n.join('・')}</b></p><p>${esc(f.sk.role)}</p>${supP(A.sk)}${f.sk.prev?`<p class="pv">見直し前：${esc(f.sk.prev)}</p>`:''}</div>
+   <div class="tier tier-mega"><h4>メガバンク<small>${MG_LVL[f.mg.lvl]}${A.ch&&A.mglvl!==f.mg.lvl?' → '+A.mglvl+'（この前提）':''}</small></h4><p>${esc(f.mg.role)}</p>${supP(A.mg)}${f.mg.prev?`<p class="pv">見直し前（${MG_LVL[f.mg.prevlvl]}）：${esc(f.mg.prev)}</p>`:''}</div></div></div>`;}
 
 
 
@@ -1219,6 +1219,30 @@ function adaptNF(r){if(isDefaultScen()) return {ch:false};
 const nowHTML=(r,A)=>`<p>${esc(r.now)}</p>${A.ch?`<p class="nf2"><b>この前提で見ると：</b>${esc(A.now2)}</p>`:''}`;
 const futHTML=(r,A,b)=>A.ch?`<p>${b?'<b>':''}${esc(A.fut)}${b?'</b>':''}</p><p class="nfo">元の将来像：${esc(r.fut)}</p>`:`<p>${b?'<b>':''}${esc(r.fut)}${b?'</b>':''}</p>`;
 
+const SUP={guard:{bank:'承継・再生の融資と{top}の設備更新資金',cg:'取引先の事業承継・M&Aと事業再生を最優先にし、{top}の設備更新に長期資金を出す。新しい大型投資は絞る。',sk:'廃業を防ぐ承継の仲介（事業承継・引継ぎ支援センターにつなぐ）と、経営改善の伴走を最優先にする。',mg:'関与は今と同じか少なめ。大企業の拠点の維持・再編の資金が中心になる。',sci:'事業承継の掘り起こし（後継者の有無の調査）と、廃業予定の事業者の引き継ぎ先探しを最優先にする。',gov:'暮らしに要る店・サービスの維持（買い物・移動の支援）と、事業承継の補助を用意する。',up:0},
+ tokyo:{bank:'{f1}への参入資金',cg:'東京から取り込む{f12}の担い手（地元企業の新事業・進出企業）に、出資と転換資金を出す。',sk:'小さな会社のIT・AI導入と、{f1}の周辺で生まれる仕事への参入を融資で支える。',mg:'',sci:'{f1}に参入したい地元事業者の相談窓口になり、勉強会と専門家派遣を用意する。',gov:'{f12}の企業を呼び込むオフィスと人材の受け皿（サテライトオフィス、デジタル人材の育成）を整える。',up:0},
+ world:{bank:'海外展開の協調融資（メガバンク・JETROと連携）と{top}のサービス化資金',cg:'{top}の企業の海外展開とサービス化（保守・データ事業）に、メガバンクとの協調融資と貿易金融の取り次ぎで応える。',sk:'越境EC・インバウンド向けの小さな事業者に、外国語対応やキャッシュレスの設備資金を出す。',mg:'{top}の大企業・中堅企業の海外拠点・M&A・貿易金融を担い、地銀との協調融資を主導する。',sci:'海外販路（越境EC・展示会・JETROの商談会）と外国人客への対応の支援を増やす。',gov:'海外との窓口（姉妹都市・JETROとの連携）と、外国人材・訪日客の受け入れ体制を整える。',up:1},
+ transform:{bank:'大型投資の協調融資・ファンドと業態転換の資金',cg:'誘致する工場・研究拠点の大型投資に、政府系金融・ファンドと組んだ協調融資で加わる。{f1}への業態転換の資金も厚くする。',sk:'移住起業・創業の融資を増やし、空き店舗・空き家を使う新しい担い手を支える。',mg:'誘致・大型投資のプロジェクトファイナンスと、ファンドの組成を担う。',sci:'創業塾・移住起業の相談と、業態転換の事業計画づくりの支援を増やす。',gov:'工業用地・研究拠点の用地、住宅と交通を先に整え、大型の誘致に動く。',up:1}};
+const LV=['小','中','大'];
+function adaptSup(r){if(isDefaultScen()) return {ch:false};
+  const st=stageOf(M).id, S=SUP[st], J=r.junkan||{}, top=J.top?'「'+J.top+'」':'主力産業';
+  const fn=r.fld.top.slice(0,2).map(([i])=>'「'+FLD[i].n+'」'), f1=fn[0]||'新しい分野', f12=fn.join('と')||f1;
+  const sub=s=>s.split('{top}').join(top).split('{f12}').join(f12).split('{f1}').join(f1);
+  const o={ch:true,cg:[],sk:[],mg:[],sci:[],gov:[],bank:[]};
+  if(r.ok){o.bank.push(sub('{top}の成長資金と、周りの市町村への波及投資')); o.cg.push(sub(`今の伸びで${MXS()}倍に届く見込み。{top}の成長投資を支えつつ、余力を周りの市町村の企業への融資に回す。`)); o.gov.push('伸びを周りの市町村に広げる広域連携（用地・人材・交通）を進める。');}
+  else{ if(st==='tokyo') o.bank.push(r.bank); else for(const k of ['bank','cg','sk','mg','sci','gov']) if(S[k]) o[k].push(sub(S[k]));
+    o.cg.push(`この市町村の上乗せ${fmt(r.gap)}のうち、中小企業の目安は${fmt(r.size.md.gap)}（配分は仮定）。`);}
+  const p=r.pop, w=p&&POP>=0?1+POP*(p.wr-1):1;
+  if(w<0.9){const x=Math.round((1-w)*100); o.bank.push('省人化投資の融資'); o.cg.push(`働き手が${x}%減る前提で、省人化・自動化の設備投資への融資を増やす。`); o.sk.push('人手が足りない小さな店・工場のデジタル化の資金を出す。'); o.sci.push('外国人材・シニアの雇用と、省人化の補助金の相談を増やす。'); o.gov.push('移住・外国人材の受け入れ（住まい・日本語教育・相談窓口）を整える。');}
+  else if(w>1.02){o.gov.push('増える住民向けに、住宅・保育・学校の受け皿を整える。'); o.sci.push('新しく来た住民の創業と、地元企業の採用を支える。');}
+  const d=fxAdj(r)-1, net=fxNet(r);
+  if(FX>=165&&Math.abs(d)>=0.005){ if(net>0){o.bank.push('輸出増に合わせた運転資金'); o.cg.push(`円安（${FX}円）で増える輸出に合わせて運転資金を出し、為替予約の相談に乗る。`);} else {o.bank.push('省エネ・燃料転換の融資'); o.cg.push(`円安（${FX}円）で上がる燃料・原材料に備え、省エネ・燃料転換の投資に融資する。`); o.sk.push('電気代・仕入れ値の上昇による資金繰りを支える。');}}
+  else if(FX<=135&&Math.abs(d)>=0.005){ if(net>0){o.bank.push('保守・サービス化の資金'); o.cg.push(`円高（${FX}円）で減る輸出の売上に備え、保守・サービス化への転換資金を出す。`); o.mg.push('為替ヘッジと、海外拠点の資金を担う。');} else {o.bank.push('設備更新の前倒し融資'); o.cg.push(`円高（${FX}円）で輸入する設備・燃料が安い間に、設備の更新を前倒しする融資を出す。`);}}
+  const li=LV.indexOf(r.fin.mg.lvl); o.mglvl=LV[Math.min(2,li+(r.ok?0:S.up))];
+  return o;}
+const supP=a=>a&&a.length?`<p class="nf2"><b>${MXS()}倍の前提で：</b>${esc(a.join(''))}</p>`:'';
+const bankHTML=(r,b)=>{const A=adaptSup(r); return A.ch&&A.bank.length?`<p>${b?'<b>':''}${esc(A.bank.join('、'))}${b?'</b>':''}</p><p class="nfo">元の打ち手：${esc(r.bank)}</p>`:`<p>${esc(r.bank)}</p>`;};
+
 const SZ=[['lg','大企業'],['md','中小企業'],['sm','零細企業']];
 let szTab='lg';
 function sizeBox(r){const s=r.size[szTab]; const A=adaptTier(r,szTab);
@@ -1307,7 +1331,7 @@ function renderPanel(){
     <dt>上乗せ</dt><dd>${r.ok?'過去のペースのままで'+MXS()+'倍を超える見込み':fmt(r.gap)+'：'+r.lev.map(([t,v])=>`${TL[t]} ${fmt(v)}`).join('／')}</dd></dl>
     <div class="blk" style="--sc:var(${stageOf(M).c})"><span class="lbl" style="display:block">いまの強み</span>${nowHTML(r,adaptNF(r))}</div>
     <div class="blk" style="--sc:var(${stageOf(M).c})"><span class="lbl" style="display:block">AI時代の将来像${adaptNF(r).ch?'（'+MXS()+'倍の前提で書き換え）':''}</span>${futHTML(r,adaptNF(r),true)}</div>
-    <div class="blk"><span class="lbl" style="display:block">地銀の打ち手</span><p>${esc(r.bank)}</p></div>
+    <div class="blk"><span class="lbl" style="display:block">地銀の打ち手${adaptSup(r).ch?'（'+MXS()+'倍の前提で書き換え）':''}</span>${bankHTML(r,true)}</div>
     ${(COS_BY_MUNI[s.key]||[]).length?`<div class="blk"><span class="lbl" style="display:block">主な企業・拠点</span><table class="cotab"><tbody>${COS_BY_MUNI[s.key].map(c=>`<tr><td><b>${esc(c.n)}</b></td><td class="k">${c.k}</td><td>${esc(c.r)}</td></tr>`).join('')}</tbody></table></div>`:''}
     ${(BELT_OF[s.key]||[]).length?`<div class="blk"><span class="lbl" style="display:block">所属する企業帯</span><div class="memb">${BELT_OF[s.key].map(b=>`<button data-belt="${b.id}">${b.code} ${esc(b.name)}</button>`).join('')}</div></div>`:''}
     <button class="go" data-list="${esc(r.n)}">一覧でこの市町村を見る</button>`;
