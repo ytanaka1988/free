@@ -15,7 +15,7 @@
     --accent:#1d5a86; --accent-soft:#e6eff6; --on-accent:#ffffff;
     --ok:#2c6b4b; --ok-soft:#e7f4ec; --warn:#9a5512; --warn-soft:#fbf0e3;
     --ng:#b8392c; --ng-soft:#fbe9e7; --border:#dde3e8; --line:#ebeff2; --soft:#f0f3f5; --input:#c6cfd6;
-    --m-aichi:#d9e6f0; --m-gifu:#e2e8de; --m-shizuoka:#efe4d8; --m-has:#7fb89a; --m-hover:#9cc3e0;
+    --m-aichi:#d9e6f0; --m-gifu:#e2e8de; --m-shizuoka:#efe4d8; --m-has:#7fb89a; --m-past:#b9c9bf; --m-hover:#9cc3e0;
     --font:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
   }
   @media (prefers-color-scheme: dark){
@@ -24,7 +24,7 @@
       --accent:#72b2df; --accent-soft:#1c3445; --on-accent:#0d1820;
       --ok:#80cfa0; --ok-soft:#1b3226; --warn:#e7a765; --warn-soft:#382816;
       --ng:#ef8a7f; --ng-soft:#3b1e1b; --border:#2d3740; --line:#252e35; --soft:#222a30; --input:#3a4650;
-      --m-aichi:#2a3d4c; --m-gifu:#2f3a2b; --m-shizuoka:#41352a; --m-has:#3f7a5c; --m-hover:#3d6a8c;
+      --m-aichi:#2a3d4c; --m-gifu:#2f3a2b; --m-shizuoka:#41352a; --m-has:#3f7a5c; --m-past:#36463d; --m-hover:#3d6a8c;
       color-scheme:dark;
     }
   }
@@ -33,7 +33,7 @@
     --accent:#72b2df; --accent-soft:#1c3445; --on-accent:#0d1820;
     --ok:#80cfa0; --ok-soft:#1b3226; --warn:#e7a765; --warn-soft:#382816;
     --ng:#ef8a7f; --ng-soft:#3b1e1b; --border:#2d3740; --line:#252e35; --soft:#222a30; --input:#3a4650;
-    --m-aichi:#2a3d4c; --m-gifu:#2f3a2b; --m-shizuoka:#41352a; --m-has:#3f7a5c; --m-hover:#3d6a8c;
+    --m-aichi:#2a3d4c; --m-gifu:#2f3a2b; --m-shizuoka:#41352a; --m-has:#3f7a5c; --m-past:#36463d; --m-hover:#3d6a8c;
     color-scheme:dark;
   }
   *{box-sizing:border-box;}
@@ -140,6 +140,7 @@
   #mapsvg path{stroke:var(--card);stroke-width:.8;cursor:pointer;transition:fill .1s;}
   #mapsvg path.aichi{fill:var(--m-aichi);} #mapsvg path.gifu{fill:var(--m-gifu);} #mapsvg path.shizuoka{fill:var(--m-shizuoka);}
   #mapsvg path.has{fill:var(--m-has);}
+  #mapsvg path.has-past{fill:var(--m-past);}
   #mapsvg path:hover{fill:var(--m-hover);}
   #mapsvg path.sel{fill:var(--accent);stroke:var(--text);stroke-width:1.5;}
   #mapsvg path:focus-visible{outline:none;stroke:var(--text);stroke-width:2;}
@@ -149,6 +150,7 @@
   .maptip{position:absolute;pointer-events:none;background:var(--text);color:var(--bg);font-size:12px;padding:2px 8px;border-radius:4px;white-space:nowrap;transform:translate(-50%,-130%);}
   .key{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 2px;}
   .key-has{background:var(--m-has);}
+  .key-past{background:var(--m-past);}
   .mappanel{border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 24px;min-width:0;}
   @media (max-width:760px){ .mappanel{grid-template-columns:minmax(0,1fr);} }
   .mappanel > div{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -161,6 +163,7 @@
   .mp-list .row{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap;}
   .mp-local{background:var(--ok-soft);border-radius:6px;padding:8px 10px;font-size:13px;}
   .mp-local b{display:block;font-size:14px;}
+  .mp-local.past{background:var(--soft);}
 
   /* シミュレーター */
   .sim{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px;margin-top:12px;align-items:start;}
@@ -211,7 +214,7 @@
 
   <section class="block" id="map" aria-labelledby="map-h">
     <h2 id="map-h">市町村マップ</h2>
-    <p class="mini">市町村をクリックすると、その地域で使える制度（国・県・市町村）と相談先が表示されます。<span class="key key-has"></span>は独自のDX・IT関連制度を把握している市町村です。</p>
+    <p class="mini">市町村をクリックすると、その地域で使える制度（国・県・市町村）と相談先が表示されます。<span class="key key-has"></span>は受付中の独自制度がある市町村、<span class="key key-past"></span>は今年度の受付が終わった（または実施未確認の）制度がある市町村です。</p>
     <div class="filters">
       <label class="mini" for="lmuni">一覧から選ぶ</label>
       <select id="lmuni"></select>
@@ -223,6 +226,7 @@
       </div>
       <div class="mappanel" id="mappanel" aria-live="polite"></div>
     </div>
+    <p class="note" style="margin-top:8px;">市町村・県の独自制度は、2026年10月時点で J-Net21・補助金ポータル・自治体資料に掲載されていたDX・IT、人材育成、生産性向上の制度です。省エネ・創業・融資関連は載せていません。受付状況や予算残は変わるため、申請前に自治体の公式ページで確認してください。</p>
   </section>
 
   <section class="block" aria-labelledby="cmp-h">
@@ -543,14 +547,53 @@ const FILTERS = [
 ];
 
 // ===== 地域の独自制度（確認できたものを追加していく） =====
+// cat: dx（DX・IT導入）/ jinzai（人材育成・研修）/ seisan（生産性向上・経営全般）/ other（その他）
 const LOCAL = [
-  { pref:"aichi", muni:"名古屋市", name:"中小企業デジタル活用支援補助金", body:"名古屋産業振興公社が実施。補助率1/2、上限500万円（下限10万円）。事前相談が必須。", status:"closed", statusText:"通常枠・賃上げ枠は受付終了（ロボット枠も9/30まで）" },
-  { pref:"aichi", muni:"小牧市", name:"中小企業デジタル化支援補助金", body:"デジタル技術・サイバーセキュリティ対策の導入費を補助。補助率1/2、上限100万円。", status:"open", statusText:"受付状況は市に確認" },
-  { pref:"aichi", muni:"愛知県", name:"建設業DX推進支援事業費補助金", body:"建設業のクラウド利用料・システム購入・構築費が対象。補助率1/2、上限50万円。", status:"open", statusText:"2027年1月29日まで" },
-  { pref:"gifu", muni:"岐阜市", name:"中小企業等DX推進補助金", body:"ソフトピアジャパンのDX・IT研修受講料の1/2（上限5万円）、テクノプラザ研修の1/2（上限10万円）、DXシステム導入で75万円を超える部分の1/2（上限20万円）。", status:"open", statusText:"2027年2月26日まで（予算到達で終了）" },
-  { pref:"shizuoka", muni:"静岡市", name:"中小企業DX人材等育成支援事業補助金", body:"社員のDX・デジタル研修費の2/3（技能・生産性向上研修は1/2）、上限10万円。", status:"open", statusText:"2026年4月1日から受付" },
-  { pref:"shizuoka", muni:"浜松市", name:"中小事業者等AIエージェント導入支援事業費補助金", body:"AIエージェントの導入費。補助率1/2、上限500万円（下限50万円）。", status:"closed", statusText:"3次募集は9月30日で終了" },
-  { pref:"shizuoka", muni:"浜松市", name:"産業用ロボット導入支援事業費補助金", body:"産業用ロボットの導入費。補助率1/2、上限500万円。", status:"soon", statusText:"3次募集 10月30日まで" }
+  // ---- 愛知県 ----
+  { pref:"aichi", muni:"愛知県", cat:"dx", name:"中小企業デジタル化・DX促進補助金", body:"あいち産業振興機構が事務局。県内中小企業のデジタルツール導入費の一部を補助。", status:"closed", statusText:"令和8年度は5月12日で締切" },
+  { pref:"aichi", muni:"愛知県", cat:"dx", name:"建設業DX推進支援事業費補助金", body:"建設業のクラウド利用料・システム購入・構築費が対象。補助率1/2、上限50万円。", status:"open", statusText:"2027年1月29日まで" },
+  { pref:"aichi", muni:"名古屋市", cat:"dx", name:"中小企業デジタル活用支援補助金", body:"名古屋産業振興公社が実施。補助率1/2、上限500万円（下限10万円）。事前相談が必須。", status:"closed", statusText:"通常枠・賃上げ枠・ロボット枠とも受付終了" },
+  { pref:"aichi", muni:"小牧市", cat:"dx", name:"中小企業デジタル化支援補助金", body:"デジタル技術・サイバーセキュリティ対策の導入費。補助率1/2、上限100万円。", status:"open", statusText:"4月1日から受付（予算残を市に確認）" },
+  { pref:"aichi", muni:"小牧市", cat:"jinzai", name:"中小企業人材育成研修費補助金", body:"社員の研修受講料など。補助率1/2、1人あたり上限10万円。", status:"open", statusText:"2027年3月31日まで" },
+  { pref:"aichi", muni:"豊田市", cat:"dx", name:"働き方改革推進支援補助金", body:"働き方改革の基盤づくり。ソフトウェア・システムの購入費・構築費も対象。補助率1/2（要件により2/3）、上限50万円。", status:"open", statusText:"2027年2月28日まで" },
+  { pref:"aichi", muni:"豊田市", cat:"dx", name:"産業パワーアップ支援補助金", body:"業務効率化等に取り組む中小企業のシステム購入・構築費など。補助率1/2、上限100万円。", status:"closed", statusText:"2次公募（8月）で終了" },
+  { pref:"aichi", muni:"豊田市", cat:"jinzai", name:"人材活躍支援補助金", body:"人材育成などの取組を支援。補助率原則1/2、上限40万円。", status:"soon", statusText:"事業開始日で申請期間が分かれる。市に確認" },
+  { pref:"aichi", muni:"尾張旭市", cat:"dx", name:"小規模企業等補助金（デジタル化対策枠）", body:"機械装置・ソフトウェア購入費。補助率3/4、上限10万円。", status:"open", statusText:"12月18日まで" },
+  { pref:"aichi", muni:"尾張旭市", cat:"jinzai", name:"小規模企業等補助金（通常枠）", body:"人材育成（受講料・受験料）・雇用・販路開拓。補助率1/2、上限5万円。", status:"open", statusText:"2027年3月8日まで" },
+  { pref:"aichi", muni:"東郷町", cat:"dx", name:"小規模企業及び中小企業振興補助金", body:"DX推進枠は補助率1/2。受講料・システム購入費なども対象。上限50万円。", status:"open", statusText:"2027年2月26日まで" },
+  { pref:"aichi", muni:"蒲郡市", cat:"dx", name:"がんばる中小企業者応援補助金", body:"IT導入（システム購入・構築）・販路開拓・人材確保など。補助率1/2、上限10万円。", status:"open", statusText:"2027年1月29日まで" },
+  { pref:"aichi", muni:"高浜市", cat:"seisan", name:"中小企業ステップアップ補助金", body:"生産性向上・業務効率化の取組。補助率1/2、上限20万円。", status:"open", statusText:"受付状況は市に確認" },
+  { pref:"aichi", muni:"知多市", cat:"jinzai", name:"がんばる中小企業応援補助金", body:"人財力事業（上限10万円）、設備投資事業（上限10万円）、販路開拓事業（上限15万円）。", status:"open", statusText:"4月1日から受付" },
+  { pref:"aichi", muni:"東浦町", cat:"seisan", name:"中小企業活性化補助金／設備投資、販路開拓等補助金", body:"活性化補助金は補助率1/2・上限30万円。設備投資・販路開拓等は補助率1/2・上限50万円（国の生産性向上事業と併用想定）。", status:"open", statusText:"4月1日から受付" },
+  { pref:"aichi", muni:"扶桑町", cat:"jinzai", name:"中小企業人材確保等支援事業補助金", body:"人材確保・販路開拓・BCP策定。補助率1/2、上限10万円。", status:"open", statusText:"4月1日から受付" },
+  { pref:"aichi", muni:"長久手市", cat:"seisan", name:"中小企業者等支援補助金", body:"広告費・機械装置等費など。補助率1/2、上限30万円。研修費は対象外。", status:"open", statusText:"受付状況は市に確認" },
+  { pref:"aichi", muni:"春日井市", cat:"dx", name:"デジタル化事業助成金", body:"専門家の診断を受けたデジタル化の取組。令和7年度は補助率20%、上限30万円。", status:"closed", statusText:"令和8年度の実施は市に確認" },
+  { pref:"aichi", muni:"豊橋市", cat:"jinzai", name:"人材育成研修応援補助金", body:"生産性向上・DXに関する研修の受講料。令和7年度は上限10万円。", status:"closed", statusText:"令和8年度の実施は市に確認" },
+  { pref:"aichi", muni:"安城市", cat:"dx", name:"ものづくりデジタル化推進事業補助金", body:"製造現場のデジタル化。令和7年度に実施。", status:"closed", statusText:"令和8年度の実施は市に確認" },
+  { pref:"aichi", muni:"大府市", cat:"other", name:"がんばる事業者応援補助金", body:"新技術・新商品開発、販路開拓、展示会出展、知的財産権取得。補助率1/2、上限60万円。実施2週間前に計画書提出。", status:"open", statusText:"受付状況は市に確認" },
+  { pref:"aichi", muni:"豊川市", cat:"other", name:"チャレンジとよかわ活性化事業費補助金（経営革新支援）", body:"経営革新計画の承認を受けた事業。上限50万円。", status:"open", statusText:"経営革新計画の承認が前提" },
+  { pref:"aichi", muni:"武豊町", cat:"other", name:"中小企業者等応援補助金", body:"研究開発等。補助率1/2、上限40万円。", status:"open", statusText:"4月1日から受付" },
+  // ---- 岐阜県 ----
+  { pref:"gifu", muni:"岐阜県", cat:"seisan", name:"中小・小規模事業者パワーアップ応援補助金", body:"生産性向上・販路開拓等。補助率1/2・2/3、上限500万円。", status:"closed", statusText:"令和8年度は5月で終了" },
+  { pref:"gifu", muni:"岐阜県", cat:"dx", name:"ソフトピアジャパンのDX支援", body:"県内中小企業向けのDX・IT研修、スマート経営アドバイザー（専門家）派遣。市の補助と組み合わせて受講料・派遣費を軽減できる。", status:"always", statusText:"通年（内容は財団に確認）" },
+  { pref:"gifu", muni:"岐阜市", cat:"dx", name:"中小企業等DX推進補助金", body:"ソフトピアジャパンのDX・IT研修受講料の1/2（上限5万円）、テクノプラザ研修の1/2（上限10万円）、DXシステム導入で75万円を超える部分の1/2（上限20万円）。", status:"open", statusText:"2027年2月26日まで（予算到達で終了）" },
+  { pref:"gifu", muni:"大垣市", cat:"dx", name:"企業DX支援事業補助金（IoT導入支援）", body:"IoT・ロボット・AI等を活用した取組。補助率1/2、上限100万円。", status:"open", statusText:"4月1日から受付" },
+  { pref:"gifu", muni:"大垣市", cat:"jinzai", name:"企業DX支援事業補助金（DX人材育成支援・スマート経営アドバイザー）", body:"ソフトピアジャパンのDX・IT研修／リスキリング研修の受講料（上限5万円）、スマート経営アドバイザー派遣費（上限3万円）。", status:"open", statusText:"4月1日から受付" },
+  { pref:"gifu", muni:"大垣市", cat:"seisan", name:"中小企業者等物価高騰対策支援事業補助金", body:"生産性向上・省エネ機器導入など。補助率1/2、上限5万円。", status:"open", statusText:"12月28日まで" },
+  { pref:"gifu", muni:"高山市", cat:"dx", name:"デジタル技術活用促進支援事業補助金", body:"商工会議所等の支援を受けてデジタル技術で生産性を高める取組。補助率1/2、上限30万円。", status:"open", statusText:"4月1日から受付（予算残を市に確認）" },
+  { pref:"gifu", muni:"各務原市", cat:"seisan", name:"収益力向上・賃上げ環境整備補助金", body:"生産性向上・デジタル化などで収益力を高め賃上げ環境を整える取組。補助率1/2、上限100万円。", status:"open", statusText:"2027年1月29日まで" },
+  { pref:"gifu", muni:"養老町", cat:"seisan", name:"中小企業チャレンジ支援事業補助金", body:"競争力強化の取組。補助率1/2、上限100万円。養老町商工会への加入と支援が条件。", status:"open", statusText:"7月1日から受付" },
+  { pref:"gifu", muni:"下呂市", cat:"seisan", name:"中小企業持続化支援事業補助金", body:"生産性向上・業務効率化など。補助率2/3、上限10万円。", status:"closed", statusText:"令和8年度は受付終了" },
+  // ---- 静岡県 ----
+  { pref:"shizuoka", muni:"静岡県", cat:"dx", name:"中小企業等収益力向上（賃上げ環境整備）事業費補助金（通常枠・DX推進枠）", body:"静岡県産業振興財団が実施。商工団体・金融機関の伴走支援が必須。補助率1/2（最大2/3）、上限700万円（賃上げ要件で1,000万円）。", status:"closed", statusText:"第2次（6月）で終了" },
+  { pref:"shizuoka", muni:"静岡市", cat:"jinzai", name:"中小企業DX人材等育成支援事業補助金", body:"社員のDX・デジタル研修費の2/3（技能・生産性向上研修は1/2）、上限10万円。", status:"open", statusText:"受付中" },
+  { pref:"shizuoka", muni:"静岡市", cat:"dx", name:"中小企業等デジタル活用事業補助金", body:"業務効率化・生産性向上に資するデジタル活用。補助率2/3、上限50万円。", status:"closed", statusText:"7月3日で終了" },
+  { pref:"shizuoka", muni:"浜松市", cat:"dx", name:"中小事業者等AIエージェント導入支援事業費補助金", body:"AIエージェントの導入費。補助率1/2、上限500万円（下限50万円）。", status:"closed", statusText:"令和8年度は受付終了" },
+  { pref:"shizuoka", muni:"浜松市", cat:"dx", name:"中小事業者等サービスロボット導入支援事業費補助金", body:"人手不足対策のサービスロボット導入費。上限200万円。", status:"closed", statusText:"7月24日で終了" },
+  { pref:"shizuoka", muni:"浜松市", cat:"dx", name:"産業用ロボット導入支援事業費補助金", body:"製造・梱包工程の産業用ロボット導入費。補助率1/2、上限500万円。", status:"soon", statusText:"3次募集 10月30日まで" },
+  { pref:"shizuoka", muni:"富士市", cat:"dx", name:"中小企業等DX推進事業支援補助金", body:"支援機関の支援を受けて行うデジタルツール導入・デジタル人材育成。上限50万円。", status:"open", statusText:"受付状況は市に確認" },
+  { pref:"shizuoka", muni:"湖西市", cat:"dx", name:"中小企業経営力向上支援補助金（DX推進支援）", body:"デジタル技術による生産性向上・業務効率化。補助率1/2、上限30万円。", status:"open", statusText:"2027年2月26日まで" },
+  { pref:"shizuoka", muni:"三島市", cat:"jinzai", name:"地域人材活躍支援補助金", body:"人材育成・人材確保の経費。補助率1/2、上限20万円。", status:"open", statusText:"12月25日まで" }
 ];
 
 const MUNIS = {
@@ -565,6 +608,7 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 const KIND = { josei:["助成金","p-josei"], hojo:["補助金","p-hojo"], free:["無料支援","p-free"] };
 const STATUS = { open:"p-open", soon:"p-soon", closed:"p-closed", always:"p-free" };
+const CAT = { dx:"DX・IT", jinzai:"人材育成", seisan:"生産性向上", other:"その他" };
 const FIT = { a:["◎ 向いている","fit-a"], b:["○ 条件次第","fit-b"], c:["△ 向きにくい","fit-c"] };
 
 function list(items, cls){
@@ -659,8 +703,9 @@ function renderMap(){
   M.m.forEach(m => {
     const el = document.createElementNS(SVGNS, "path");
     el.setAttribute("d", m.d);
-    const has = LOCAL.some(l => l.muni === m.n);
-    el.setAttribute("class", m.p + (has ? " has" : ""));
+    const mine = LOCAL.filter(l => l.muni === m.n);
+    const cls = mine.some(l => l.status !== "closed") ? " has" : mine.length ? " has-past" : "";
+    el.setAttribute("class", m.p + cls);
     el.setAttribute("tabindex", "0");
     el.setAttribute("role", "button");
     el.setAttribute("aria-label", PREF_NAME[m.p] + m.n);
@@ -707,7 +752,7 @@ function renderPanel(pref, name){
   const info = PREF_INFO[pref];
   const locals = LOCAL.filter(l => l.muni === name);
   const prefLocals = LOCAL.filter(l => l.muni === PREF_NAME[pref]);
-  const localHtml = (arr) => arr.map(l => `<div class="mp-local"><b>${esc(l.name)}</b>${esc(l.body)}<div><span class="pill ${STATUS[l.status]}">${esc(l.statusText)}</span></div></div>`).join("");
+  const localHtml = (arr) => arr.map(l => `<div class="mp-local${l.status === "closed" ? " past" : ""}"><b>${esc(l.name)}</b>${esc(l.body)}<div><span class="pill p-free">${CAT[l.cat]}</span> <span class="pill ${STATUS[l.status]}">${esc(l.statusText)}</span></div></div>`).join("");
   const natl = PROGRAMS.filter(p => p.id !== "free").map(p => {
     const [kLabel, kCls] = KIND[p.kind];
     return `<li><div class="row"><a href="#${p.id}">${esc(p.name.replace(/（.*?）/g, ""))}</a><span class="pill ${STATUS[p.status]}">${esc(p.statusText)}</span></div>
@@ -717,7 +762,7 @@ function renderPanel(pref, name){
     <div class="mp-head"><span class="org">${PREF_NAME[pref]}</span><div class="town">${esc(name)}</div></div>
     <div>
     <h3>${esc(name)}の独自制度</h3>
-    ${locals.length ? localHtml(locals) : `<p class="mini">把握している独自のDX・IT関連制度はありません。<a href="${gsearch(PREF_NAME[pref] + name + " 中小企業 補助金 令和8年度 DX OR デジタル OR 人材育成")}" target="_blank" rel="noopener">${esc(name)}の制度を検索</a></p>`}
+    ${locals.length ? localHtml(locals) : `<p class="mini">把握している独自のDX・人材育成・生産性向上の制度はありません。<a href="${gsearch(PREF_NAME[pref] + name + " 中小企業 補助金 令和8年度 DX OR デジタル OR 人材育成")}" target="_blank" rel="noopener">${esc(name)}の制度を検索</a></p>`}
     ${prefLocals.length ? `<h3>${PREF_NAME[pref]}の制度</h3>${localHtml(prefLocals)}` : ""}
     <h3>相談先</h3>
     <ul class="mp-list">
