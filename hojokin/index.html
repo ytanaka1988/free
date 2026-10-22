@@ -4,603 +4,521 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>東海3県 補助金・伴走支援ナビ</title>
+<title>東海3県 補助金・助成金ハンドブック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap">
 <style>
+  /* レイアウト：上に「締切」と「比較表」、下に制度ごとの詳細シート。担当者が上から順に読めば説明できる構成 */
   :root{
-    --bg:#f5f7f9; --card:#ffffff; --accent:#1f5f8b; --accent-soft:#e8f1f8; --on-accent:#ffffff;
-    --ok:#2f6f4f; --ok-soft:#eaf6ee; --warn:#a85a14; --warn-soft:#fdf3e7;
-    --ng:#c0392b; --ng-soft:#fdecea; --border:#dfe4e8; --line:#eef1f3; --input:#c9d1d8;
-    --text:#1f2428; --muted:#5f6b75; --label:#3d4851; --soft:#f2f4f6; --sheet:#fafbfc; --toast:#2b3238;
+    --bg:#f4f6f8; --card:#ffffff; --text:#1d2328; --muted:#5b6670; --label:#3a454e;
+    --accent:#1d5a86; --accent-soft:#e6eff6; --on-accent:#ffffff;
+    --ok:#2c6b4b; --ok-soft:#e7f4ec; --warn:#9a5512; --warn-soft:#fbf0e3;
+    --ng:#b8392c; --ng-soft:#fbe9e7; --border:#dde3e8; --line:#ebeff2; --soft:#f0f3f5; --input:#c6cfd6;
+    --font:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#14191d; --card:#1c2328; --accent:#6fb3e0; --accent-soft:#1d3546; --on-accent:#0e1a22;
-      --ok:#7fcf9f; --ok-soft:#1c3327; --warn:#e8a866; --warn-soft:#3a2a18;
-      --ng:#f08b80; --ng-soft:#3d1f1c; --border:#2e3840; --line:#262f36; --input:#3a4650;
-      --text:#e6eaed; --muted:#9aa6b0; --label:#c3ccd3; --soft:#242c32; --sheet:#182025; --toast:#e6eaed;
+      --bg:#13181c; --card:#1b2227; --text:#e5e9ec; --muted:#98a4ae; --label:#c4ccd3;
+      --accent:#72b2df; --accent-soft:#1c3445; --on-accent:#0d1820;
+      --ok:#80cfa0; --ok-soft:#1b3226; --warn:#e7a765; --warn-soft:#382816;
+      --ng:#ef8a7f; --ng-soft:#3b1e1b; --border:#2d3740; --line:#252e35; --soft:#222a30; --input:#3a4650;
       color-scheme:dark;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#14191d; --card:#1c2328; --accent:#6fb3e0; --accent-soft:#1d3546; --on-accent:#0e1a22;
-    --ok:#7fcf9f; --ok-soft:#1c3327; --warn:#e8a866; --warn-soft:#3a2a18;
-    --ng:#f08b80; --ng-soft:#3d1f1c; --border:#2e3840; --line:#262f36; --input:#3a4650;
-    --text:#e6eaed; --muted:#9aa6b0; --label:#c3ccd3; --soft:#242c32; --sheet:#182025; --toast:#e6eaed;
+    --bg:#13181c; --card:#1b2227; --text:#e5e9ec; --muted:#98a4ae; --label:#c4ccd3;
+    --accent:#72b2df; --accent-soft:#1c3445; --on-accent:#0d1820;
+    --ok:#80cfa0; --ok-soft:#1b3226; --warn:#e7a765; --warn-soft:#382816;
+    --ng:#ef8a7f; --ng-soft:#3b1e1b; --border:#2d3740; --line:#252e35; --soft:#222a30; --input:#3a4650;
     color-scheme:dark;
   }
   *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
   body{
-    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-    background:var(--bg); color:var(--text); margin:0; padding-block:20px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); line-height:1.6;
+    font-family:var(--font); background:var(--bg); color:var(--text); margin:0; line-height:1.75; font-size:15px;
+    padding-block:20px 40px;
+    padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
   }
-  .wrap{max-width:960px;margin:0 auto;}
-  h1{font-size:22px;margin:0 0 4px;}
-  .sub{color:var(--muted);font-size:13px;margin-bottom:20px;}
-  .card{
-    background:var(--card); border:1px solid var(--border); border-radius:10px;
-    padding:18px 20px; margin-bottom:18px;
-  }
-  .card h2{font-size:16px;margin:0 0 12px;border-left:4px solid var(--accent);padding-left:8px;}
-  .card h3{font-size:14px;margin:16px 0 6px;}
-  .step-no{display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:50%;width:22px;height:22px;text-align:center;font-size:12px;line-height:22px;margin-right:6px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
-  label.f{display:block;font-size:13px;color:var(--label);}
-  select,input[type=text],input[type=number],input[type=email],textarea{
-    width:100%;padding:8px 10px;border:1px solid var(--input);border-radius:6px;font-size:14px;font-family:inherit;background:var(--card);color:var(--text);
-  }
-  textarea{min-height:90px;}
-  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 16px;font-size:14px;}
-  .checks label{display:flex;gap:6px;align-items:flex-start;cursor:pointer;}
-  .checks input{margin-top:5px;}
-  .radios{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;}
-  button{
-    background:var(--accent);color:var(--on-accent);border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;
-  }
-  button.ghost{background:var(--card);color:var(--accent);border:1px solid var(--accent);}
-  button:hover{opacity:0.9;}
-  button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  .center{text-align:center;margin-top:14px;}
-  .linklist{list-style:none;padding:0;margin:0;}
-  .linklist li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;}
-  .linklist li:last-child{border-bottom:none;}
-  .linklist .desc{display:block;color:var(--muted);font-size:12px;}
+  .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+  h1{font-size:24px;margin:0;text-wrap:balance;line-height:1.4;}
+  h2{font-size:18px;margin:0 0 12px;text-wrap:balance;}
+  h3{font-size:15px;margin:18px 0 6px;color:var(--accent);}
+  p{margin:0 0 8px;}
   a{color:var(--accent);}
-  .prog{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
-  .prog.fit-high{border-left:6px solid var(--ok);}
-  .prog.fit-mid{border-left:6px solid var(--warn);}
-  .prog.fit-low{border-left:6px solid var(--input);opacity:0.8;}
-  .prog-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
-  .prog-name{font-weight:bold;font-size:15px;}
-  .prog-org{color:var(--muted);font-size:12px;}
-  .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:bold;white-space:nowrap;}
-  .b-high{background:var(--ok-soft);color:var(--ok);}
-  .b-mid{background:var(--warn-soft);color:var(--warn);}
-  .b-low{background:var(--soft);color:var(--muted);}
-  .b-type{background:var(--accent-soft);color:var(--accent);margin-right:4px;}
-  .kv{display:grid;grid-template-columns:7em 1fr;gap:2px 10px;font-size:13px;margin:8px 0;}
-  .kv dt{color:var(--muted);}
-  .kv dd{margin:0;}
-  .reasons{font-size:13px;margin:6px 0 0;padding-left:18px;}
-  .reasons li.ng{color:var(--ng);}
-  .reasons li.ok{color:var(--ok);}
-  .reasons li.warn{color:var(--warn);}
-  .caution{background:var(--warn-soft);border-radius:6px;padding:8px 12px;font-size:12px;margin-top:8px;}
-  .flow{counter-reset:flow;list-style:none;padding:0;margin:0;}
-  .flow li{position:relative;padding:8px 0 8px 36px;border-bottom:1px dashed var(--line);font-size:14px;}
-  .flow li::before{
-    counter-increment:flow;content:counter(flow);position:absolute;left:0;top:8px;
-    width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
-    text-align:center;line-height:24px;font-size:12px;font-weight:bold;
-  }
-  .flow li small{display:block;color:var(--muted);}
-  .note{font-size:12px;color:var(--muted);line-height:1.7;}
-  .note p{margin:6px 0;}
-  pre.sheet{white-space:pre-wrap;background:var(--sheet);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:12px;font-size:13px;font-family:inherit;}
-  .hidden{display:none;}
-  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-  .tabs button{padding:6px 14px;font-size:13px;}
-  .tabs button[aria-selected=false]{background:var(--card);color:var(--accent);border:1px solid var(--accent);}
-  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--toast);color:var(--bg);padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
-  .toast.show{opacity:1;}
-  @media (max-width:560px){
-    .card{padding:14px;}
-    .kv{grid-template-columns:6em 1fr;}
-  }
+  a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .lead{color:var(--muted);font-size:14px;max-width:60em;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--label);}
+  .meta b{color:var(--text);}
+  section.block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;min-width:0;}
+  .eyebrow{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:bold;}
+  .gap{height:10px;}
+
+  /* 締切 */
+  .deadlines{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;}
+  .dl{border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--card);text-decoration:none;color:inherit;}
+  .dl .date{font-size:17px;font-weight:bold;font-variant-numeric:tabular-nums;}
+  .dl .what{font-size:13px;}
+  .dl .sub{font-size:12px;color:var(--muted);}
+  .dl.hot{border-color:var(--ng);background:var(--ng-soft);}
+  .dl.hot .date{color:var(--ng);}
+  .dl.soon{border-color:var(--warn);background:var(--warn-soft);}
+  .dl.soon .date{color:var(--warn);}
+  .dl.closed .date{color:var(--muted);}
+
+  /* フィルタ */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chip{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:20px;padding:5px 14px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);}
+  .search{flex:1 1 220px;min-width:0;padding:7px 12px;border:1px solid var(--input);border-radius:20px;font-size:14px;font-family:inherit;background:var(--card);color:var(--text);}
+
+  /* 表 */
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px;}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  th{background:var(--soft);font-size:12px;color:var(--label);white-space:nowrap;}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+  td a{font-weight:bold;}
+  .mini table{min-width:420px;}
+
+  .pill{display:inline-block;padding:1px 9px;border-radius:12px;font-size:11px;font-weight:bold;white-space:nowrap;}
+  .p-josei{background:var(--ok-soft);color:var(--ok);}
+  .p-hojo{background:var(--accent-soft);color:var(--accent);}
+  .p-free{background:var(--soft);color:var(--label);}
+  .p-open{background:var(--ok-soft);color:var(--ok);}
+  .p-soon{background:var(--warn-soft);color:var(--warn);}
+  .p-closed{background:var(--soft);color:var(--muted);}
+  .fit{display:inline-block;font-size:12px;font-weight:bold;}
+  .fit-a{color:var(--ok);} .fit-b{color:var(--warn);} .fit-c{color:var(--muted);}
+
+  /* 制度シート */
+  #sheets{display:flex;flex-direction:column;gap:20px;}
+  .sheet{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;scroll-margin-top:16px;min-width:0;}
+  .sheet-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start;border-bottom:2px solid var(--accent);padding-bottom:10px;margin-bottom:10px;}
+  .sheet-head h2{margin:4px 0 0;}
+  .org{font-size:12px;color:var(--muted);}
+  .oneline{font-size:15px;font-weight:bold;background:var(--accent-soft);border-radius:6px;padding:8px 12px;margin:8px 0;}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:10px 0;}
+  .fact{background:var(--soft);border-radius:6px;padding:8px 10px;}
+  .fact .k{font-size:11px;color:var(--muted);letter-spacing:.05em;}
+  .fact .v{font-size:15px;font-weight:bold;font-variant-numeric:tabular-nums;}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 24px;}
+  ul.list{margin:0;padding-left:1.4em;font-size:14px;}
+  ul.list li{margin:2px 0;}
+  ul.yes li::marker{content:"○ ";color:var(--ok);}
+  ul.no li::marker{content:"× ";color:var(--ng);}
+  .talk{border-left:4px solid var(--ok);background:var(--ok-soft);padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;}
+  .caution{border-left:4px solid var(--warn);background:var(--warn-soft);padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;}
+  .caution ul{margin:0;padding-left:1.2em;}
+  .mini{font-size:13px;}
+  details{border-top:1px dashed var(--line);padding:6px 0;}
+  details summary{cursor:pointer;font-size:14px;font-weight:bold;}
+  details p{font-size:14px;margin:4px 0 4px 1em;}
+  .src{font-size:12px;color:var(--muted);margin-top:10px;}
+  .toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .toc a{font-size:13px;text-decoration:none;border:1px solid var(--border);border-radius:16px;padding:3px 12px;background:var(--card);}
+  .local{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;}
+  .local .item{border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;display:flex;flex-direction:column;gap:4px;}
+  .local .item b{font-size:14px;}
+  select{padding:6px 10px;border:1px solid var(--input);border-radius:6px;font-family:inherit;font-size:14px;background:var(--card);color:var(--text);max-width:100%;}
+  .checklist{columns:2 280px;column-gap:28px;font-size:14px;padding-left:1.4em;margin:0;}
+  .checklist li{break-inside:avoid;margin-bottom:4px;}
+  .case-table td.num{text-align:right;}
+  .note{font-size:12px;color:var(--muted);}
+  .empty{font-size:14px;color:var(--muted);padding:10px 0;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>東海3県 補助金・伴走支援ナビ</h1>
-  <div class="sub">
-    愛知県・岐阜県・静岡県の中小企業向けに、<b>「自社で業務の仕組み（シフト作成・業務システム・AI活用など）を作る」</b>ときに
-    使える補助金・助成金・無料の専門家支援を、市町村ごとに整理して相談につなげるためのツールです。<br>
-    ※掲載情報は制度の概要です。補助率・上限額・公募期間は年度ごとに変わるため、申請前に必ず公式情報で確認してください。
-  </div>
 
-  <!-- STEP 1: 地域 -->
-  <div class="card">
-    <h2><span class="step-no">1</span>所在地を選ぶ</h2>
-    <div class="grid">
-      <label class="f">県
-        <select id="pref">
-          <option value="aichi">愛知県</option>
-          <option value="gifu">岐阜県</option>
-          <option value="shizuoka">静岡県</option>
-        </select>
-      </label>
-      <label class="f">市町村
-        <select id="muni"></select>
-      </label>
+  <header>
+    <div class="eyebrow">商工会議所・地域金融機関の担当者向け</div>
+    <h1>東海3県 補助金・助成金ハンドブック</h1>
+    <p class="lead">中小企業から「業務を効率化したい」「AIやシステムを入れたい」「社員を育てたい」と相談を受けたときに、問い合わせをしなくても制度の中身と使い分けを説明できるようにまとめた資料です。シフト作成・業務システムを<b>自社で作る（内製化）取組を外部専門家が伴走する</b>ケースを中心にしています。</p>
+    <div class="meta">
+      <span>情報基準日 <b>2026年10月22日</b>（令和8年度）</span>
+      <span>対象地域 <b>愛知県・岐阜県・静岡県</b></span>
+      <span>金額・期限は公募要領で最終確認してください</span>
     </div>
-    <h3>この地域の相談窓口</h3>
-    <ul class="linklist" id="contacts"></ul>
-  </div>
+  </header>
 
-  <!-- STEP 2: 会社の状況 -->
-  <div class="card">
-    <h2><span class="step-no">2</span>会社の状況を入力</h2>
-    <div class="grid">
-      <label class="f">業種
-        <select id="industry">
-          <option value="service">サービス業（宿泊・娯楽以外）</option>
-          <option value="retail">小売業・卸売業</option>
-          <option value="hospitality">宿泊業・娯楽業</option>
-          <option value="food">飲食業</option>
-          <option value="care">医療・福祉・介護</option>
-          <option value="manufacturing">製造業</option>
-          <option value="construction">建設業・運輸業</option>
-          <option value="other">その他</option>
-        </select>
-      </label>
-      <label class="f">常時使用する従業員数（人）
-        <input type="number" id="employees" min="0" value="15">
-      </label>
-    </div>
-    <h3>雇用保険の適用事業所ですか？（厚生労働省の助成金の前提条件）</h3>
-    <div class="radios">
-      <label><input type="radio" name="koyou" value="yes" checked> はい</label>
-      <label><input type="radio" name="koyou" value="no"> いいえ・わからない</label>
-    </div>
-    <h3>やりたいこと（複数選択可）</h3>
-    <div class="checks" id="goals">
-      <label><input type="checkbox" value="build" checked> 自社に合う仕組み（シフト作成・業務システム等）を自分たちで作りたい</label>
-      <label><input type="checkbox" value="training" checked> 社員がAI・ITの使い方を研修で学びたい</label>
-      <label><input type="checkbox" value="expert" checked> 外部の専門家に伴走してほしい</label>
-      <label><input type="checkbox" value="saas"> 既製のITツール・クラウドサービスを導入したい</label>
-      <label><input type="checkbox" value="overtime"> 残業削減・休暇を取りやすくしたい</label>
-      <label><input type="checkbox" value="wage"> 近いうちに賃上げ（最低賃金の引き上げ）をする予定</label>
-      <label><input type="checkbox" value="equipment"> 省力化のための設備・機器を入れたい</label>
-    </div>
-    <div class="center"><button id="diagnose">使える制度を調べる</button></div>
-  </div>
+  <section class="block" aria-labelledby="dl-h">
+    <h2 id="dl-h">いま押さえておくべき締切</h2>
+    <div class="deadlines" id="deadlines"></div>
+  </section>
 
-  <!-- STEP 3: 結果 -->
-  <div class="card hidden" id="resultCard">
-    <h2><span class="step-no">3</span>使えそうな制度</h2>
-    <p class="note" id="resultSummary"></p>
-    <div id="results"></div>
-    <h3>組み合わせ例：シフト作成を「自分たちで作る」伴走支援</h3>
-    <div class="note" id="comboNote"></div>
-  </div>
+  <section class="block" aria-labelledby="cmp-h">
+    <h2 id="cmp-h">制度の比較</h2>
+    <div class="filters" role="group" aria-label="目的で絞り込み" id="filters"></div>
+    <div class="gap"></div>
+    <div class="filters"><input type="search" class="search" id="q" placeholder="キーワードで絞り込み（例：研修、ソフトウェア、賃上げ）" aria-label="キーワード"></div>
+    <div class="gap"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>制度</th><th>種別</th><th>補助・助成率</th><th>上限の目安</th><th>内製化の伴走に</th><th>2026年度の状況</th></tr></thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:8px;">「助成金」（厚生労働省）は要件を満たせば原則受給でき、通年で受け付けるものが多い。「補助金」（経済産業省系）は審査・採択制で、公募期間が決まっている。</p>
+    <div class="toc" id="toc"></div>
+  </section>
 
-  <!-- STEP 4: 申請の流れ -->
-  <div class="card">
-    <h2><span class="step-no">4</span>申請の流れ</h2>
-    <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-flow="hojo">補助金（経産省系）</button>
-      <button role="tab" aria-selected="false" data-flow="josei">助成金（厚労省系）</button>
-    </div>
-    <ol class="flow" id="flow"></ol>
-    <div class="caution">
-      <b>よくある失敗：</b>交付決定（助成金は計画届の提出）の<b>前に</b>契約・発注・支払いをすると対象外になります。
-      また、補助金・助成金は原則<b>後払い</b>のため、いったん全額を立て替える資金が必要です。
-    </div>
-  </div>
+  <div id="sheets"></div>
 
-  <!-- STEP 5: 相談シート -->
-  <div class="card">
-    <h2><span class="step-no">5</span>相談シートを作る</h2>
-    <p class="note">入力内容と診断結果をまとめた相談シートを作ります。商工会議所・商工会、よろず支援拠点、伴走支援者への相談時にそのまま貼り付けてお使いください。入力内容はこの端末のブラウザ内にだけ保存されます。</p>
-    <div class="grid">
-      <label class="f">会社名<input type="text" id="company"></label>
-      <label class="f">ご担当者名<input type="text" id="person"></label>
-      <label class="f">連絡先（メール・電話）<input type="text" id="contact"></label>
+  <section class="block" id="case" aria-labelledby="case-h">
+    <div class="eyebrow">ケーススタディ</div>
+    <h2 id="case-h">シフト作成の仕組みを自社で作る（従業員15人・サービス業）</h2>
+    <p class="mini">一宮市内の会員企業。業務ごとの必要人数、スタッフごとの勤務可能日・資格・連続勤務の上限などの条件が多く、既製のシフトシステムでは対応できなかった。外部専門家の伴走で、社員がスプレッドシートとAIを使ってシフト作成の仕組みを自分たちで作る。</p>
+    <h3>制度の振り分け</h3>
+    <div class="tablewrap mini">
+      <table class="case-table">
+        <thead><tr><th>やること</th><th>費用（例）</th><th>使う制度</th><th>受給見込み（例）</th></tr></thead>
+        <tbody>
+          <tr><td>業務の棚卸し・条件整理（初回〜2回）</td><td class="num">0円</td><td>商工会議所の専門家派遣・よろず支援拠点</td><td class="num">—</td></tr>
+          <tr><td>社員3名が受ける伴走型研修（20時間）</td><td class="num">600,000円</td><td>人材開発支援助成金（リスキリング）経費助成75%</td><td class="num">最大450,000円</td></tr>
+          <tr><td>研修時間中の賃金</td><td class="num">—</td><td>同 賃金助成 1,000円×20時間×3名</td><td class="num">60,000円</td></tr>
+          <tr><td>研修後に入れるシステム（有料ツール・API利用料など）</td><td class="num">200,000円</td><td>同 設備投資加算 50%</td><td class="num">100,000円</td></tr>
+        </tbody>
+      </table>
     </div>
-    <label class="f" style="margin-top:12px;">相談したいこと・現在の課題
-      <textarea id="issue" placeholder="例）毎月のシフト作成に店長が10時間以上かかっている。業務ごとの必要人数、スタッフごとの勤務可能日・資格・連続勤務の上限などの条件があり、既製のシフトシステムでは対応できなかった。"></textarea>
-    </label>
-    <div class="center">
-      <button id="makeSheet">相談シートを作成</button>
-    </div>
-    <div id="sheetWrap" class="hidden">
-      <pre class="sheet" id="sheet"></pre>
-      <div class="center">
-        <button id="copySheet">コピーする</button>
-        <button class="ghost" id="mailSheet">メールで送る</button>
-      </div>
-    </div>
-  </div>
+    <p class="note" style="margin-top:6px;">※経費助成には訓練時間に応じた1人あたりの限度額があり、実際の受給額はこれを下回ることがあります。数字は説明用の例です。</p>
+    <div class="caution" style="margin-top:10px;"><ul>
+      <li>研修開始の<b>1か月前まで</b>に訓練計画届を出す必要がある。リスキリングコースは<b>令和8年度末（2027年3月31日）まで</b>の時限措置なので、今年度中に使うなら早めの計画が必要。</li>
+      <li>残業削減の目標を立てられる会社なら、働き方改革推進支援助成金（11月30日締切）でシフト管理ソフトの導入費・コンサル費を別枠で賄える。<b>同じ経費を2つの制度に重ねて申請することはできない。</b></li>
+      <li>助成金は後払い。研修費をいったん全額払うため、つなぎ資金の相談が金融機関の出番になる。</li>
+    </ul></div>
+  </section>
 
-  <div class="note">
-    <p>【ご注意】</p>
-    <p>・本ツールは制度の当たりをつけるための簡易ツールです。対象可否・補助額を保証するものではありません。</p>
-    <p>・雇用関係助成金（厚生労働省）の申請書類の作成・提出代行は社会保険労務士の業務です。補助金（経済産業省系）の申請は事業者自身が行うのが原則で、成功報酬型の高額な申請代行には注意してください。</p>
-    <p>・市町村独自の補助金は各自治体・商工団体のサイトで最新情報を確認してください（ステップ1の検索リンクから探せます）。</p>
-  </div>
+  <section class="block" id="local" aria-labelledby="local-h">
+    <h2 id="local-h">県・市町村の独自制度（DX・IT関連）</h2>
+    <p class="mini">国の制度に上乗せできる地域の制度です。把握できたものだけを載せています。載っていない市町村は下の検索から探してください。</p>
+    <div class="filters">
+      <label class="mini" for="lpref">県</label>
+      <select id="lpref"><option value="all">すべて</option><option value="aichi">愛知県</option><option value="gifu">岐阜県</option><option value="shizuoka">静岡県</option></select>
+      <label class="mini" for="lmuni">市町村</label>
+      <select id="lmuni"></select>
+      <a id="lsearch" class="mini" target="_blank" rel="noopener" href="#">制度を検索</a>
+    </div>
+    <div class="gap"></div>
+    <div class="local" id="localList"></div>
+    <p class="note" style="margin-top:8px;">地域制度は J-Net21・補助金ポータル・自治体資料の掲載内容（2026年10月時点）をもとにしています。受付状況は変わるため、自治体の公式ページで確認してください。</p>
+  </section>
+
+  <section class="block" id="hearing" aria-labelledby="hear-h">
+    <h2 id="hear-h">相談を受けたときの確認項目</h2>
+    <p class="mini">次の項目がわかれば、使える制度をほぼ絞り込めます。</p>
+    <ol class="checklist">
+      <li>雇用保険の適用事業所か（厚労省の助成金の前提）</li>
+      <li>常時使用する従業員数と業種（小規模事業者に当たるか）</li>
+      <li>商工会議所地区か商工会地区か（持続化補助金の申請先が変わる）</li>
+      <li>GビズIDプライムを持っているか（補助金の電子申請に必須。取得に1〜2週間）</li>
+      <li>一番低い時給と地域別最低賃金との差（業務改善助成金・賃上げ特例）</li>
+      <li>賃上げの予定と時期</li>
+      <li>月の残業時間（36協定の上限）と年休の計画的付与制度の有無</li>
+      <li>やりたいことが「研修」「既製ツール導入」「オーダーメイド開発」「設備」のどれか</li>
+      <li>直近の決算が赤字か（持続化補助金の補助率が変わる場合あり）</li>
+      <li>立替払いの資金があるか（補助金・助成金は後払い）</li>
+      <li>すでに発注・契約していないか（交付決定前の発注は対象外）</li>
+      <li>同じ経費で他の補助金を受けていないか</li>
+    </ol>
+  </section>
+
+  <section class="block" aria-labelledby="rule-h">
+    <h2 id="rule-h">どの制度にも共通する注意点</h2>
+    <ul class="list">
+      <li><b>交付決定（助成金は計画届の受理）より前の契約・発注・支払いは対象外。</b>見積の取得までにとどめる。</li>
+      <li><b>原則後払い。</b>事業完了から入金まで数か月かかる。つなぎ融資・資金繰りの確認を。</li>
+      <li><b>同じ経費の二重取りは不可。</b>複数の制度を使うときは経費ごとに振り分ける。</li>
+      <li>雇用関係助成金の申請書類を報酬を得て作成・提出代行できるのは<b>社会保険労務士</b>だけ。補助金も、高額な成功報酬型の申請代行業者には注意を促す。</li>
+      <li>証拠書類（見積書・契約書・請求書・振込記録・出勤簿・賃金台帳・受講記録）を最初から整理して保管する。</li>
+    </ul>
+  </section>
+
+  <p class="note">本資料は公表資料をもとにした要約で、受給・採択を保証するものではありません。最新の公募要領・支給要領と、労働局・事務局の案内を優先してください。</p>
 </div>
-<div class="toast" id="toast"></div>
 
 <script>
-// ===== 設定 =====
-// 相談シートの「メールで送る」の宛先。空のままならメールソフトの宛先欄は空で開きます。
-const CONTACT_EMAIL = "";
-
-// ===== 市町村 =====
-const PREFS = {
-  aichi: {
-    name: "愛知県",
-    bureau: "中部経済産業局",
-    labor: "愛知労働局",
-    support: "公益財団法人あいち産業振興機構",
-    cities: ["名古屋市","豊橋市","岡崎市","一宮市","瀬戸市","半田市","春日井市","豊川市","津島市","碧南市","刈谷市","豊田市","安城市","西尾市","蒲郡市","犬山市","常滑市","江南市","小牧市","稲沢市","新城市","東海市","大府市","知多市","知立市","尾張旭市","高浜市","岩倉市","豊明市","日進市","田原市","愛西市","清須市","北名古屋市","弥富市","みよし市","あま市","長久手市"],
-    towns: ["東郷町","豊山町","大口町","扶桑町","大治町","蟹江町","飛島村","阿久比町","東浦町","南知多町","美浜町","武豊町","幸田町","設楽町","東栄町","豊根村"]
-  },
-  gifu: {
-    name: "岐阜県",
-    bureau: "中部経済産業局",
-    labor: "岐阜労働局",
-    support: "公益財団法人岐阜県産業経済振興センター",
-    cities: ["岐阜市","大垣市","高山市","多治見市","関市","中津川市","美濃市","瑞浪市","羽島市","恵那市","美濃加茂市","土岐市","各務原市","可児市","山県市","瑞穂市","飛騨市","本巣市","郡上市","下呂市","海津市"],
-    towns: ["岐南町","笠松町","養老町","垂井町","関ケ原町","神戸町","輪之内町","安八町","揖斐川町","大野町","池田町","北方町","坂祝町","富加町","川辺町","七宗町","八百津町","白川町","東白川村","御嵩町","白川村"]
-  },
-  shizuoka: {
-    name: "静岡県",
-    bureau: "関東経済産業局",
-    labor: "静岡労働局",
-    support: "公益財団法人静岡県産業振興財団",
-    cities: ["静岡市","浜松市","沼津市","熱海市","三島市","富士宮市","伊東市","島田市","富士市","磐田市","焼津市","掛川市","藤枝市","御殿場市","袋井市","下田市","裾野市","湖西市","伊豆市","御前崎市","菊川市","伊豆の国市","牧之原市"],
-    towns: ["東伊豆町","河津町","南伊豆町","松崎町","西伊豆町","函南町","清水町","長泉町","小山町","吉田町","川根本町","森町"]
-  }
-};
-
-// 市町村独自の制度（確認済みのものだけを追加してください）
-// 例: LOCAL_PROGRAMS["一宮市"] = [{ name:"〇〇補助金", org:"一宮市", note:"概要", url:"https://..." }];
-const LOCAL_PROGRAMS = {};
-
-const g = (q) => "https://www.google.com/search?q=" + encodeURIComponent(q);
-
-// ===== 制度データ =====
-// fit: 診断結果から [score, reasons[]] を返す。score が負なら対象外の可能性が高い。
+// ===== 制度データ（2026年10月22日時点） =====
+// status: open（受付中）/ soon（締切間近・公募予定）/ closed（今年度終了・次回未定）/ always（通年）
 const PROGRAMS = [
   {
-    id: "yorozu", type: "無料相談", name: "よろず支援拠点（無料の経営相談）",
-    org: "国（中小企業基盤整備機構）が各県に設置",
-    rate: "相談無料・回数制限なし", max: "—",
-    use: "どの補助金が合うかの整理、事業計画書のブラッシュアップ、IT・DX活用の相談",
-    search: (p) => g(p.name + " よろず支援拠点"),
-    fit: (a) => [3, [["ok", "業種・規模を問わず無料で何度でも相談できます。まず最初の相談先に"]]]
+    id: "reskill", kind: "josei", tags: ["training","system"],
+    name: "人材開発支援助成金（事業展開等リスキリング支援コース）",
+    org: "厚生労働省／申請先：都道府県労働局",
+    oneline: "社員に新しい分野（DX・AI活用など）の研修を受けさせると、研修費の75%と研修中の賃金の一部が戻ってくる。",
+    rate: "経費75%（中小）／60%（大企業）", max: "1人あたり訓練時間別の限度額あり", fit: "a",
+    status: "open", statusText: "受付中（令和8年度末まで）",
+    facts: [["経費助成率（中小）","75%"],["賃金助成（中小）","1,000円／人・時間"],["設備投資加算（R8新設）","50%・1人15万円まで"],["必要な研修時間","10時間以上（OFF-JT）"]],
+    who: ["雇用保険の適用事業所","新規事業の立ち上げやDX・GXに伴い、新たな知識・技能を身につける研修を行う事業主","受講者は雇用保険の被保険者（正社員に限らない）"],
+    yes: ["外部講師の謝金・研修の委託費（事業内訓練）","外部の研修機関の受講料（事業外訓練）","研修時間中の賃金（賃金助成）","研修内容を活かす機器・システムの導入費（設備投資加算：50%、1人15万円・10人以上は150万円まで）"],
+    no: ["10時間未満の研修","業務そのもの（OJT）や、研修と言いながら実態がシステム開発の外注になっているもの","計画届の提出前に始めた研修","eラーニングの2回目以降（2026年8月3日以降の計画届は1人1年度1回まで）"],
+    req: ["研修開始日の6か月前〜1か月前までに「職業訓練実施計画届」を提出","研修内容が事業展開・DX等と関係していることを説明できる計画","研修終了後2か月以内に支給申請"],
+    schedule: "通年受付。ただし本コースは令和8年度末（2027年3月31日）までの時限措置。令和8年4月8日と8月3日に制度改正あり。",
+    flow: ["労働局（またはハローワーク）に事前相談","訓練実施計画届を提出（開始1か月前まで）","研修を実施（出勤簿・受講記録を残す）","研修終了後2か月以内に支給申請","審査（数か月）→支給"],
+    talk: "「社員さんがAIを使ってシフトの仕組みを自分で作れるようになる研修として組めば、研修費の4分の3が国から戻ります。研修中のお給料も1時間1,000円出ます。今年度末で終わる制度なので、始めるなら年明けまでに計画を出しましょう。」",
+    caution: ["申請書類の作成代行は社労士の業務。伴走する専門家は研修の提供者の立場にとどめる","研修カリキュラム・時間割・講師の経歴を最初に固める必要がある","時限措置のため、令和9年度以降の継続は未定"],
+    faq: [["社長だけが受ける研修は対象？","雇用保険の被保険者が対象のため、役員だけの研修は対象外。"],["自社の社員が講師でもいい？","事業内訓練として可能な場合もあるが、講師要件がある。外部講師のほうが説明しやすい。"],["オンライン研修は？","同時双方向のオンラインは対象になりうる。eラーニングは回数制限あり。"]],
+    src: "厚生労働省・各労働局の案内（令和8年度）、制度解説記事"
   },
   {
-    id: "senmonka", type: "専門家派遣", name: "商工会議所・商工会の専門家派遣",
-    org: "地元の商工会議所・商工会（会員向けが中心）",
-    rate: "無料〜一部負担（団体により異なる）", max: "数回程度",
-    use: "業務の棚卸し・要件整理など、伴走の初期段階を専門家派遣でまかなう",
-    search: (p, m) => g(m + " 商工会議所 OR 商工会 専門家派遣"),
-    fit: (a) => {
-      const r = [["ok", "伴走の初回〜数回分（業務ヒアリング・要件整理）に充てやすい制度です"]];
-      if (!a.goals.expert && !a.goals.build) return [1, r];
-      return [3, r];
-    }
+    id: "hatarakikata", kind: "josei", tags: ["system","overtime","consult"],
+    name: "働き方改革推進支援助成金（労働時間短縮・年休促進支援コース）",
+    org: "厚生労働省／申請先：都道府県労働局",
+    oneline: "残業を減らす・年休を取りやすくする目標を立てて、労務管理ソフトやコンサルに投資すると、費用の3/4が戻ってくる。",
+    rate: "3/4（条件により4/5）", max: "成果目標ごとに設定・賃上げ加算あり", fit: "a",
+    status: "soon", statusText: "受付中・11月30日締切",
+    facts: [["助成率","3/4（条件により4/5）"],["基本の上限目安","150万円前後（目標による）"],["賃上げ加算","あり（大幅に加算）"],["申請期限","2026年11月30日"]],
+    who: ["中小企業事業主（労災保険の適用事業主）","年5日の年休取得に向けて就業規則等を整備している","成果目標（下記）に取り組む"],
+    yes: ["労務管理用ソフトウェア（シフト・勤怠管理）の導入・更新","外部専門家（社労士・コンサル）によるコンサルティング","労務管理担当者・労働者への研修","就業規則・労使協定の作成・変更","労働能率の増進に資する設備・機器"],
+    no: ["パソコン・タブレット・スマートフォンなど汎用性の高い機器","交付決定前の発注","成果目標を達成できなかった部分の上乗せ"],
+    req: ["成果目標を1つ以上選ぶ：36協定の時間外・休日労働の上限を減らす／年休の計画的付与制度を新たに導入／時間単位年休と特別休暇の導入 など","目標を達成した場合に上限額まで助成（未達成は減額）","賃金引上げを目標に加えると上限額が加算"],
+    schedule: "申請は2026年4月13日〜11月30日。予算に達すると早めに締め切られることがある。事業の実施期限は例年1月末頃。",
+    flow: ["働き方改革推進支援センター・労働局に事前相談","交付申請（11月30日まで）","交付決定後に発注・導入・研修を実施","目標の達成（規程整備・協定届出など）","支給申請 → 審査 → 支給"],
+    talk: "「シフトの仕組みを作って残業を減らす目標を立てるなら、ソフトの導入費やコンサル費の4分の3が戻ります。ただ今年度は11月30日が申請期限で、予算がなくなると早めに締まります。」",
+    caution: ["すでに年休の計画的付与の労使協定を結んでいる場合、その目標は選べない","目標ごとに上限が違うので、どの目標で申請するかが受給額を左右する","今年度分は締切まで約5週間。間に合わなければ来年度4月の受付開始に向けて準備"],
+    faq: [["自社開発のシフトの仕組みは対象？","外部に委託して作るソフトウェアは対象になりうる。社内の人件費は対象外。"],["来年度もある？","例年継続しているが、要件・上限は年度ごとに変わる。"]],
+    src: "厚生労働省・静岡労働局ほかの案内、令和8年度制度解説記事"
   },
   {
-    id: "jinzai", type: "助成金", name: "人材開発支援助成金（事業展開等リスキリング支援コース）",
-    org: "厚生労働省（窓口：都道府県労働局）",
-    rate: "研修経費の75%（中小企業）＋研修時間中の賃金助成（1人1時間あたり1,000円程度）",
-    max: "1事業所あたり年間上限あり（要確認）",
-    use: "社員が「AI・ITで業務の仕組みを自分たちで作る」研修を受ける費用。伴走を10時間以上の研修カリキュラムとして設計すると対象になりうる",
-    search: () => g("人材開発支援助成金 事業展開等リスキリング支援コース site:mhlw.go.jp"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (a.koyou !== "yes") { r.push(["ng", "雇用保険の適用事業所であることが前提です"]); s -= 5; }
-      if (a.goals.training) { s += 3; r.push(["ok", "社員研修として伴走を行う形に最も合う制度です"]); }
-      if (a.goals.build || a.goals.expert) { s += 1; r.push(["ok", "「自社で作れる人材を育てる」伴走は、研修計画として組み立てやすい"]); }
-      r.push(["warn", "研修開始の1か月前までに訓練計画の届出が必要。期間限定のコースなので実施期間を確認"]);
-      return [s, r];
-    }
+    id: "gyomukaizen", kind: "josei", tags: ["system","wage","equipment","consult"],
+    name: "業務改善助成金",
+    org: "厚生労働省／申請先：都道府県労働局",
+    oneline: "一番低い時給を50円以上上げて、生産性を上げる設備やシステムに投資すると、その費用の3/4〜4/5が戻ってくる。",
+    rate: "3/4〜4/5", max: "30万〜600万円（引上げ額・人数別）", fit: "b",
+    status: "closed", statusText: "今年度の受付はほぼ終了",
+    facts: [["引上げコース","50円・70円・90円"],["助成率","3/4〜4/5"],["上限","最大600万円"],["R8申請期間","9/1〜最賃発効日の前日（遅くとも11/30）"]],
+    who: ["中小企業・小規模事業者","事業場内最低賃金が、改定後の地域別最低賃金を下回っている事業場","解雇・賃金引下げ等を行っていない"],
+    yes: ["生産性向上のための機械設備・POSレジ・業務システム","コンサルティング（業務フロー見直し等）","人材育成・教育訓練"],
+    no: ["賃金引上げを伴わない投資","単なる買い替え・汎用品（パソコン等は条件付き）","交付決定前の発注"],
+    req: ["事業場内最低賃金を50円以上引き上げる（R8は50・70・90円の3コース。R7の30・45・60円コースは廃止）","引上げは申請後〜事業完了までに実施","設備投資等で生産性が上がることを計画で示す"],
+    schedule: "令和8年度は9月1日から受付。締切は「地域別最低賃金の発効日の前日」と「11月30日」の早いほう。来年度も最低賃金改定の時期に合わせた受付が見込まれる。",
+    flow: ["労働局に事前相談","交付申請（引上げ計画＋設備投資計画）","交付決定","賃金引上げ・設備導入","事業実績報告 → 支給"],
+    talk: "「最低賃金に近い時給の方がいて、どうせ上げるなら、その年はシステム投資の4分の3以上がこの助成金で戻ります。今年度はもう締切なので、来年の最低賃金改定のタイミングで一緒に計画しましょう。」",
+    caution: ["申請期限が最低賃金の発効日で決まるので、県ごとに締切が違う","上限は事業場規模30人未満のほうが高く設定されている"],
+    limitTable: { head:["引上げ人数","50円","70円","90円"], rows:[["1人","40万","50万","100万"],["2〜3人","70万","100万","240万"],["4〜5人","70万","130万","270万"],["6〜7人","90万","180万","360万"],["8人以上","110万","230万","450万"],["10人以上","130万","300万","600万"]], note:"事業場規模30人未満の場合の上限（令和8年度・労働局資料より）。30人以上は一部低い。" },
+    faq: [["今年はもう使えない？","愛知・岐阜・静岡いずれも、地域別最低賃金の発効日前日が締切。発効済みなら今年度の受付は終了。"]],
+    src: "厚生労働省「令和8年度業務改善助成金のご案内」、各労働局資料"
   },
   {
-    id: "hatarakikata", type: "助成金", name: "働き方改革推進支援助成金（労働時間短縮・年休促進支援コース等）",
-    org: "厚生労働省（窓口：都道府県労働局）",
-    rate: "対象経費の3/4（条件により4/5）",
-    max: "成果目標・賃上げ加算により変動",
-    use: "労務管理用ソフト（シフト管理）の導入・開発、外部専門家によるコンサルティング、労務管理担当者への研修",
-    search: () => g("働き方改革推進支援助成金 労働時間短縮・年休促進支援コース site:mhlw.go.jp"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (a.koyou !== "yes") { r.push(["ng", "雇用保険の適用事業所であることが前提です"]); s -= 5; }
-      if (a.goals.overtime) { s += 3; r.push(["ok", "シフト最適化による残業削減・休暇取得促進は制度の目的にぴったりです"]); }
-      else { r.push(["warn", "残業削減や年休取得促進などの「成果目標」の設定が必要です"]); }
-      if (a.goals.build || a.goals.expert) s += 1;
-      r.push(["warn", "例年、交付申請の締切は秋〜11月頃で予算上限による早期締切もあり。年度当初からの準備が安全"]);
-      return [s, r];
-    }
+    id: "jizokuka", kind: "hojo", tags: ["system","small"],
+    name: "小規模事業者持続化補助金（一般型・通常枠）",
+    org: "中小企業庁／窓口：商工会議所・商工会",
+    oneline: "従業員の少ない事業者が、販路開拓とそれに伴う業務効率化に取り組む費用の2/3を補助。",
+    rate: "2/3（赤字の賃上げ特例は3/4）", max: "50万円（特例で最大250万円）", fit: "b",
+    status: "soon", statusText: "第20回：11/5〜12/15",
+    facts: [["補助率","2/3"],["基本上限","50万円"],["賃上げ特例","+150万円"],["インボイス特例","+50万円"]],
+    who: ["小規模事業者：商業・サービス業（宿泊・娯楽を除く）は従業員5人以下、宿泊・娯楽業と製造業その他は20人以下","商工会議所地区か商工会地区かで申請窓口が分かれる"],
+    yes: ["機械装置等費","広報費・ウェブサイト関連費（補助金額の1/4まで）","展示会出展費・旅費","新商品開発費・借料","委託・外注費（販路開拓に必要なシステム構築など）"],
+    no: ["販路開拓につながらない、業務効率化だけの取組","汎用性の高いパソコン・タブレット等","交付決定前の発注"],
+    req: ["経営計画書・補助事業計画書を作成","商工会議所・商工会が発行する「事業支援計画書（様式4）」が必須","GビズIDプライムで電子申請"],
+    schedule: "第20回（2026年度）：申請受付 2026年11月5日〜12月15日17時。事業支援計画書（様式4）の発行受付締切は12月4日。",
+    flow: ["商工会議所・商工会に相談（様式4の依頼）","経営計画書・補助事業計画書を作成","様式4の発行（12月4日まで）","電子申請（12月15日まで）","採択・交付決定 → 事業実施 → 実績報告 → 入金"],
+    talk: "「従業員5人以下のお店なら、販路を広げる取組とセットで仕組みづくりの外注費の3分の2が補助されます。次の締切は12月15日、商工会議所の支援計画書は12月4日までです。」",
+    caution: ["様式4の発行には面談が必要。締切直前は混み合うので11月中に相談を","業務効率化（シフト作成）だけでは対象になりにくい。販路開拓の計画と組み合わせる"],
+    faq: [["従業員15人のサービス業は？","商業・サービス業は5人以下が条件のため対象外。"]],
+    src: "J-Net21 支援情報（第20回公募）、公募要領（2026年5月27日公開）"
   },
   {
-    id: "gyomukaizen", type: "助成金", name: "業務改善助成金",
-    org: "厚生労働省（窓口：都道府県労働局）",
-    rate: "設備投資等の費用の3/4〜4/5（規模・賃金水準による）",
-    max: "引上げ額・人数により数十万〜数百万円",
-    use: "事業場内最低賃金の引上げとセットで、生産性向上のための設備・システム導入やコンサルティングに",
-    search: () => g("業務改善助成金 site:mhlw.go.jp"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (a.koyou !== "yes") { r.push(["ng", "雇用保険の適用事業所であることが前提です"]); s -= 5; }
-      if (a.goals.wage) { s += 3; r.push(["ok", "賃上げ予定があるなら、システム構築費を賄える可能性が高い制度です"]); }
-      else { s -= 1; r.push(["ng", "事業場内で最も低い賃金の引上げ（30円以上など）が必須条件です"]); }
-      if (a.goals.build || a.goals.equipment || a.goals.expert) s += 1;
-      r.push(["warn", "事業場内最低賃金と地域別最低賃金の差額などの要件が年度ごとに変わります"]);
-      return [s, r];
-    }
-  },
-  {
-    id: "jizokuka", type: "補助金", name: "小規模事業者持続化補助金",
-    org: "中小企業庁（商工会議所・商工会が申請を支援）",
-    rate: "2/3", max: "50万円（賃上げ等の特例で上乗せあり）",
-    use: "販路開拓・業務効率化の取組。委託・外注費として仕組みづくりの費用を計上できる場合あり",
-    search: () => g("小規模事業者持続化補助金 公募要領 最新"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (!a.isSmall) { s -= 5; r.push(["ng", "小規模事業者（商業・サービス5人以下、宿泊・娯楽・製造その他20人以下）が対象です"]); }
-      else { s += 2; r.push(["ok", "小規模事業者に該当する可能性があります"]); }
-      if (a.goals.build || a.goals.saas || a.goals.expert) s += 1;
-      r.push(["warn", "商工会議所・商工会の「事業支援計画書」の発行が必要。締切の1〜2週間前までに相談を"]);
-      r.push(["warn", "業務効率化だけの取組は対象外。販路開拓と組み合わせた計画が必要です"]);
-      return [s, r];
-    }
-  },
-  {
-    id: "it", type: "補助金", name: "デジタル化・AI導入補助金（旧 IT導入補助金）",
+    id: "digital", kind: "hojo", tags: ["saas"],
+    name: "デジタル化・AI導入補助金（旧 IT導入補助金）",
     org: "中小企業庁・中小企業基盤整備機構",
-    rate: "1/2〜4/5（枠・規模による）", max: "枠により数十万〜数百万円",
-    use: "事前登録されたITツール（クラウドのシフト管理・勤怠システム等）を、登録支援事業者と一緒に導入する場合",
-    search: () => g("デジタル化・AI導入補助金 公募"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (a.goals.saas) { s += 3; r.push(["ok", "既製ツールの導入なら最も使いやすい制度です"]); }
-      if (a.goals.build && !a.goals.saas) { s -= 1; r.push(["ng", "登録済みツールが対象のため、自社で作る仕組みそのものには使いにくい"]); }
-      r.push(["warn", "申請はIT導入支援事業者（ベンダー）と共同で行います"]);
-      return [s, r];
-    }
+    oneline: "事務局に登録されたITツール（クラウドのシフト管理・勤怠・会計など）を、登録ベンダーと一緒に導入する費用を補助。",
+    rate: "1/2（最賃近傍の事業者は2/3）", max: "通常枠 5万〜150万円", fit: "c",
+    status: "closed", statusText: "以降の締切回は公式で確認",
+    facts: [["通常枠の補助率","1/2（条件で2/3）"],["通常枠の補助額","5万〜150万円"],["申請","IT導入支援事業者と共同"],["ほかの枠","インボイス枠・セキュリティ枠など"]],
+    who: ["中小企業・小規模事業者","IT導入支援事業者（登録ベンダー）を通じて登録済みツールを導入する"],
+    yes: ["登録済みソフトウェア・クラウド利用料（最大2年分）","導入関連費（活用支援・設定・マニュアル作成など）","インボイス枠ではPC・レジ等のハードウェアも一部対象"],
+    no: ["登録されていないツール、自社で作る仕組み","ベンダーを通さない導入","交付決定前の契約"],
+    req: ["通常枠は業務プロセスのソフトウェアを1種類以上含む","通常枠の申請は期間中1事業者1回","GビズIDプライム・SECURITY ACTIONの宣言"],
+    schedule: "2026年度は3月30日から公募開始。1次5/12、2次6/15、3次7/21、4次8/25締切。以降の回は公式サイトで確認。",
+    flow: ["IT導入支援事業者とツールを選ぶ","GビズIDプライム取得・SECURITY ACTION宣言","ベンダーと共同で交付申請","交付決定後に契約・導入","実績報告 → 入金 → 効果報告"],
+    talk: "「既製のシフト管理サービスを入れるならこの補助金が使えます。ただし登録ツールに限られるので、自社に合わせて作る場合には向きません。」",
+    caution: ["既製品が業務に合わなかった会社には不向き","ベンダー主導で申請が進むため、ツール選定の妥当性を第三者として確認したい"],
+    faq: [["名前が変わった？","2026年度から「IT導入補助金」は「デジタル化・AI導入補助金」に名称変更。"]],
+    src: "中小企業庁 令和8年度予算資料、制度解説記事"
   },
   {
-    id: "shoryokuka", type: "補助金", name: "中小企業省力化投資補助金（一般型）",
+    id: "shoryokuka", kind: "hojo", tags: ["system","equipment","wage"],
+    name: "中小企業省力化投資補助金（一般型）",
     org: "中小企業庁・中小企業基盤整備機構",
-    rate: "1/2（小規模事業者等は2/3）", max: "従業員規模により数百万円〜",
-    use: "個別の業務に合わせたオーダーメイドの設備・システム導入による省力化",
-    search: () => g("中小企業省力化投資補助金 一般型 公募要領"),
-    fit: (a) => {
-      const r = [];
-      let s = 0;
-      if (a.goals.equipment) { s += 2; r.push(["ok", "省力化設備・システムの導入に合う制度です"]); }
-      if (a.goals.build) { s += 1; r.push(["warn", "外注開発するシステムは対象になりうるが、社内の伴走・研修費は対象外"]); }
-      r.push(["warn", "賃上げ計画などの要件あり。投資規模が小さい（数十万円）と見合わないことが多い"]);
-      return [s, r];
-    }
+    oneline: "自社の業務に合わせたオーダーメイドの設備・システムで人手不足を解消する投資を補助。金額の大きい投資向け。",
+    rate: "1/2（小規模・再生事業者は2/3）", max: "従業員規模別（5人以下750万円〜最大1億円）", fit: "c",
+    status: "closed", statusText: "第7回は終了・次回は公式で確認",
+    facts: [["補助率","1/2（小規模等 2/3）"],["上限（5人以下）","750万円（大幅賃上げで1,000万円）"],["上限（最大）","1億円"],["対象","オーダーメイド設備・システム"]],
+    who: ["人手不足の状態にある中小企業","労働生産性・賃上げ・事業場内最低賃金の数値目標を約束できる事業者"],
+    yes: ["機械装置・システム構築費（オーダーメイド・セミオーダーメイド）","専門家経費・運搬費・クラウド利用料など"],
+    no: ["社内の伴走・研修費","汎用品のみの導入","交付決定前の発注"],
+    req: ["労働生産性の年平均伸び率、給与支給総額の増加、事業場内最低賃金の水準などの目標","従業員21名以上は一般事業主行動計画の公表（第7回から）"],
+    schedule: "第7回は2026年7月下旬に締切済み。次回公募は公式サイトで確認。",
+    flow: ["事業計画（省力化効果・賃上げ計画）を作成","電子申請","審査・採択 → 交付決定","発注・導入","実績報告 → 入金 → 事業計画期間の効果報告"],
+    talk: "「数百万円以上の専用システムや設備を入れて人手不足を解消するなら候補になります。数十万円の仕組みづくりには手続きの負担が見合いません。」",
+    caution: ["賃上げ目標が未達だと返還の可能性","採択後も数年間の効果報告が必要"],
+    faq: [],
+    src: "中小企業庁資料、ミラサポplus「中小企業庁担当者に聞く」（2026年9月）"
+  },
+  {
+    id: "free", kind: "free", tags: ["consult","training"],
+    name: "無料の専門家支援（よろず支援拠点・商工会議所の専門家派遣）",
+    org: "国（中小機構）・各県の支援機関・商工会議所／商工会",
+    oneline: "補助金を使う前の業務整理や計画づくりを、無料または少額で専門家に相談できる。",
+    rate: "無料〜一部負担", max: "派遣は数回程度", fit: "a",
+    status: "always", statusText: "通年",
+    facts: [["よろず支援拠点","無料・回数制限なし"],["専門家派遣","無料〜一部負担"],["向いている段階","最初の業務整理"],["申請","不要（相談のみ）"]],
+    who: ["中小企業・小規模事業者（業種問わず）","専門家派遣は会員向けの場合あり"],
+    yes: ["業務の棚卸し、要件整理","補助金・助成金の選び方","事業計画書の見直し"],
+    no: ["システムの開発そのもの","長期間の伴走（回数に上限）"],
+    req: ["愛知県よろず支援拠点（あいち産業振興機構）","岐阜県よろず支援拠点（岐阜県産業経済振興センター）","静岡県よろず支援拠点（静岡県産業振興財団）"],
+    schedule: "通年。商工会議所の専門家派遣は年度予算の範囲内。",
+    flow: ["商工会議所・よろず支援拠点に相談予約","課題のヒアリング","必要に応じて専門家派遣","有料の伴走・補助金活用へ"],
+    talk: "「最初の2〜3回は商工会議所の専門家派遣で業務の整理をして、その後の研修部分を助成金で賄う流れがおすすめです。」",
+    caution: [],
+    faq: [],
+    src: "中小企業基盤整備機構、各県支援機関"
   }
 ];
 
-// ===== 申請フロー =====
-const FLOWS = {
-  hojo: [
-    ["GビズIDプライムを取得", "電子申請（jGrants）に必須。発行まで1〜2週間かかることがあるので最初に"],
-    ["公募要領を読み、対象経費・スケジュールを確認", "補助率・上限・締切・対象外経費をチェック"],
-    ["商工会議所・よろず支援拠点に相談", "持続化補助金は事業支援計画書の発行が必要"],
-    ["事業計画書を作成・電子申請", "現状の課題 → 取組内容 → 効果（時間削減・売上）を数字で"],
-    ["採択・交付決定", "ここから契約・発注が可能に（それ以前の発注は対象外）"],
-    ["事業の実施・支払い", "見積書・契約書・請求書・振込記録をすべて保管"],
-    ["実績報告 → 確定検査 → 入金", "入金は事業完了後。数か月かかることも"]
-  ],
-  josei: [
-    ["労働局・働き方改革推進支援センターに事前相談", "対象になるか、成果目標の立て方を確認"],
-    ["計画届・交付申請を提出", "人材開発支援助成金は研修開始の1か月前までに訓練計画届"],
-    ["（交付決定後）研修・取組を実施", "出勤簿・賃金台帳・受講記録を整備"],
-    ["支給申請", "取組完了後、定められた期間内に申請"],
-    ["審査 → 支給決定 → 入金", "審査に数か月かかることがある"]
-  ]
+const DEADLINES = [
+  { date: "11月30日", what: "働き方改革推進支援助成金", sub: "交付申請の締切（予算到達で早期終了あり）", cls: "hot", href: "#hatarakikata" },
+  { date: "12月4日", what: "持続化補助金 第20回", sub: "事業支援計画書（様式4）の発行受付締切", cls: "hot", href: "#jizokuka" },
+  { date: "12月15日", what: "持続化補助金 第20回", sub: "電子申請の締切（17時）", cls: "soon", href: "#jizokuka" },
+  { date: "2027年3月31日", what: "リスキリング支援コース", sub: "時限措置の終了。計画届は研修開始1か月前まで", cls: "soon", href: "#reskill" },
+  { date: "受付終了", what: "業務改善助成金（R8）", sub: "最低賃金発効日の前日まで。来年度に向けて準備", cls: "closed", href: "#gyomukaizen" }
+];
+
+const FILTERS = [
+  ["all","すべて"],["training","社員研修"],["system","システム・仕組みづくり"],["saas","既製ツール導入"],
+  ["overtime","残業削減・年休"],["wage","賃上げとセット"],["equipment","設備投資"],["small","小規模事業者"],["consult","専門家に相談"]
+];
+
+// ===== 地域の独自制度（確認できたものを追加していく） =====
+const LOCAL = [
+  { pref:"aichi", muni:"名古屋市", name:"中小企業デジタル活用支援補助金", body:"名古屋産業振興公社が実施。補助率1/2、上限500万円（下限10万円）。事前相談が必須。", status:"closed", statusText:"通常枠・賃上げ枠は受付終了（ロボット枠も9/30まで）" },
+  { pref:"aichi", muni:"小牧市", name:"中小企業デジタル化支援補助金", body:"デジタル技術・サイバーセキュリティ対策の導入費を補助。補助率1/2、上限100万円。", status:"open", statusText:"受付状況は市に確認" },
+  { pref:"aichi", muni:"愛知県", name:"建設業DX推進支援事業費補助金", body:"建設業のクラウド利用料・システム購入・構築費が対象。補助率1/2、上限50万円。", status:"open", statusText:"2027年1月29日まで" },
+  { pref:"gifu", muni:"岐阜市", name:"中小企業等DX推進補助金", body:"ソフトピアジャパンのDX・IT研修受講料の1/2（上限5万円）、テクノプラザ研修の1/2（上限10万円）、DXシステム導入で75万円を超える部分の1/2（上限20万円）。", status:"open", statusText:"2027年2月26日まで（予算到達で終了）" },
+  { pref:"shizuoka", muni:"静岡市", name:"中小企業DX人材等育成支援事業補助金", body:"社員のDX・デジタル研修費の2/3（技能・生産性向上研修は1/2）、上限10万円。", status:"open", statusText:"2026年4月1日から受付" },
+  { pref:"shizuoka", muni:"浜松市", name:"中小事業者等AIエージェント導入支援事業費補助金", body:"AIエージェントの導入費。補助率1/2、上限500万円（下限50万円）。", status:"closed", statusText:"3次募集は9月30日で終了" },
+  { pref:"shizuoka", muni:"浜松市", name:"産業用ロボット導入支援事業費補助金", body:"産業用ロボットの導入費。補助率1/2、上限500万円。", status:"soon", statusText:"3次募集 10月30日まで" }
+];
+
+const MUNIS = {
+  aichi: ["名古屋市","豊橋市","岡崎市","一宮市","瀬戸市","半田市","春日井市","豊川市","津島市","碧南市","刈谷市","豊田市","安城市","西尾市","蒲郡市","犬山市","常滑市","江南市","小牧市","稲沢市","新城市","東海市","大府市","知多市","知立市","尾張旭市","高浜市","岩倉市","豊明市","日進市","田原市","愛西市","清須市","北名古屋市","弥富市","みよし市","あま市","長久手市","東郷町","豊山町","大口町","扶桑町","大治町","蟹江町","飛島村","阿久比町","東浦町","南知多町","美浜町","武豊町","幸田町","設楽町","東栄町","豊根村"],
+  gifu: ["岐阜市","大垣市","高山市","多治見市","関市","中津川市","美濃市","瑞浪市","羽島市","恵那市","美濃加茂市","土岐市","各務原市","可児市","山県市","瑞穂市","飛騨市","本巣市","郡上市","下呂市","海津市","岐南町","笠松町","養老町","垂井町","関ケ原町","神戸町","輪之内町","安八町","揖斐川町","大野町","池田町","北方町","坂祝町","富加町","川辺町","七宗町","八百津町","白川町","東白川村","御嵩町","白川村"],
+  shizuoka: ["静岡市","浜松市","沼津市","熱海市","三島市","富士宮市","伊東市","島田市","富士市","磐田市","焼津市","掛川市","藤枝市","御殿場市","袋井市","下田市","裾野市","湖西市","伊豆市","御前崎市","菊川市","伊豆の国市","牧之原市","東伊豆町","河津町","南伊豆町","松崎町","西伊豆町","函南町","清水町","長泉町","小山町","吉田町","川根本町","森町"]
 };
+const PREF_NAME = { aichi:"愛知県", gifu:"岐阜県", shizuoka:"静岡県" };
 
-// ===== 画面処理 =====
+// ===== 描画 =====
 const $ = (id) => document.getElementById(id);
-const STORE_KEY = "hojokin-navi-v1";
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const KIND = { josei:["助成金","p-josei"], hojo:["補助金","p-hojo"], free:["無料支援","p-free"] };
+const STATUS = { open:"p-open", soon:"p-soon", closed:"p-closed", always:"p-free" };
+const FIT = { a:["◎ 向いている","fit-a"], b:["○ 条件次第","fit-b"], c:["△ 向きにくい","fit-c"] };
 
-function loadState(){
-  try { return JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch(e){ return {}; }
-}
-function saveState(){
-  const st = {
-    pref: $("pref").value, muni: $("muni").value,
-    company: $("company").value, person: $("person").value,
-    contact: $("contact").value, issue: $("issue").value
-  };
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(st)); } catch(e){}
+function list(items, cls){
+  return items.length ? `<ul class="list ${cls || ""}">${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : "";
 }
 
-function fillMunis(selected){
-  const p = PREFS[$("pref").value];
-  const sel = $("muni");
-  sel.innerHTML = "";
-  [["市", p.cities], ["町村", p.towns]].forEach(([label, list]) => {
-    const og = document.createElement("optgroup");
-    og.label = label;
-    list.forEach(n => {
-      const o = document.createElement("option");
-      o.value = n; o.textContent = n;
-      og.appendChild(o);
-    });
-    sel.appendChild(og);
-  });
-  if (selected && [...p.cities, ...p.towns].includes(selected)) sel.value = selected;
-  renderContacts();
+function renderDeadlines(){
+  $("deadlines").innerHTML = DEADLINES.map(d =>
+    `<a class="dl ${d.cls}" href="${d.href}"><span class="date">${esc(d.date)}</span><span class="what">${esc(d.what)}</span><span class="sub">${esc(d.sub)}</span></a>`).join("");
 }
 
-function li(title, url, desc){
-  return `<li><a href="${url}" target="_blank" rel="noopener">${title}</a><span class="desc">${desc}</span></li>`;
+function sheet(p){
+  const [kLabel, kCls] = KIND[p.kind];
+  const lt = p.limitTable
+    ? `<h3>上限額の早見表</h3><div class="tablewrap mini"><table><thead><tr>${p.limitTable.head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead>` +
+      `<tbody>${p.limitTable.rows.map(r => `<tr>${r.map((c, i) => `<td class="${i ? "num" : ""}">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` +
+      `<p class="note">${esc(p.limitTable.note)}</p>`
+    : "";
+  return `<article class="sheet" id="${p.id}">
+    <div class="sheet-head">
+      <div><span class="pill ${kCls}">${kLabel}</span> <span class="pill ${STATUS[p.status]}">${esc(p.statusText)}</span>
+        <h2>${esc(p.name)}</h2><div class="org">${esc(p.org)}</div></div>
+      <span class="fit ${FIT[p.fit][1]}">内製化の伴走に：${FIT[p.fit][0]}</span>
+    </div>
+    <div class="oneline">${esc(p.oneline)}</div>
+    <div class="facts">${p.facts.map(([k, v]) => `<div class="fact"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join("")}</div>
+    <h3>対象になる事業者</h3>${list(p.who)}
+    <div class="two">
+      <div><h3>対象になる経費</h3>${list(p.yes, "yes")}</div>
+      <div><h3>対象にならないもの</h3>${list(p.no, "no")}</div>
+    </div>
+    <h3>${p.kind === "free" ? "各県の窓口" : "主な要件"}</h3>${list(p.req)}
+    ${lt}
+    <h3>2026年度のスケジュール</h3><p class="mini">${esc(p.schedule)}</p>
+    <h3>申請の流れ</h3><p class="mini">${p.flow.map(esc).join(" → ")}</p>
+    <h3>お客様への説明例</h3><div class="talk">${esc(p.talk)}</div>
+    ${p.caution.length ? `<h3>注意点</h3><div class="caution">${list(p.caution)}</div>` : ""}
+    ${p.faq.length ? `<h3>よくある質問</h3>${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}` : ""}
+    <div class="src">出典：${esc(p.src)}</div>
+  </article>`;
 }
 
-function renderContacts(){
-  const p = PREFS[$("pref").value];
-  const m = $("muni").value;
-  const local = (LOCAL_PROGRAMS[m] || []).map(x => li(x.name + "（" + x.org + "）", x.url, x.note)).join("");
-  $("contacts").innerHTML =
-    local +
-    li(m + "の中小企業向け補助金を探す", g(m + " 中小企業 補助金 DX OR IT OR 生産性向上"), "市町村独自の補助金（DX・IT導入・人材育成など）を検索します") +
-    li(m + "の商工会議所・商工会", g(m + " 商工会議所 OR 商工会"), "補助金の申請支援・専門家派遣・事業支援計画書の窓口") +
-    li(p.name + "よろず支援拠点（無料相談）", g(p.name + " よろず支援拠点"), p.support + "が運営。補助金選びから計画づくりまで無料で相談可") +
-    li(p.labor + "（助成金の窓口）", g(p.labor + " 助成金"), "人材開発支援助成金・業務改善助成金などの申請先") +
-    li(p.name + "働き方改革推進支援センター", g(p.name + " 働き方改革推進支援センター"), "労務管理・シフト見直しの無料相談、働き方改革推進支援助成金の相談") +
-    li(p.name + "の補助金・支援制度（" + p.bureau + "管内）", g(p.name + " 中小企業 補助金 DX 支援 令和8年度"), "県独自の制度や" + p.bureau + "の支援策を検索します") +
-    li("J-Net21 支援情報ヘッドライン", "https://j-net21.smrj.go.jp/snavi/", "国・県・市町村の公募情報を地域別に一覧できる中小機構のサイト") +
-    li("jGrants（電子申請システム）", "https://www.jgrants-portal.go.jp/", "補助金の検索と電子申請。GビズIDプライムが必要");
-}
-
-function getAnswers(){
-  const goals = {};
-  document.querySelectorAll("#goals input").forEach(c => goals[c.value] = c.checked);
-  const industry = $("industry").value;
-  const emp = Math.max(0, parseInt($("employees").value, 10) || 0);
-  const smallLimit = (industry === "service" || industry === "retail" || industry === "food") ? 5 : 20;
-  return {
-    pref: $("pref").value, muni: $("muni").value, industry, emp,
-    isSmall: emp <= smallLimit,
-    koyou: document.querySelector("input[name=koyou]:checked").value,
-    goals
-  };
-}
-
-let lastRanked = [];
-
-function diagnose(){
-  const a = getAnswers();
-  const p = PREFS[a.pref];
-  const ranked = PROGRAMS.map(pr => {
-    const [score, reasons] = pr.fit(a);
-    return { pr, score, reasons };
-  }).sort((x, y) => y.score - x.score);
-  lastRanked = ranked;
-
-  $("results").innerHTML = ranked.map(({pr, score, reasons}) => {
-    const lvl = score >= 3 ? "high" : score >= 1 ? "mid" : "low";
-    const label = { high: "有力", mid: "条件次第", low: "合わない可能性" }[lvl];
-    return `<div class="prog fit-${lvl}">
-      <div class="prog-head">
-        <div><span class="badge b-type">${pr.type}</span><span class="prog-name">${pr.name}</span>
-          <div class="prog-org">${pr.org}</div></div>
-        <span class="badge b-${lvl}">${label}</span>
-      </div>
-      <dl class="kv"><dt>補助・助成</dt><dd>${pr.rate}</dd><dt>上限</dt><dd>${pr.max}</dd><dt>使いどころ</dt><dd>${pr.use}</dd></dl>
-      <ul class="reasons">${reasons.map(([k, t]) => `<li class="${k}">${t}</li>`).join("")}</ul>
-      <div style="margin-top:6px;font-size:13px;"><a href="${pr.search(p, a.muni)}" target="_blank" rel="noopener">最新の公式情報を確認する</a></div>
-    </div>`;
+function renderPrograms(){
+  $("cmpBody").innerHTML = PROGRAMS.map(p => {
+    const [kLabel, kCls] = KIND[p.kind];
+    return `<tr data-id="${p.id}">
+      <td><a href="#${p.id}">${esc(p.name)}</a></td>
+      <td><span class="pill ${kCls}">${kLabel}</span></td>
+      <td class="num">${esc(p.rate)}</td><td>${esc(p.max)}</td>
+      <td><span class="fit ${FIT[p.fit][1]}">${FIT[p.fit][0]}</span></td>
+      <td><span class="pill ${STATUS[p.status]}">${esc(p.statusText)}</span></td></tr>`;
   }).join("");
-
-  $("resultSummary").textContent =
-    `${p.name}${a.muni}・${$("industry").selectedOptions[0].textContent}・従業員${a.emp}人` +
-    `（小規模事業者${a.isSmall ? "に該当する可能性あり" : "には該当しない見込み"}）として判定しました。`;
-
-  const combo = [];
-  combo.push("① 初回〜数回：商工会議所・商工会の専門家派遣やよろず支援拠点で、業務の棚卸し（業務ごとの必要人数、スタッフごとの条件）を無料で整理。");
-  if (a.koyou === "yes") {
-    combo.push("② 構築期：社員が「シフト作成の仕組みを自分で作る」10時間以上の研修カリキュラムとして伴走を設計し、人材開発支援助成金で研修費の75%を充当。");
-    if (a.goals.overtime) combo.push("③ 残業削減の目標を立てられるなら、働き方改革推進支援助成金で労務管理ソフトの開発費・コンサル費を3/4充当。");
-    if (a.goals.wage) combo.push("③' 賃上げを予定しているなら、業務改善助成金でシステム導入・コンサル費を充当。");
-  } else {
-    combo.push("② 雇用保険の適用事業所でない場合、厚労省系の助成金は使えません。小規模事業者持続化補助金や市町村独自の補助金を確認しましょう。");
-  }
-  combo.push("※同じ経費に複数の補助金・助成金を重ねて使うことはできません。経費ごとに制度を振り分けます。");
-  $("comboNote").innerHTML = combo.map(t => `<p>${t}</p>`).join("");
-
-  $("resultCard").classList.remove("hidden");
-  $("resultCard").scrollIntoView({ behavior: "smooth" });
+  $("sheets").innerHTML = PROGRAMS.map(sheet).join("");
+  $("toc").innerHTML = PROGRAMS.map(p => `<a href="#${p.id}">${esc(p.name.replace(/（.*?）/g, ""))}</a>`).join("") +
+    `<a href="#case">ケーススタディ</a><a href="#local">地域の独自制度</a><a href="#hearing">確認項目</a>`;
 }
 
-function renderFlow(kind){
-  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.flow === kind ? "true" : "false"));
-  $("flow").innerHTML = FLOWS[kind].map(([t, d]) => `<li>${t}<small>${d}</small></li>`).join("");
+let activeFilter = "all";
+function applyFilter(){
+  const q = $("q").value.trim();
+  PROGRAMS.forEach(p => {
+    const show = (activeFilter === "all" || p.tags.includes(activeFilter)) && (!q || JSON.stringify(p).includes(q));
+    document.querySelector(`tr[data-id="${p.id}"]`).hidden = !show;
+    $(p.id).hidden = !show;
+  });
 }
 
-function buildSheet(){
-  const a = getAnswers();
-  const p = PREFS[a.pref];
-  const goalLabels = [...document.querySelectorAll("#goals input:checked")].map(c => "・" + c.parentElement.textContent.trim());
-  if (!lastRanked.length) lastRanked = PROGRAMS.map(pr => { const [score, reasons] = pr.fit(a); return { pr, score, reasons }; }).sort((x, y) => y.score - x.score);
-  const cands = lastRanked.filter(x => x.score >= 1).map(x => "・" + x.pr.name);
-  return [
-    "【補助金・伴走支援 相談シート】",
-    "会社名：" + ($("company").value || "（未入力）"),
-    "ご担当者：" + ($("person").value || "（未入力）"),
-    "連絡先：" + ($("contact").value || "（未入力）"),
-    "所在地：" + p.name + a.muni,
-    "業種：" + $("industry").selectedOptions[0].textContent,
-    "従業員数：" + a.emp + "人",
-    "雇用保険適用：" + (a.koyou === "yes" ? "はい" : "いいえ・不明"),
-    "",
-    "■やりたいこと",
-    ...(goalLabels.length ? goalLabels : ["（未選択）"]),
-    "",
-    "■相談内容・課題",
-    $("issue").value || "（未入力）",
-    "",
-    "■候補になりそうな制度（簡易診断）",
-    ...(cands.length ? cands : ["（該当なし）"]),
-    "",
-    "■確認したいこと",
-    "・上記制度の今年度の公募時期・締切",
-    "・自社が対象になるか、どの経費をどの制度に振り分けるか",
-    "・伴走支援（研修・専門家派遣）の進め方"
-  ].join("\n");
+function renderFilters(){
+  $("filters").innerHTML = FILTERS.map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${k === activeFilter}">${l}</button>`).join("");
+  $("filters").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    activeFilter = b.dataset.f;
+    $("filters").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    applyFilter();
+  }));
 }
 
-function toast(msg){
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 1800);
+function renderLocal(){
+  const pref = $("lpref").value;
+  const items = LOCAL.filter(l => pref === "all" || l.pref === pref);
+  $("localList").innerHTML = items.length
+    ? items.map(l => `<div class="item"><span class="org">${PREF_NAME[l.pref]}・${esc(l.muni)}</span><b>${esc(l.name)}</b><span>${esc(l.body)}</span>
+        <span><span class="pill ${STATUS[l.status]}">${esc(l.statusText)}</span></span></div>`).join("")
+    : `<div class="empty">登録された制度はありません。</div>`;
+  const prefs = pref === "all" ? Object.keys(MUNIS) : [pref];
+  const cur = $("lmuni").value;
+  $("lmuni").innerHTML = prefs.map(k => `<optgroup label="${PREF_NAME[k]}">${MUNIS[k].map(m => `<option value="${k}|${m}">${m}</option>`).join("")}</optgroup>`).join("");
+  if ([...$("lmuni").options].some(o => o.value === cur)) $("lmuni").value = cur;
+  else if (pref === "all" || pref === "aichi") $("lmuni").value = "aichi|一宮市";
+  updateSearch();
 }
 
-// ===== 初期化 =====
-const st = loadState();
-if (st.pref && PREFS[st.pref]) $("pref").value = st.pref;
-fillMunis(st.muni || "一宮市");
-["company", "person", "contact", "issue"].forEach(k => { if (st[k]) $(k).value = st[k]; $(k).addEventListener("input", saveState); });
-$("pref").addEventListener("change", () => { fillMunis(); saveState(); });
-$("muni").addEventListener("change", () => { renderContacts(); saveState(); });
-$("diagnose").addEventListener("click", diagnose);
-document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => renderFlow(b.dataset.flow)));
-renderFlow("hojo");
-$("makeSheet").addEventListener("click", () => {
-  $("sheet").textContent = buildSheet();
-  $("sheetWrap").classList.remove("hidden");
-});
-$("copySheet").addEventListener("click", () => {
-  const text = $("sheet").textContent;
-  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
-    .then(() => toast("コピーしました"))
-    .catch(() => {
-      const r = document.createRange(); r.selectNodeContents($("sheet"));
-      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      toast("選択しました。Ctrl+C / ⌘C でコピーしてください");
-    });
-});
-$("mailSheet").hidden = !CONTACT_EMAIL;
-$("mailSheet").addEventListener("click", () => {
-  const subject = "補助金・伴走支援のご相談（" + ($("company").value || "会社名未入力") + "）";
-  location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent($("sheet").textContent);
-});
+function updateSearch(){
+  const [k, m] = $("lmuni").value.split("|");
+  $("lsearch").href = "https://www.google.com/search?q=" + encodeURIComponent(PREF_NAME[k] + m + " 中小企業 補助金 令和8年度 DX OR デジタル OR 人材育成");
+  $("lsearch").textContent = m + "の制度を検索";
+}
+
+renderDeadlines();
+renderPrograms();
+renderFilters();
+renderLocal();
+$("q").addEventListener("input", applyFilter);
+$("lpref").addEventListener("change", renderLocal);
+$("lmuni").addEventListener("change", updateSearch);
 </script>
 </body>
 </html>
