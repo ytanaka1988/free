@@ -2,18 +2,36 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
 <title>東海3県 補助金・伴走支援ナビ</title>
 <style>
   :root{
-    --bg:#f6f7f9; --card:#ffffff; --accent:#1f5f8b; --accent-soft:#e8f1f8;
-    --ok:#2f6f4f; --ok-soft:#eaf6ee; --warn:#b5651d; --warn-soft:#fdf3e7;
-    --ng:#c0392b; --ng-soft:#fdecea; --border:#e0e0e0; --text:#222; --muted:#666;
+    --bg:#f5f7f9; --card:#ffffff; --accent:#1f5f8b; --accent-soft:#e8f1f8; --on-accent:#ffffff;
+    --ok:#2f6f4f; --ok-soft:#eaf6ee; --warn:#a85a14; --warn-soft:#fdf3e7;
+    --ng:#c0392b; --ng-soft:#fdecea; --border:#dfe4e8; --line:#eef1f3; --input:#c9d1d8;
+    --text:#1f2428; --muted:#5f6b75; --label:#3d4851; --soft:#f2f4f6; --sheet:#fafbfc; --toast:#2b3238;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14191d; --card:#1c2328; --accent:#6fb3e0; --accent-soft:#1d3546; --on-accent:#0e1a22;
+      --ok:#7fcf9f; --ok-soft:#1c3327; --warn:#e8a866; --warn-soft:#3a2a18;
+      --ng:#f08b80; --ng-soft:#3d1f1c; --border:#2e3840; --line:#262f36; --input:#3a4650;
+      --text:#e6eaed; --muted:#9aa6b0; --label:#c3ccd3; --soft:#242c32; --sheet:#182025; --toast:#e6eaed;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14191d; --card:#1c2328; --accent:#6fb3e0; --accent-soft:#1d3546; --on-accent:#0e1a22;
+    --ok:#7fcf9f; --ok-soft:#1c3327; --warn:#e8a866; --warn-soft:#3a2a18;
+    --ng:#f08b80; --ng-soft:#3d1f1c; --border:#2e3840; --line:#262f36; --input:#3a4650;
+    --text:#e6eaed; --muted:#9aa6b0; --label:#c3ccd3; --soft:#242c32; --sheet:#182025; --toast:#e6eaed;
+    color-scheme:dark;
   }
   *{box-sizing:border-box;}
   body{
     font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-    background:var(--bg); color:var(--text); margin:0; padding:20px 16px; line-height:1.6;
+    background:var(--bg); color:var(--text); margin:0; padding-block:20px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); line-height:1.6;
   }
   .wrap{max-width:960px;margin:0 auto;}
   h1{font-size:22px;margin:0 0 4px;}
@@ -24,11 +42,11 @@
   }
   .card h2{font-size:16px;margin:0 0 12px;border-left:4px solid var(--accent);padding-left:8px;}
   .card h3{font-size:14px;margin:16px 0 6px;}
-  .step-no{display:inline-block;background:var(--accent);color:#fff;border-radius:50%;width:22px;height:22px;text-align:center;font-size:12px;line-height:22px;margin-right:6px;}
+  .step-no{display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:50%;width:22px;height:22px;text-align:center;font-size:12px;line-height:22px;margin-right:6px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
-  label.f{display:block;font-size:13px;color:#444;}
+  label.f{display:block;font-size:13px;color:var(--label);}
   select,input[type=text],input[type=number],input[type=email],textarea{
-    width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-size:14px;font-family:inherit;background:#fff;
+    width:100%;padding:8px 10px;border:1px solid var(--input);border-radius:6px;font-size:14px;font-family:inherit;background:var(--card);color:var(--text);
   }
   textarea{min-height:90px;}
   .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 16px;font-size:14px;}
@@ -36,27 +54,28 @@
   .checks input{margin-top:5px;}
   .radios{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;}
   button{
-    background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;
+    background:var(--accent);color:var(--on-accent);border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;
   }
-  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button.ghost{background:var(--card);color:var(--accent);border:1px solid var(--accent);}
   button:hover{opacity:0.9;}
+  button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .center{text-align:center;margin-top:14px;}
   .linklist{list-style:none;padding:0;margin:0;}
-  .linklist li{padding:8px 0;border-bottom:1px dashed #eee;font-size:14px;}
+  .linklist li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;}
   .linklist li:last-child{border-bottom:none;}
   .linklist .desc{display:block;color:var(--muted);font-size:12px;}
   a{color:var(--accent);}
   .prog{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
   .prog.fit-high{border-left:6px solid var(--ok);}
   .prog.fit-mid{border-left:6px solid var(--warn);}
-  .prog.fit-low{border-left:6px solid #bbb;opacity:0.8;}
+  .prog.fit-low{border-left:6px solid var(--input);opacity:0.8;}
   .prog-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
   .prog-name{font-weight:bold;font-size:15px;}
   .prog-org{color:var(--muted);font-size:12px;}
   .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:bold;white-space:nowrap;}
   .b-high{background:var(--ok-soft);color:var(--ok);}
   .b-mid{background:var(--warn-soft);color:var(--warn);}
-  .b-low{background:#f0f0f0;color:#777;}
+  .b-low{background:var(--soft);color:var(--muted);}
   .b-type{background:var(--accent-soft);color:var(--accent);margin-right:4px;}
   .kv{display:grid;grid-template-columns:7em 1fr;gap:2px 10px;font-size:13px;margin:8px 0;}
   .kv dt{color:var(--muted);}
@@ -67,24 +86,23 @@
   .reasons li.warn{color:var(--warn);}
   .caution{background:var(--warn-soft);border-radius:6px;padding:8px 12px;font-size:12px;margin-top:8px;}
   .flow{counter-reset:flow;list-style:none;padding:0;margin:0;}
-  .flow li{position:relative;padding:8px 0 8px 36px;border-bottom:1px dashed #eee;font-size:14px;}
+  .flow li{position:relative;padding:8px 0 8px 36px;border-bottom:1px dashed var(--line);font-size:14px;}
   .flow li::before{
     counter-increment:flow;content:counter(flow);position:absolute;left:0;top:8px;
     width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
     text-align:center;line-height:24px;font-size:12px;font-weight:bold;
   }
   .flow li small{display:block;color:var(--muted);}
-  .note{font-size:12px;color:#777;line-height:1.7;}
+  .note{font-size:12px;color:var(--muted);line-height:1.7;}
   .note p{margin:6px 0;}
-  pre.sheet{white-space:pre-wrap;background:#fafafa;border:1px solid #eee;border-radius:6px;padding:12px;font-size:13px;font-family:inherit;}
+  pre.sheet{white-space:pre-wrap;background:var(--sheet);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:12px;font-size:13px;font-family:inherit;}
   .hidden{display:none;}
   .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
   .tabs button{padding:6px 14px;font-size:13px;}
-  .tabs button[aria-selected=false]{background:#fff;color:var(--accent);border:1px solid var(--accent);}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#333;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
+  .tabs button[aria-selected=false]{background:var(--card);color:var(--accent);border:1px solid var(--accent);}
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--toast);color:var(--bg);padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;}
   .toast.show{opacity:1;}
   @media (max-width:560px){
-    body{padding:14px 12px;}
     .card{padding:14px;}
     .kv{grid-template-columns:6em 1fr;}
   }
@@ -578,6 +596,7 @@ $("copySheet").addEventListener("click", () => {
       toast("選択しました。Ctrl+C / ⌘C でコピーしてください");
     });
 });
+$("mailSheet").hidden = !CONTACT_EMAIL;
 $("mailSheet").addEventListener("click", () => {
   const subject = "補助金・伴走支援のご相談（" + ($("company").value || "会社名未入力") + "）";
   location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent($("sheet").textContent);
